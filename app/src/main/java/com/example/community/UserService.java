@@ -20,11 +20,11 @@ public class UserService {
 
     }
 
-    public User getUserBYID(String userID) {
-
-    }
-
-    public List<User> getAllUsers() {
-
-    }
+//    public User getUserBYID(String userID) {
+//
+//    }
+//
+//    public List<User> getAllUsers() {
+//
+//    }
 }

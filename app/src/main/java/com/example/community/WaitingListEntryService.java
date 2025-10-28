@@ -21,12 +21,12 @@ public class WaitingListEntryService {
 
     }
 
-    public WaitingListEntry getEntryBYID(String entryID) {
-
-    }
-
-    public List<WaitingListEntry> getALLEntries() {
-
-    }
+//    public WaitingListEntry getEntryBYID(String entryID) {
+//
+//    }
+//
+//    public List<WaitingListEntry> getALLEntries() {
+//
+//    }
 
 }

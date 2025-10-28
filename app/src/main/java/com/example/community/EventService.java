@@ -22,11 +22,15 @@ public class EventService {
 
     }
 
-    public Event getEventByID(String eventID) {
+//    public Event getEventByID(String eventID) {
+//
+//        return null;
+//
+//    }
+//
+//    public List<Event> getAllEvents(){
+//
+//        return null;
 
-    }
-
-    public List<Event> getAllEvents(){
-
-    }
+//    }
 }
