@@ -22,7 +22,7 @@ public class EventService {
 
     }
 
-    public Event getEventByID(UUID eventID) {
+    public Event getEventByID(String eventID) {
 
     }
 

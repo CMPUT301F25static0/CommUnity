@@ -21,7 +21,7 @@ public class WaitingListEntryService {
 
     }
 
-    public WaitingListEntry getENtryBYID(UUID entryID) {
+    public WaitingListEntry getEntryBYID(String entryID) {
 
     }
 

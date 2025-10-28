@@ -13,7 +13,7 @@ public class User {
     }
 
     private String deviceToken;
-    private UUID userID;
+    private String userID;
     private String username;
     private String email;
     private String phoneNumber;
@@ -25,7 +25,7 @@ public class User {
     List<Event> registrationHistory;
     Boolean receiveNotifications;
 
-    public User(String deviceToken, UUID userID, String username, String email) {
+    public User(String deviceToken, String userID, String username, String email) {
         this.deviceToken = deviceToken;
         this.userID = userID;
         this.username = username;
@@ -36,7 +36,7 @@ public class User {
         return deviceToken;
     }
 
-    public UUID getUserID() {
+    public String getUserID() {
         return userID;
     }
 

@@ -3,14 +3,16 @@ package com.example.community;
 import java.time.LocalDateTime;
 
 public class Invitation {
+    String invitationID;
     String eventId;
     String entrantId;
     LocalDateTime issueDate;
     LocalDateTime expiryDate;
     WaitingListEntry.EntryStatus state;
 
-    public Invitation(String eventId, String entrantId, LocalDateTime issuedTime,
+    public Invitation(String invitationID, String eventId, String entrantId, LocalDateTime issuedTime,
                       LocalDateTime expiryTime, WaitingListEntry.EntryStatus state) {
+        this.invitationID = invitationID;
         this.eventId = eventId;
         this.entrantId = entrantId;
         this.issueDate = issuedTime;

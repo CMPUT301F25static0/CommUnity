@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Event {
-    private UUID eventID;
+    private String eventID; // need to make a UUID to string helper
     private String title;
     private String description;
     private User organizer;
@@ -26,7 +26,7 @@ public class Event {
     private List<User> invitedList;
     private List<User> cancelledList;
 
-    public Event(UUID eventID, String title, String description, User organizer, String location,
+    public Event(String eventID, String title, String description, User organizer, String location,
                  String eventType, Integer capacity, LocalDateTime eventStartDate,
                  LocalDateTime eventEndDate, LocalDateTime registrationStart, LocalDateTime registrationEnd,
                  String qrCodeImageURL) {
@@ -44,7 +44,7 @@ public class Event {
         this.qrCodeImageURL = qrCodeImageURL;
     }
 
-    public UUID getEventID() {
+    public String getEventID() {
         return eventID;
     }
 

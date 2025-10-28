@@ -1,7 +1,6 @@
 package com.example.community;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class Notification {
     public enum NotificationType {
@@ -11,13 +10,13 @@ public class Notification {
         WAITLIST,
         INFO}
 
-    private UUID notificationID;
-    private UUID recipientID;
-    private UUID eventID;
+    private String notificationID;
+    private String recipientID;
+    private String eventID;
     private LocalDateTime issueDate;
     private String message;
 
-    public Notification(UUID notificationID, UUID recipientID, UUID eventID,
+    public Notification(String notificationID, String recipientID, String eventID,
                         LocalDateTime issueDate, String message) {
         this.notificationID = notificationID;
         this.recipientID = recipientID;
@@ -26,15 +25,15 @@ public class Notification {
         this.message = message;
     }
 
-    public UUID getNotificationID() {
+    public String getNotificationID() {
         return notificationID;
     }
 
-    public UUID getRecipientID() {
+    public String getRecipientID() {
         return recipientID;
     }
 
-    public UUID getEventID() {
+    public String getEventID() {
         return eventID;
     }
 

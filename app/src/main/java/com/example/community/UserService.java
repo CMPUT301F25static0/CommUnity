@@ -20,7 +20,7 @@ public class UserService {
 
     }
 
-    public User getUserBYID(UUID userID) {
+    public User getUserBYID(String userID) {
 
     }
 

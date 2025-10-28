@@ -21,7 +21,7 @@ public class InvitationService {
 
     }
 
-    public Invite getInviteByID(UUID inviteID){
+    public Invitation getInviteByID(String invitationID){
 
     }
 
