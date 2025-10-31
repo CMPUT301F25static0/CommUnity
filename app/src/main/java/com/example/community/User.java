@@ -1,9 +1,9 @@
 package com.example.community;
 
-import android.media.Ringtone;
+import com.google.firebase.firestore.DocumentId;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class User {
     public enum Role {
@@ -13,43 +13,65 @@ public class User {
     }
 
     private String deviceToken;
+
+    @DocumentId
     private String userID;
     private String username;
     private String email;
     private String phoneNumber;
     private Role role = Role.ENTRANT;
+    Boolean receiveNotifications = true;
 
-    List<String> interests;
-    List<Event> waitingListsJoined;
-    List<Event> attendingLists;
-    List<Event> registrationHistory;
-    Boolean receiveNotifications;
+    List<String> interests = new ArrayList<>();
+    List<String> waitingListsJoinedIDs = new ArrayList<>();
+    List<String> attendingListsIDs = new ArrayList<>();
+    List<String> registrationHistoryIDs = new ArrayList<>();
+
+    public User() { }
 
     public User(String deviceToken, String userID, String username, String email) {
         this.deviceToken = deviceToken;
         this.userID = userID;
         this.username = username;
         this.email = email;
+
     }
+
 
     public String getDeviceToken() {
         return deviceToken;
+    }
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 
     public String getUserID() {
         return userID;
     }
 
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
     public String getUsername() {
         return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
         return email;
     }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Role getRole() {
@@ -59,33 +81,37 @@ public class User {
     public List<String> getInterests() {
         return interests;
     }
-
-    public List<Event> getWaitingListsJoined() {
-        return waitingListsJoined;
+    public void setInterests(List<String> interests) {
+        this.interests = interests;
     }
 
-    public List<Event> getAttendingLists() {
-        return attendingLists;
+    public List<String> getWaitingListsJoinedIDs() {
+        return waitingListsJoinedIDs;
+    }
+    public void setWaitingListsJoinedIDs(List<String> waitingListsJoinedIDs) {
+        this.waitingListsJoinedIDs = waitingListsJoinedIDs;
     }
 
-    public List<Event> getRegistrationHistory() {
-        return registrationHistory;
+    public List<String> getAttendingListsIDs() {
+        return attendingListsIDs;
+    }
+    public void setAttendingListsIDs(List<String> attendingListsIDs) {
+        this.attendingListsIDs = attendingListsIDs;
+    }
+
+    public List<String> getRegistrationHistoryIDs() {
+        return registrationHistoryIDs;
+    }
+    public void setRegistrationHistoryIDs(List<String> registrationHistoryIDs) {
+        this.registrationHistoryIDs = registrationHistoryIDs;
     }
 
     public Boolean getReceiveNotifications() {
         return receiveNotifications;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setReceiveNotifications(Boolean receiveNotifications) {
+        this.receiveNotifications = receiveNotifications;
     }
 
     public void setRole(Role role) {
