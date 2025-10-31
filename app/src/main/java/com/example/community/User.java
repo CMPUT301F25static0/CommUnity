@@ -48,7 +48,6 @@ public class User {
     public String getUserID() {
         return userID;
     }
-
     public void setUserID(String userID) {
         this.userID = userID;
     }
@@ -76,6 +75,9 @@ public class User {
 
     public Role getRole() {
         return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public List<String> getInterests() {
@@ -109,14 +111,8 @@ public class User {
     public Boolean getReceiveNotifications() {
         return receiveNotifications;
     }
-
     public void setReceiveNotifications(Boolean receiveNotifications) {
         this.receiveNotifications = receiveNotifications;
     }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-
+    
 }
