@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestUserClass {
+public class UserTest {
 
     private User user;
     private static final String TEST_DEVICE_TOKEN = "test_device_token_123";
