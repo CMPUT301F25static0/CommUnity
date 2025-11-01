@@ -30,6 +30,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    tasks.withType<Test>{
+        useJUnitPlatform()
+    }
 }
 
 dependencies {
@@ -44,5 +48,8 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
     implementation("com.google.firebase:firebase-firestore")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.0.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.0.1")
 
 }
