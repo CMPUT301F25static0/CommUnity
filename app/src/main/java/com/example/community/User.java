@@ -124,31 +124,37 @@ public class User {
     }
 
     public void addInterest(String interest) {
-        if (interest != null && !interests.contains(interest)) {
-            interests.add(interest);
+        if (interests.contains(interest)) {
+            throw new IllegalArgumentException("Interest already in list");
         }
+        interests.add(interest);
     }
 
     public void removeInterest(String interest) {
+        if (!interests.contains(interest)) {
+            throw new IllegalArgumentException("Interest not found");
+        }
         interests.remove(interest);
+
     }
+
 
     public boolean hasInterest(String interest) {
         return interests.contains(interest);
     }
 
-    public void clearInterests() {
-        interests.clear();
-    }
-
     public void addEventToWaitlist(String eventId) {
-        if (eventId != null && !waitingListsJoinedIDs.contains(eventId)) {
-            waitingListsJoinedIDs.add(eventId);
-            addToRegistrationHistory(eventId);
+        if (waitingListsJoinedIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event already in waitlist");
         }
+        waitingListsJoinedIDs.add(eventId);
+        addToRegistrationHistory(eventId);
     }
 
     public void removeEventFromWaitingList(String eventId) {
+        if (!waitingListsJoinedIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event not in waitlist");
+        }
         waitingListsJoinedIDs.remove(eventId);
     }
 
@@ -157,14 +163,19 @@ public class User {
     }
 
     public void addEventToAttendingList(String eventId) {
-        if (eventId != null && !attendingListsIDs.contains(eventId)) {
-            attendingListsIDs.add(eventId);
-            // Remove from waitlist when they accept/attend
-            removeEventFromWaitingList(eventId);
+        if (attendingListsIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event already in attending list");
         }
+        attendingListsIDs.add(eventId);
+        // Remove from waitlist when they accept/attend
+        removeEventFromWaitingList(eventId);
+
     }
 
     public void removeEventFromAttendingList(String eventId) {
+        if (!attendingListsIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event not in attending list");
+        }
         attendingListsIDs.remove(eventId);
     }
 
@@ -173,9 +184,10 @@ public class User {
     }
 
     public void addToRegistrationHistory(String eventId) {
-        if (eventId != null && !registrationHistoryIDs.contains(eventId)) {
-            registrationHistoryIDs.add(eventId);
+        if (registrationHistoryIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event already in registration history");
         }
+        registrationHistoryIDs.add(eventId);
     }
 
     public boolean hasEventInRegistrationHistory(String eventId) {
