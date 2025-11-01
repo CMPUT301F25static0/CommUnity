@@ -1,6 +1,7 @@
 package com.example.community;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Event {
@@ -19,10 +20,10 @@ public class Event {
 
     private String qrCodeImageURL;
 
-    private List<String> waitListUserIDs;
-    private List<String> attendeeListUserIDs;
-    private List<String> invitedListUserIDs;
-    private List<String> cancelledListUserIDs;
+    private List<String> waitListUserIDs = new ArrayList<>();
+    private List<String> attendeeListUserIDs = new ArrayList<>();
+    private List<String> invitedListUserIDs = new ArrayList<>();
+    private List<String> cancelledListUserIDs = new ArrayList<>();
 
     public Event() { }
 
@@ -154,5 +155,78 @@ public class Event {
     }
     public void setCancelledListUserIDs(List<String> cancelledListUserIDs) {
         this.cancelledListUserIDs = cancelledListUserIDs;
+    }
+
+
+    public void addUserToWaitlist(String userID) {
+        if (waitListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is already on waitlist");
+        }
+        waitListUserIDs.add(userID);
+    }
+
+    public void removeUserFromWaitlist(String userID) {
+        if (!waitListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is not on waitlist");
+        }
+        waitListUserIDs.remove(userID);
+    }
+
+    public boolean hasUserInWaitlist(String userID) {
+        return waitListUserIDs.contains(userID);
+    }
+
+    public void addUserToInvitedList(String userID) {
+        if (invitedListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is already invited");
+        }
+        invitedListUserIDs.add(userID);
+    }
+
+    public void removeUserFromInvitedList(String userID) {
+        if (!invitedListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is not invited");
+        }
+        invitedListUserIDs.remove(userID);
+    }
+
+    public boolean hasUserInInvitedList(String userID) {
+        return invitedListUserIDs.contains(userID);
+    }
+
+    public void addUserToAttendeeList(String userID) {
+        if (attendeeListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is already on attendee list");
+        }
+        attendeeListUserIDs.add(userID);
+    }
+
+    public void removeUserFromAttendeeList(String userID) {
+        if (!attendeeListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is not on attendee list");
+        }
+        attendeeListUserIDs.remove(userID);
+    }
+
+    public boolean hasUserInAttendeeList(String userID) {
+        return attendeeListUserIDs.contains(userID);
+    }
+
+    public void addUserToCancelledList(String userID) {
+        if (cancelledListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is already cancelled");
+        }
+        cancelledListUserIDs.add(userID);
+    }
+
+    public void removeUserFromCancelledList(String userID) {
+        if (!cancelledListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is not cancelled");
+        }
+        cancelledListUserIDs.remove(userID);
+    }
+
+    public boolean hasUserInCancelledList(String userID) {
+        return cancelledListUserIDs.contains(userID);
     }
 }
