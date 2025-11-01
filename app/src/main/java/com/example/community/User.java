@@ -34,7 +34,6 @@ public class User {
         this.userID = userID;
         this.username = username;
         this.email = email;
-
     }
 
 
@@ -114,5 +113,76 @@ public class User {
     public void setReceiveNotifications(Boolean receiveNotifications) {
         this.receiveNotifications = receiveNotifications;
     }
-    
+
+
+    public void enableNotifications() {
+        this.receiveNotifications = true;
+    }
+
+    public void disableNotifications() {
+        this.receiveNotifications = false;
+    }
+
+    public void addInterest(String interest) {
+        if (interest != null && !interests.contains(interest)) {
+            interests.add(interest);
+        }
+    }
+
+    public void removeInterest(String interest) {
+        interests.remove(interest);
+    }
+
+    public boolean hasInterest(String interest) {
+        return interests.contains(interest);
+    }
+
+    public void clearInterests() {
+        interests.clear();
+    }
+
+    public void addEventToWaitlist(String eventId) {
+        if (eventId != null && !waitingListsJoinedIDs.contains(eventId)) {
+            waitingListsJoinedIDs.add(eventId);
+            addToRegistrationHistory(eventId);
+        }
+    }
+
+    public void removeEventFromWaitingList(String eventId) {
+        waitingListsJoinedIDs.remove(eventId);
+    }
+
+    public boolean hasEventInWaitlist(String eventId) {
+        return waitingListsJoinedIDs.contains(eventId);
+    }
+
+    public void addEventToAttendingList(String eventId) {
+        if (eventId != null && !attendingListsIDs.contains(eventId)) {
+            attendingListsIDs.add(eventId);
+            // Remove from waitlist when they accept/attend
+            removeEventFromWaitingList(eventId);
+        }
+    }
+
+    public void removeEventFromAttendingList(String eventId) {
+        attendingListsIDs.remove(eventId);
+    }
+
+    public boolean hasEventInAttendingList(String eventId) {
+        return attendingListsIDs.contains(eventId);
+    }
+
+    public void addToRegistrationHistory(String eventId) {
+        if (eventId != null && !registrationHistoryIDs.contains(eventId)) {
+            registrationHistoryIDs.add(eventId);
+        }
+    }
+
+    public boolean hasEventInRegistrationHistory(String eventId) {
+        return registrationHistoryIDs.contains(eventId);
+    }
+
+    public boolean hasPhoneNumber() {
+        return phoneNumber != null && !phoneNumber.isEmpty();
+    }
 }
