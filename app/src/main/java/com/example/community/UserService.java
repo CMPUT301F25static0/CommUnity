@@ -59,6 +59,13 @@ public class UserService {
 
     }
 
+    public List<String> seeRegistrationHistory(String userId) {
+        User user = loadUser(userId).getResult();
+        return user.getRegistrationHistoryIDs();
+    }
+
+
+
     public void deleteUser() {
 
     }
@@ -74,4 +81,15 @@ public class UserService {
 //    public List<User> getAllUsers() {
 //
 //    }
+
+    private Task<User> loadUser(String userId) {
+        return userRepository.getUserByUserId(userId)
+                .continueWith(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.e(TAG, "Failed to get user", task.getException());
+                        throw task.getException();
+                    }
+                    return task.getResult().toObject(User.class);
+                });
+    }
 }
