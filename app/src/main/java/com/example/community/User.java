@@ -280,6 +280,9 @@ public class User {
         if (interests.contains(interest)) {
             throw new IllegalArgumentException("Interest already in list");
         }
+        if (interest == null || interest.isBlank()) {
+            return;
+        }
         interests.add(interest);
     }
 
@@ -318,6 +321,9 @@ public class User {
         if (waitingListsJoinedIDs.contains(eventId)) {
             throw new IllegalArgumentException("Event already in waitlist");
         }
+        if (attendingListsIDs.contains(eventId)) {
+            throw new IllegalArgumentException("You are already attending this event");
+        }
         waitingListsJoinedIDs.add(eventId);
         addToRegistrationHistory(eventId);
     }
@@ -355,10 +361,8 @@ public class User {
         if (attendingListsIDs.contains(eventId)) {
             throw new IllegalArgumentException("Event already in attending list");
         }
-        attendingListsIDs.add(eventId);
-        // Remove from waitlist when they accept/attend
         removeEventFromWaitingList(eventId);
-
+        attendingListsIDs.add(eventId);
     }
 
     /**

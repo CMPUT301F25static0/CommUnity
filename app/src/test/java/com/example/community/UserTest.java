@@ -141,6 +141,7 @@ public class UserTest {
 
     @Test
     public void testAddEventToAttendingList() {
+        user.addEventToWaitlist("event_123");
         user.addEventToAttendingList("event_123");
         assertTrue("Should have event in attending list", user.hasEventInAttendingList("event_123"));
         assertEquals("Should have 1 event in attending list", 1, user.getAttendingListsIDs().size());
@@ -148,6 +149,7 @@ public class UserTest {
 
     @Test
     public void testAddEventToAttendingListException() {
+        user.addEventToWaitlist("event_123");
         user.addEventToAttendingList("event_123");
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             user.addEventToAttendingList("event_123");
@@ -156,6 +158,7 @@ public class UserTest {
 
     @Test
     public void testRemoveEventFromAttendingList() {
+        user.addEventToWaitlist("event_123");
         user.addEventToAttendingList("event_123");
         user.removeEventFromAttendingList("event_123");
         assertFalse("Should not have event in attending list", user.hasEventInAttendingList("event_123"));
@@ -164,6 +167,7 @@ public class UserTest {
 
     @Test
     public void testRemoveEventFromAttendingListException() {
+        user.addEventToWaitlist("event_123");
         user.addEventToAttendingList("event_123");
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             user.removeEventFromAttendingList("event_456");
@@ -172,6 +176,7 @@ public class UserTest {
 
     @Test
     public void testHasEventInAttendingList() {
+        user.addEventToWaitlist("event_123");
         user.addEventToAttendingList("event_123");
         assertTrue("Should have event in attending list", user.hasEventInAttendingList("event_123"));
         assertFalse("Should not have event in attending list", user.hasEventInAttendingList("event_456"));
