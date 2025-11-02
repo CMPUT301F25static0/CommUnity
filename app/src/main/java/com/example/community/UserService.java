@@ -28,11 +28,11 @@ public class UserService {
         return firebaseAuth.signInAnonymously()
             .continueWith(task -> {
                 if (!task.isSuccessful()) {
-                    Log.d(TAG, "Anonymous auth failed", task.getException());
+                    Log.d(TAG + "(authenticateByDevice)", "Anonymous auth failed", task.getException());
                     throw task.getException();
                 }
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                Log.d(TAG, "User authenticated with UID: " + user.getUid());
+                Log.d(TAG + "(authenticateByDevice)", "User authenticated with UID: " + user.getUid());
                 return user;
             });
 
@@ -41,19 +41,30 @@ public class UserService {
     public Task<User> createUser(FirebaseUser firebaseUser) {
         String deviceId = firebaseUser.getUid();
 
-        User newUser = new User(deviceId, null, null);
+        User newUser = new User(deviceId);
 
-        return userRepository.addUserToDatabase(newUser)
+        return userRepository.addNewUserToDatabaseIfNotExists(newUser)
                 .continueWith(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "User created succesfully with deviceID: " + deviceId);
+                        Log.d(TAG+"(createUser)", "User created successfully with deviceID: " + deviceId);
                         return newUser;
                     } else {
-                        Log.e(TAG, "Failed to create user", task.getException());
+                        Log.e(TAG+"(createUser)", "Failed to create user", task.getException());
                         throw task.getException();
                     }
                 });
 
+    }
+
+    public Task<User> splashScreenDeviceAuthentication() {
+        return authenticateByDevice()
+                .onSuccessTask(firebaseUser -> {
+                    String uid = firebaseUser.getUid();
+
+                    User user = new User(uid);
+                    return userRepository.addNewUserToDatabaseIfNotExists(user)
+                            .onSuccessTask(v -> userRepository.getUserByUserId(uid));
+                });
     }
 
     public void deleteUser() {
