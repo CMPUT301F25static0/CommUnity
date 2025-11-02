@@ -61,13 +61,9 @@ public class User {
      * Constructor for User object
      *
      * @param userID unique user id
-     * @param username display name for the user
-     * @param email user's email address
      */
-    public User(String userID, String username, String email) {
+    public User(String userID) {
         this.userID = userID;
-        this.username = username;
-        this.email = email;
     }
 
 
