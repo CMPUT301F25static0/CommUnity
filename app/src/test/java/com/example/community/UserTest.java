@@ -17,10 +17,15 @@ public class UserTest {
     private static final String TEST_EMAIL = "test@example.com";
     private static final String TEST_PHONE = "123-456-7890";
 
+//    @Before
+//    public void setUp() {
+//        // Create a fresh user before each test
+//        user = new User(TEST_DEVICE_TOKEN, TEST_USER_ID, TEST_USERNAME, TEST_EMAIL);
+//    }
+
     @Before
-    public void setUp() {
-        // Create a fresh user before each test
-        user = new User(TEST_DEVICE_TOKEN, TEST_USER_ID, TEST_USERNAME, TEST_EMAIL);
+    public void SetUP() {
+        user = new User(TEST_USER_ID, TEST_USERNAME, TEST_EMAIL);
     }
 
     @Test
