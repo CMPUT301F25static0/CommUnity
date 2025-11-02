@@ -49,8 +49,22 @@ public class User {
      * @param username display name for the user
      * @param email user's email address
      */
-    public User(String deviceToken, String userID, String username, String email) {
-        this.deviceToken = deviceToken;
+//    public User(String deviceToken, String userID, String username, String email) {
+//        this.deviceToken = deviceToken;
+//        this.userID = userID;
+//        this.username = username;
+//        this.email = email;
+//    }
+
+
+    /**
+     * Constructor for User object
+     *
+     * @param userID unique user id
+     * @param username display name for the user
+     * @param email user's email address
+     */
+    public User(String userID, String username, String email) {
         this.userID = userID;
         this.username = username;
         this.email = email;
