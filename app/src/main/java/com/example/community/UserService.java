@@ -7,9 +7,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.List;
-import java.util.UUID;
-
 public class UserService {
     private static final String TAG = "UserService";
     private UserRepository userRepository;
@@ -41,7 +38,7 @@ public class UserService {
 
     }
 
-    public Task<User> createUser(FirebaseUser firebaseUser, String username, String email) {
+    public Task<User> createUser(FirebaseUser firebaseUser) {
         String deviceId = firebaseUser.getUid();
 
         User newUser = new User(deviceId, null, null);
