@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+
+    <!-- Header section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="40dp"
+        android:paddingBottom="8dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/headerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CommUnity"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <!-- Divider line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#BDBDBD" />
+
+    <!-- Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center">
+
+        <!-- Helper text -->
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select category to browse"
+            android:textColor="#333333"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:paddingBottom="32dp" />
+
+        <!-- Event buttons -->
+        <Button
+            android:id="@+id/buttonEvent"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:text="Event"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Host buttons -->
+        <Button
+            android:id="@+id/buttonHost"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:text="Host"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Profile buttons -->
+        <Button
+            android:id="@+id/buttonProfile"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Image buttons -->
+        <Button
+            android:id="@+id/buttonImage"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:text="Image"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
