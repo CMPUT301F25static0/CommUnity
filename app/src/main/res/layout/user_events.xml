@@ -121,8 +121,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/event_history"
-            app:layout_constraintTop_toBottomOf="@+id/view2"
-            app:layout_constraintVertical_bias="0.555" />
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
