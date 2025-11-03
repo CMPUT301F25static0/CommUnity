@@ -1,11 +1,17 @@
 package com.example.community;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
+import androidx.annotation.NonNull;
 public class Event {
+
     private String eventID; // need to make a UUID to string helper
     private String title;
     private String description;
@@ -42,6 +48,7 @@ public class Event {
         this.registrationStart = registrationStart;
         this.registrationEnd = registrationEnd;
         this.qrCodeImageURL = qrCodeImageURL;
+
     }
 
     public String getEventID() {
