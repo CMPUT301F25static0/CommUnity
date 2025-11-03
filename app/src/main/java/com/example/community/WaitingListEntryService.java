@@ -5,11 +5,14 @@ import java.util.UUID;
 
 public class WaitingListEntryService {
 
-    WaitingListEntryService() {
+    private WaitlistRepository waitlistRepository;
 
+    WaitingListEntryService() {
+        waitlistRepository = new WaitlistRepository();
     }
 
-    public void createEntry() {
+    public void joinEventWaitlist(String userID, String eventID) {
+
 
     }
 
