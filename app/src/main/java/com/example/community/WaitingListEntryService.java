@@ -5,11 +5,14 @@ import java.util.UUID;
 
 public class WaitingListEntryService {
 
-    WaitingListEntryService() {
+    private WaitlistRepository waitlistRepository;
 
+    WaitingListEntryService() {
+        waitlistRepository = new WaitlistRepository();
     }
 
-    public void createEntry() {
+    public void joinEventWaitlist(String userID, String eventID) {
+
 
     }
 
@@ -21,12 +24,12 @@ public class WaitingListEntryService {
 
     }
 
-    public WaitingListEntry getEntryBYID(String entryID) {
-
-    }
-
-    public List<WaitingListEntry> getALLEntries() {
-
-    }
+//    public WaitingListEntry getEntryBYID(String entryID) {
+//
+//    }
+//
+//    public List<WaitingListEntry> getALLEntries() {
+//
+//    }
 
 }

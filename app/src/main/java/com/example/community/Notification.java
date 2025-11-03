@@ -16,6 +16,8 @@ public class Notification {
     private LocalDateTime issueDate;
     private String message;
 
+    public Notification() { }
+
     public Notification(String notificationID, String recipientID, String eventID,
                         LocalDateTime issueDate, String message) {
         this.notificationID = notificationID;
@@ -28,20 +30,35 @@ public class Notification {
     public String getNotificationID() {
         return notificationID;
     }
+    public void setNotificationID(String notificationID) {
+        this.notificationID = notificationID;
+    }
 
     public String getRecipientID() {
         return recipientID;
+    }
+    public void setRecipientID(String recipientID) {
+        this.recipientID = recipientID;
     }
 
     public String getEventID() {
         return eventID;
     }
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
 
     public LocalDateTime getIssueDate() {
         return issueDate;
     }
+    public void setIssueDate(LocalDateTime issueDate) {
+        this.issueDate = issueDate;
+    }
 
     public String getMessage() {
         return message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
