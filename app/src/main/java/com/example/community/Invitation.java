@@ -3,23 +3,24 @@ package com.example.community;
 import java.time.LocalDateTime;
 
 public class Invitation {
-    private String invitationID;
+    private String invitationId;
     private String eventId;
     private String entrantId;
-    private LocalDateTime issueDate;
-    private LocalDateTime expiryDate;
-    private WaitingListEntry.EntryStatus state;
+    private LocalDateTime issueDate; // Might remove; not needed
+    private LocalDateTime expiryDate; // Might remove; not needed
+    private EntryStatus status;
 
     public Invitation() { }
 
-    public Invitation(String invitationID, String eventId, String entrantId, LocalDateTime issuedTime,
-                      LocalDateTime expiryTime, WaitingListEntry.EntryStatus state) {
-        this.invitationID = invitationID;
+    public Invitation(String eventId, String entrantId) {
+        this.invitationId = generateInvitationId();
         this.eventId = eventId;
         this.entrantId = entrantId;
-        this.issueDate = issuedTime;
-        this.expiryDate = expiryTime;
-        this.state = state;
+        this.status = EntryStatus.INVITED;
+    }
+
+    private String generateInvitationId() {
+        return "INV_" + eventId + entrantId;
     }
 
     public String getEventId() {
@@ -51,18 +52,18 @@ public class Invitation {
     }
 
 
-    public WaitingListEntry.EntryStatus getState() {
-        return state;
+    public EntryStatus getStatus() {
+        return status;
     }
-    public void setState(WaitingListEntry.EntryStatus state) {
-        this.state = state;
-    }
-
-    public String getInvitationID() {
-        return invitationID;
+    public void setStatus(EntryStatus state) {
+        this.status = state;
     }
 
-    public void setInvitationID(String invitationID) {
-        this.invitationID = invitationID;
+    public String getInvitationId() {
+        return invitationId;
+    }
+
+    public void setInvitationId(String invitationId) {
+        this.invitationId = invitationId;
     }
 }

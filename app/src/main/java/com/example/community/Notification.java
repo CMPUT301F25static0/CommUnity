@@ -1,30 +1,35 @@
 package com.example.community;
 
-import java.time.LocalDateTime;
+import com.google.firebase.Timestamp;
+
+import java.util.UUID;
 
 public class Notification {
-    public enum NotificationType {
-        WON,
-        LOST,
-        CANCELLED,
-        WAITLIST,
-        INFO}
 
     private String notificationID;
     private String recipientID;
     private String eventID;
-    private LocalDateTime issueDate;
+    private Timestamp issueDate;
     private String message;
+    private NotificationType type;
+    private String relatedInvitationId;
+
+
 
     public Notification() { }
 
-    public Notification(String notificationID, String recipientID, String eventID,
-                        LocalDateTime issueDate, String message) {
+    public Notification(String recipientID, String eventID,
+                        NotificationType type, String message) {
         this.notificationID = notificationID;
         this.recipientID = recipientID;
         this.eventID = eventID;
-        this.issueDate = issueDate;
+        this.issueDate = Timestamp.now();
         this.message = message;
+        this.type = type;
+    }
+
+    private String generateNotificationID() {
+        return "NOTIF_" + UUID.randomUUID().toString();
     }
 
     public String getNotificationID() {
@@ -48,10 +53,10 @@ public class Notification {
         this.eventID = eventID;
     }
 
-    public LocalDateTime getIssueDate() {
+    public Timestamp getIssueDate() {
         return issueDate;
     }
-    public void setIssueDate(LocalDateTime issueDate) {
+    public void setIssueDate(Timestamp issueDate) {
         this.issueDate = issueDate;
     }
 
@@ -60,5 +65,12 @@ public class Notification {
     }
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public NotificationType getType() {
+        return type;
+    }
+    public void setType(NotificationType type) {
+        this.type = type;
     }
 }
