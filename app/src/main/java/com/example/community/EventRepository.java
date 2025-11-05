@@ -1,11 +1,14 @@
 package com.example.community;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class EventRepository {
+    public static final String TAG = "EventRepository";
 
     private FirebaseFirestore db;
     private CollectionReference eventsRef;
@@ -15,10 +18,12 @@ public class EventRepository {
         this.eventsRef = db.collection("events");
     }
 
-    public Task<Void> addEventToDatabase(Event event) {
+    public Task<Void> createEvent(Event event) {
         return eventsRef
             .document(event.getEventID())
-            .set(event);
+            .set(event)
+            .addOnSuccessListener(aVoid -> Log.d(TAG, "Event created successfully"))
+            .addOnFailureListener(e -> Log.w(TAG, "Error creating event", e));
     }
 
     public Task<DocumentSnapshot> getEventByEventID(String eventID) {
