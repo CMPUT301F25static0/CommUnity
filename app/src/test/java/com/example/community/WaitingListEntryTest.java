@@ -8,45 +8,43 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import java.sql.Timestamp;
-
 public class WaitingListEntryTest {
 
     @Test
     public void testHasStatus() {
         WaitingListEntry entry = new WaitingListEntry();
-        entry.setStatus(WaitingListEntry.EntryStatus.INVITED);
+        entry.setStatus(EntryStatus.INVITED);
 
-        assertTrue(entry.hasStatus(WaitingListEntry.EntryStatus.INVITED));
-        assertFalse(entry.hasStatus(WaitingListEntry.EntryStatus.ACCEPTED));
+        assertTrue(entry.hasStatus(EntryStatus.INVITED));
+        assertFalse(entry.hasStatus(EntryStatus.ACCEPTED));
     }
 
     @Test
     public void testMarkAsJoined() {
         WaitingListEntry entry = new WaitingListEntry();
         entry.markAsJoined();
-        assertEquals(WaitingListEntry.EntryStatus.WAITING, entry.getStatus());
+        assertEquals(EntryStatus.WAITING, entry.getStatus());
     }
 
     @Test
     public void testMarkAsAccepted() {
         WaitingListEntry entry = new WaitingListEntry();
         entry.markAsAccepted();
-        assertEquals(WaitingListEntry.EntryStatus.ACCEPTED, entry.getStatus());
+        assertEquals(EntryStatus.ACCEPTED, entry.getStatus());
     }
 
     @Test
     public void testMarkAsDeclined() {
         WaitingListEntry entry = new WaitingListEntry();
         entry.markAsDeclined();
-        assertEquals(WaitingListEntry.EntryStatus.DECLINED, entry.getStatus());
+        assertEquals(EntryStatus.DECLINED, entry.getStatus());
     }
 
     @Test
     public void testMarkAsCancelled() {
         WaitingListEntry entry = new WaitingListEntry();
         entry.markAsCancelled();
-        assertEquals(WaitingListEntry.EntryStatus.CANCELLED, entry.getStatus());
+        assertEquals(EntryStatus.CANCELLED, entry.getStatus());
     }
 
 }
