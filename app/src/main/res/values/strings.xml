@@ -13,4 +13,9 @@
     <string name="cancel">Cancel</string>
     <string name="leave">Leave</string>
     <string name="leave_join_str">Warning! You have Joined the Selected Event \n ARE YOU SURE YOU WANT TO LEAVE?</string>
+    <string name="confirm">Confirm</string>
+    <string name="results_noti">Recieve notification for results</string>
+    <string name="phone_text">Phone:</string>
+    <string name="name_string">Name:</string>
+    <string name="email_string">Email:</string>
 </resources>
