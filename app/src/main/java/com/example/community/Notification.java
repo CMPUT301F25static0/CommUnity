@@ -73,4 +73,11 @@ public class Notification {
     public void setType(NotificationType type) {
         this.type = type;
     }
+
+    public String getRelatedInvitationId() {
+        return relatedInvitationId;
+    }
+    public void setRelatedInvitationId(String relatedInvitationId) {
+        this.relatedInvitationId = relatedInvitationId;
+    }
 }
