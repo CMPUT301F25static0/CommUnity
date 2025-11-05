@@ -20,7 +20,7 @@ public class NotificationRepository {
         this.notifRef = db.collection("notifications");
     }
 
-    public Task<Void> CreateNotification(Notification notification) {
+    public Task<Void> createNotification(Notification notification) {
         return notifRef.document(notification.getNotificationID())
                 .set(notification)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Notification created successfully"))
