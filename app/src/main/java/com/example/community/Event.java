@@ -1,16 +1,9 @@
 package com.example.community;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 public class Event {
 
     private String eventID; // need to make a UUID to string helper
@@ -26,7 +19,10 @@ public class Event {
     private LocalDateTime registrationStart;
     private LocalDateTime registrationEnd;
 
+    private String qrCodeImageID;
     private String qrCodeImageURL;
+    private String posterImageID;
+    private String posterImageURL;
 
     private List<String> waitListUserIDs = new ArrayList<>();
     private List<String> attendeeListUserIDs = new ArrayList<>();
@@ -38,7 +34,7 @@ public class Event {
     public Event(String eventID, String title, String description, User organizer, String location,
                  String eventType, Integer capacity, LocalDateTime eventStartDate,
                  LocalDateTime eventEndDate, LocalDateTime registrationStart, LocalDateTime registrationEnd,
-                 String qrCodeImageURL) {
+                 String qrCodeImageURL, String posterImageURL) {
         this.eventID = eventID;
         this.title = title;
         this.description = description;
@@ -51,6 +47,7 @@ public class Event {
         this.registrationStart = registrationStart;
         this.registrationEnd = registrationEnd;
         this.qrCodeImageURL = qrCodeImageURL;
+        this.posterImageURL = posterImageURL;
 
     }
 
@@ -131,11 +128,32 @@ public class Event {
         this.registrationEnd = registrationEnd;
     }
 
-    public String getQrCodeImageURL() {
+    public String getQRCodeImageID() {
+        return qrCodeImageID;
+    }
+    public void setQRCodeImageID(String qrCodeImageID) {
+        this.qrCodeImageID = qrCodeImageID;
+    }
+
+    public String getQRCodeImageURL() {
         return qrCodeImageURL;
     }
-    public void setQrCodeImageURL(String qrCodeImageURL) {
+    public void setQRCodeImageURL(String qrCodeImageURL) {
         this.qrCodeImageURL = qrCodeImageURL;
+    }
+
+    public String getPosterImageID() {
+        return posterImageID;
+    }
+    public void setPosterImageID(String posterImageID) {
+        this.posterImageID = posterImageID;
+    }
+
+    public String getPosterImageURL() {
+        return posterImageURL;
+    }
+    public void setPosterImageURL(String posterImageURL) {
+        this.posterImageURL = posterImageURL;
     }
 
     public List<String> getWaitListUserIDs() {
