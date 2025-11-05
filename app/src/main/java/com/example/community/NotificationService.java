@@ -21,13 +21,13 @@ public class NotificationService {
         // might not be needed tbh
     }
 
-    public Notification getNotifByID(UUID notificationID) {
-
-    }
-
-    public List<Notification> getALLNotifs() {
-
-    }
+//    public Notification getNotifByID(UUID notificationID) {
+//
+//    }
+//
+//    public List<Notification> getALLNotifs() {
+//
+//    }
 
     // probably should create helpers like getAllNotifsFromEvent
 }

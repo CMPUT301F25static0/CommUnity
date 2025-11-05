@@ -21,13 +21,13 @@ public class InvitationService {
 
     }
 
-    public Invitation getInviteByID(String invitationID){
-
-    }
-
-    public List<Invitation> getAllInvites() {
-
-    }
+//    public Invitation getInviteByID(String invitationID){
+//
+//    }
+//
+//    public List<Invitation> getAllInvites() {
+//
+//    }
 
     // probably should create helpers like getAllInvitesFromEvent
 }
