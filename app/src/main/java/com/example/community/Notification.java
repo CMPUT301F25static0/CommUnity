@@ -14,7 +14,8 @@ public class Notification {
     private String message;
     private NotificationType type;
 
-    public Notification() { }
+    public Notification() {
+    }
 
     public Notification(String notificationID, String recipientID, String eventID,
                         long issueDate, String message, NotificationType type) {
@@ -29,6 +30,7 @@ public class Notification {
     public String getNotificationID() {
         return notificationID;
     }
+
     public void setNotificationID(String notificationID) {
         this.notificationID = notificationID;
     }
@@ -36,6 +38,7 @@ public class Notification {
     public String getRecipientID() {
         return recipientID;
     }
+
     public void setRecipientID(String recipientID) {
         this.recipientID = recipientID;
     }
@@ -43,6 +46,7 @@ public class Notification {
     public String getEventID() {
         return eventID;
     }
+
     public void setEventID(String eventID) {
         this.eventID = eventID;
     }
@@ -50,6 +54,7 @@ public class Notification {
     public long getIssueDate() {
         return issueDate;
     }
+
     public void setIssueDate(long issueDate) {
         this.issueDate = issueDate;
     }
@@ -57,6 +62,7 @@ public class Notification {
     public String getMessage() {
         return message;
     }
+
     public void setMessage(String message) {
         this.message = message;
     }
@@ -64,6 +70,7 @@ public class Notification {
     public NotificationType getType() {
         return type;
     }
+
     public void setType(NotificationType type) {
         this.type = type;
     }

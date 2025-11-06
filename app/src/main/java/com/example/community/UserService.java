@@ -11,6 +11,7 @@ public class UserService {
     private static final String TAG = "UserService";
     private UserRepository userRepository;
     private FirebaseAuth firebaseAuth;
+
     UserService() {
         userRepository = new UserRepository();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -26,32 +27,14 @@ public class UserService {
 
         Log.d(TAG, "Starting authentication process");
         return firebaseAuth.signInAnonymously()
-            .continueWith(task -> {
-                if (!task.isSuccessful()) {
-                    Log.d(TAG + "(authenticateByDevice)", "Anonymous auth failed", task.getException());
-                    throw task.getException();
-                }
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                Log.d(TAG + "(authenticateByDevice)", "User authenticated with UID: " + user.getUid());
-                return user;
-            });
-
-    }
-
-    public Task<User> createUser(FirebaseUser firebaseUser) {
-        String deviceId = firebaseUser.getUid();
-
-        User newUser = new User(deviceId);
-
-        return userRepository.addNewUserToDatabaseIfNotExists(newUser)
                 .continueWith(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG+"(createUser)", "User created successfully with deviceID: " + deviceId);
-                        return newUser;
-                    } else {
-                        Log.e(TAG+"(createUser)", "Failed to create user", task.getException());
+                    if (!task.isSuccessful()) {
+                        Log.d(TAG + "(authenticateByDevice)", "Anonymous auth failed", task.getException());
                         throw task.getException();
                     }
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    Log.d(TAG + "(authenticateByDevice)", "User authenticated with UID: " + user.getUid());
+                    return user;
                 });
 
     }
@@ -61,25 +44,47 @@ public class UserService {
                 .onSuccessTask(firebaseUser -> {
                     String uid = firebaseUser.getUid();
 
-                    User user = new User(uid);
-                    return userRepository.addNewUserToDatabaseIfNotExists(user)
-                            .onSuccessTask(v -> userRepository.getUserByUserId(uid));
+                    return createUser(firebaseUser)
+                            .onSuccessTask(v -> userRepository.getByID(uid));
                 });
     }
 
-    public void deleteUser() {
+    public Task<User> createUser(FirebaseUser firebaseUser) {
+        String uid = firebaseUser.getUid();
+        User newUser = new User(uid);
 
+        return userRepository.getByID(uid)
+                .onSuccessTask(existing -> {
+                    if (existing != null) {
+                        Log.d(TAG + "(createUser)", "User already exists with uid: " + uid);
+                        return Tasks.forResult(existing);
+                    }
+
+                    return userRepository.create(newUser)
+                            .continueWith(task -> {
+                                if (!task.isSuccessful()) {
+                                    Log.e(TAG + "(createUser)", "Failed to create user", task.getException());
+                                    throw task.getException();
+                                }
+                                Log.d(TAG + "(createUser)", "User created successfully with uid: " + uid);
+                                return newUser;
+                            });
+                });
     }
 
-    public void updateUser() {
-
+    public Task<User> getUserByID(String userID) {
+        return userRepository.getByID(userID);
     }
 
-//    public User getUserBYID(String userID) {
-//
-//    }
-//
-//    public List<User> getAllUsers() {
-//
-//    }
+    public Task<java.util.List<User>> getAllUsers() {
+        return userRepository.getAll();
+    }
+
+    public Task<Void> updateUser(User user) {
+        return userRepository.update(user);
+    }
+
+    public Task<Void> deleteUser(String userID) {
+        return userRepository.delete(userID);
+    }
 }

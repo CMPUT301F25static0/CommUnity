@@ -29,100 +29,99 @@ public class ImageRepository {
 
     /**
      * Generic upload method that handles both Storage and Firestore
-     * @param data Image bytes to upload
+     *
+     * @param data        Image bytes to upload
      * @param storagePath Path in Firebase Storage
-     * @param uploadedBy User ID who uploaded the image
+     * @param uploadedBy  User ID who uploaded the image
      * @return Task that resolves to Image object with all metadata
      */
     public Task<Image> upload(byte[] data, String storagePath, String uploadedBy) {
         String imageID = UUID.randomUUID().toString();
 
-        return uploadToStorage(data, storagePath)
-                .onSuccessTask(downloadUrl -> {
-                    Image image = new Image();
-                    image.setImageID(imageID);
-                    image.setStoragePath(storagePath);
-                    image.setImageURL(downloadUrl);
-                    image.setUploadedBy(uploadedBy);
-                    image.setUploadedAt(Timestamp.now());
+        return uploadToStorage(data, storagePath).onSuccessTask(downloadUrl -> {
+            Image image = new Image();
+            image.setImageID(imageID);
+            image.setStoragePath(storagePath);
+            image.setImageURL(downloadUrl);
+            image.setUploadedBy(uploadedBy);
+            image.setUploadedAt(Timestamp.now());
 
-                    return firestoreRef.document(imageID).set(image)
-                            .continueWith(task -> {
-                                if (!task.isSuccessful()) {
-                                    // Rollback: delete from Storage if Firestore fails
-                                    deleteFromStorage(storagePath);
-                                    throw task.getException();
-                                }
-                                return image;
-                            });
-                });
+            return firestoreRef.document(imageID).set(image).continueWith(task -> {
+                if (!task.isSuccessful()) {
+                    // Rollback: delete from Storage if Firestore fails
+                    deleteFromStorage(storagePath);
+                    throw task.getException();
+                }
+                return image;
+            });
+        });
     }
 
     /**
      * Deletes an image from both Firestore and Storage
+     *
      * @param imageID The image document ID
      * @return Task that completes when deletion is done
      */
     public Task<Void> delete(String imageID) {
-        return firestoreRef.document(imageID).get()
-                .onSuccessTask(snapshot -> {
-                    if (!snapshot.exists()) {
-                        return Tasks.forResult(null);
-                    }
+        return firestoreRef.document(imageID).get().onSuccessTask(snapshot -> {
+            if (!snapshot.exists()) {
+                return Tasks.forResult(null);
+            }
 
-                    Image image = snapshot.toObject(Image.class);
-                    if (image == null) {
-                        return Tasks.forResult(null);
-                    }
+            Image image = snapshot.toObject(Image.class);
+            if (image == null) {
+                return Tasks.forResult(null);
+            }
 
-                    return deleteFromStorage(image.getStoragePath())
-                            .continueWithTask(task -> {
-                                return firestoreRef.document(imageID).delete();
-                            });
-                });
+            return deleteFromStorage(image.getStoragePath()).continueWithTask(task -> {
+                return firestoreRef.document(imageID).delete();
+            });
+        });
     }
 
     /**
      * Gets an image by its ID
+     *
      * @param imageID The image document ID
      * @return Task that resolves to Image object or null if not found
      */
     public Task<Image> getByID(String imageID) {
-        return firestoreRef.document(imageID).get()
-                .continueWith(task -> {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-                    DocumentSnapshot snapshot = task.getResult();
-                    return snapshot.exists() ? snapshot.toObject(Image.class) : null;
-                });
+        return firestoreRef.document(imageID).get().continueWith(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+            DocumentSnapshot snapshot = task.getResult();
+            return snapshot.exists() ? snapshot.toObject(Image.class) : null;
+        });
     }
 
     /**
      * Gets all images (for admin browsing)
+     *
      * @return Task that resolves to list of all images
      */
     public Task<List<Image>> getAll() {
-        return firestoreRef.get()
-                .continueWith(task -> {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
+        return firestoreRef.get().continueWith(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
 
-                    List<Image> images = new ArrayList<>();
-                    for (DocumentSnapshot doc : task.getResult()) {
-                        Image image = doc.toObject(Image.class);
-                        if (image != null) {
-                            images.add(image);
-                        }
-                    }
-                    return images;
-                });
+            List<Image> images = new ArrayList<>();
+            for (DocumentSnapshot doc : task.getResult()) {
+                Image image = doc.toObject(Image.class);
+                if (image != null) {
+                    images.add(image);
+                }
+            }
+            return images;
+        });
     }
 
     /**
      * Low-level method to upload bytes to Firebase Storage
-     * @param data The image bytes
+     *
+     * @param data        The image bytes
      * @param storagePath The storage path
      * @return Task that resolves to download URL
      */
@@ -146,6 +145,7 @@ public class ImageRepository {
 
     /**
      * Low-level method to delete from Firebase Storage
+     *
      * @param storagePath The storage path
      * @return Task that completes when deletion is done
      */
@@ -156,8 +156,7 @@ public class ImageRepository {
             if (!task.isSuccessful()) {
                 Exception e = task.getException();
                 // ignore file not found errors
-                if (e != null && e.getMessage() != null &&
-                        e.getMessage().contains("does not exist")) {
+                if (e != null && e.getMessage() != null && e.getMessage().contains("does not exist")) {
                     return Tasks.forResult(null);
                 }
                 throw e;
@@ -168,6 +167,7 @@ public class ImageRepository {
 
     /**
      * Helper method for UI to get poster URL from Event
+     *
      * @param event The event object
      * @return The poster URL or null if none exists
      */
@@ -177,6 +177,7 @@ public class ImageRepository {
 
     /**
      * Gets download URL for a storage path (if needed for direct access)
+     *
      * @param storagePath The path in Firebase Storage
      * @return Task that resolves to the download URL
      */

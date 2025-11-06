@@ -5,10 +5,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class EventRepository {
+
+    private final String TAG = "EventRepository";
 
     private FirebaseFirestore db;
     private CollectionReference eventsRef;
@@ -18,80 +21,104 @@ public class EventRepository {
         this.eventsRef = db.collection("events");
     }
 
-    public Task<Void> addEventToDatabase(Event event) {
-        return eventsRef
-            .document(event.getEventID())
-            .set(event);
+    public Task<Void> create(Event event) {
+        return eventsRef.document(event.getEventID()).set(event);
     }
 
-    public Task<DocumentSnapshot> getEventByEventID(String eventID) {
-        return eventsRef
-            .document(eventID)
-            .get();
+    public Task<Event> getByID(String eventID) {
+        return eventsRef.document(eventID).get().continueWith(task -> {
+            DocumentSnapshot snapshot = task.getResult();
+            return snapshot.exists() ? snapshot.toObject(Event.class) : null;
+        });
     }
 
-    /**
-     * Updates event poster URL and imageID
-     * @param eventID The event ID
-     * @param posterURL The poster download URL
-     * @param posterImageID The Image document ID in Firestore
-     * @return Task that completes when update is done
-     */
-    public Task<Void> updateEventPoster(String eventID, String posterURL, String posterImageID) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("posterImageURL", posterURL);
-        updates.put("posterImageID", posterImageID);
-
-        return eventsRef
-                .document(eventID)
-                .update(updates);
+    public Task<Void> update(Event event) {
+        return eventsRef.document(event.getEventID()).set(event);
     }
 
-    /**
-     * Clears event poster URL and imageID
-     * @param eventID The event ID
-     * @return Task that completes when update is done
-     */
-    public Task<Void> clearEventPoster(String eventID) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("posterImageURL", null);
-        updates.put("posterImageID", null);
-
-        return eventsRef
-                .document(eventID)
-                .update(updates);
+    public Task<Void> delete(String eventID) {
+        return eventsRef.document(eventID).delete();
     }
 
-    /**
-     * Updates event QR code URL and imageID
-     * @param eventID The event ID
-     * @param qrCodeURL The QR code download URL
-     * @param qrCodeImageID The Image document ID in Firestore
-     * @return Task that completes when update is done
-     */
-    public Task<Void> updateEventQRCode(String eventID, String qrCodeURL, String qrCodeImageID) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("qrCodeImageURL", qrCodeURL);
-        updates.put("qrCodeImageID", qrCodeImageID);
+    public Task<List<Event>> getAll() {
+        return eventsRef.get()
+                .continueWith(task -> {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
 
-        return eventsRef
-                .document(eventID)
-                .update(updates);
+                    List<Event> events = new ArrayList<>();
+                    for (DocumentSnapshot doc : task.getResult()) {
+                        Event event = doc.toObject(Event.class);
+                        if (event != null) {
+                            events.add(event);
+                        }
+                    }
+                    return events;
+                });
     }
 
-    /**
-     * Clears event QR code URL and imageID
-     * @param eventID The event ID
-     * @return Task that completes when update is done
-     */
-    public Task<Void> clearEventQRCode(String eventID) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("qrCodeImageURL", null);
-        updates.put("qrCodeImageID", null);
+    public Task<List<Event>> listEventsByOrganizer(String organizerID, int limit,
+                                                   String startAfterID) {
+        com.google.firebase.firestore.Query query =
+                eventsRef.whereEqualTo("organizerID", organizerID).limit(limit);
 
-        return eventsRef
-                .document(eventID)
-                .update(updates);
+        if (startAfterID != null) {
+            query = query.startAfter(startAfterID);
+        }
+
+        return query.get().continueWith(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+
+            List<Event> events = new ArrayList<>();
+            for (DocumentSnapshot doc : task.getResult()) {
+                Event event = doc.toObject(Event.class);
+                if (event != null) {
+                    events.add(event);
+                }
+            }
+            return events;
+        });
     }
+
+    public Task<List<Event>> listUpcoming(String fromDate, String toDate, List<String> tags,
+                                          int limit, String startAfterID) {
+
+        com.google.firebase.firestore.Query query = eventsRef
+                .whereEqualTo("status", EventStatus.OPEN.name());  // only open events
+
+        if (fromDate != null) {
+            query = query.whereGreaterThanOrEqualTo("eventStartDate", fromDate);
+        }
+        if (toDate != null) {
+            query = query.whereLessThanOrEqualTo("eventStartDate", toDate);
+        }
+        if (tags != null && !tags.isEmpty()) {
+            query = query.whereArrayContains("tags", tags.get(0));
+        }
+
+        query = query.limit(limit);
+        if (startAfterID != null) {
+            query = query.startAfter(startAfterID);
+        }
+
+        return query.get().continueWith(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+            java.util.List<Event> events = new java.util.ArrayList<>();
+            for (com.google.firebase.firestore.DocumentSnapshot doc : task.getResult()) {
+                Event e = doc.toObject(Event.class);
+                if (e != null) {
+                    events.add(e);
+                }
+            }
+            return events;
+        });
+    }
+
+
 
 }

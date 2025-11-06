@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -22,29 +23,28 @@ public class QRCodeService {
 
     /**
      * Generates QR code for an event and uploads it to Storage + Firestore
-     * @param eventID The event ID
+     *
+     * @param eventID     The event ID
      * @param generatedBy User ID who generated the QR code
      * @return Task that resolves to Image object with storagePath and download URL
      */
     public Task<Image> generateAndUploadQRCode(String eventID, String generatedBy) {
         try {
             byte[] qrCodeBytes = generateQRCodeBytes(eventID);
-
             String storagePath = "images/events/" + eventID + "/qrcode.png";
 
             return imageRepository.upload(qrCodeBytes, storagePath, generatedBy)
-                    .onSuccessTask(image -> {
-                        return eventRepository.updateEventQRCode(
-                                eventID,
-                                image.getImageURL(),
-                                image.getImageID()
-                        ).continueWith(task -> {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
-                            }
-                            return image;
-                        });
-                    });
+                    .onSuccessTask(image ->
+                            eventRepository.getByID(eventID)
+                                    .onSuccessTask(event -> {
+                                        if (event == null) {
+                                            throw new IllegalArgumentException("Event not found: " + eventID);
+                                        }
+                                        event.setQrCodeImageURL(image.getImageURL());
+                                        event.setQrCodeImageID(image.getImageID());
+                                        return eventRepository.update(event).continueWith(t -> image);
+                                    })
+                    );
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate QR code", e);
         }
@@ -52,32 +52,34 @@ public class QRCodeService {
 
     /**
      * Deletes event QR code from Storage/Firestore and clears the Event document
+     *
      * @param eventID The event ID
      * @return Task that completes when both Storage/Firestore and Event are updated
      */
     public Task<Void> deleteEventQRCode(String eventID) {
-        return eventRepository.getEventByEventID(eventID)
-                .onSuccessTask(eventDoc -> {
-                    if (!eventDoc.exists()) {
+        return eventRepository.getByID(eventID)
+                .onSuccessTask(event -> {
+                    if (event == null) {
                         throw new IllegalArgumentException("Event not found: " + eventID);
                     }
 
-                    Event event = eventDoc.toObject(Event.class);
-                    String qrCodeImageID = event.getQRCodeImageID();
+                    String qrCodeImageID = event.getQrCodeImageID();
 
-                    if (qrCodeImageID == null) {
-                        return eventRepository.clearEventQRCode(eventID);
-                    }
+                    Task<Void> deleteImageTask = (qrCodeImageID != null)
+                            ? imageRepository.delete(qrCodeImageID)
+                            : Tasks.forResult(null);
 
-                    return imageRepository.delete(qrCodeImageID)
-                            .continueWithTask(task -> {
-                                return eventRepository.clearEventQRCode(eventID);
-                            });
+                    event.setQrCodeImageID(null);
+                    event.setQrCodeImageURL(null);
+
+                    return deleteImageTask
+                            .continueWithTask(t -> eventRepository.update(event));
                 });
     }
 
     /**
      * Generates QR code image bytes for an event
+     *
      * @param eventID The event ID
      * @return PNG image bytes
      * @throws WriterException if QR code generation fails
