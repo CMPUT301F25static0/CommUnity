@@ -3,10 +3,12 @@ package com.example.community;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserRepository {
 
@@ -20,36 +22,39 @@ public class UserRepository {
         this.usersRef = db.collection("users");
     }
 
-    public Task<Void> addNewUserToDatabaseIfNotExists(User user) {
-        return usersRef
-                .document(user.getUserID())
-                .get()
-                .onSuccessTask(snapshot ->
-                        snapshot.exists() ? Tasks.forResult(null) : usersRef.document(user.getUserID()).set(user)
-                );
+    public Task<Void> create(User user) {
+        return usersRef.document(user.getUserID()).set(user);
     }
 
-    public Task<User> getUserByUserId(String userID) {
-        return usersRef
-            .document(userID)
-            .get()
-            .continueWith(task -> {
-                if (!task.isSuccessful()) {
-                    Log.d(TAG + "(getUserByUserId)", "Failed to get user", task.getException());
-                    throw task.getException();
-                }
-                DocumentSnapshot userDocument = task.getResult();
-                if (userDocument.exists()) {
-                    Log.d(TAG + "(getUserByUserId)", "User found with ID: " + userID);
-                    return userDocument.toObject(User.class);
-                } else {
-                    Log.d(TAG + "(getUserByUserId)", "User not found with ID: " + userID);
-                    return null;
-                }
-            });
+    public Task<User> getByID(String userID) {
+        return usersRef.document(userID).get().continueWith(task -> {
+            DocumentSnapshot snapshot = task.getResult();
+            return snapshot.exists() ? snapshot.toObject(User.class) : null;
+        });
     }
 
-    //TODO: Implement UPDATE Methods
+    public Task<Void> update(User user) {
+        return usersRef.document(user.getUserID()).set(user);
+    }
 
-    //TODO: Implement DELETE Methods
+    public Task<Void> delete(String userID) {
+        return usersRef.document(userID).delete();
+    }
+
+    public Task<List<User>> getAll() {
+        return usersRef.get().continueWith(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+
+            List<User> users = new ArrayList<>();
+            for (DocumentSnapshot doc : task.getResult()) {
+                User user = doc.toObject(User.class);
+                if (user != null) {
+                    users.add(user);
+                }
+            }
+            return users;
+        });
+    }
 }

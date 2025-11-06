@@ -13,20 +13,13 @@ import java.util.List;
  * interests and event participation (waitlists, attending lists, and registration history).
  */
 public class User {
-    public enum Role {
-        ENTRANT,
-        ORGANIZER,
-        ADMIN
-    }
-
-    private String deviceToken;
-
 
     @DocumentId
     private String userID;
     private String username;
     private String email;
     private String phoneNumber;
+    private String deviceToken;
     private Role role = Role.ENTRANT;
     Boolean receiveNotifications = true;
 
@@ -41,20 +34,7 @@ public class User {
      */
     public User() { }
 
-    /**
-     * Constructor for User object
-     *
-     * @param deviceToken device token
-     * @param userID unique user id
-     * @param username display name for the user
-     * @param email user's email address
-     */
-//    public User(String deviceToken, String userID, String username, String email) {
-//        this.deviceToken = deviceToken;
-//        this.userID = userID;
-//        this.username = username;
-//        this.email = email;
-//    }
+
 
 
     /**

@@ -29,11 +29,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
-    tasks.withType<Test>{
-        useJUnitPlatform()
-    }
 }
 
 dependencies {
@@ -51,8 +49,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-storage")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.0.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.0.1")
+    implementation("com.google.zxing:core:3.5.3")
 
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }
