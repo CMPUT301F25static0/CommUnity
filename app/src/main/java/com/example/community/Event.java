@@ -1,18 +1,22 @@
 package com.example.community;
 
+import com.google.firebase.firestore.DocumentId;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Event {
-
-    private String eventID; // need to make a UUID to string helper
+    @DocumentId
+    private String eventID;
     private String title;
     private String description;
     private User organizer;
     private String location;
     private String eventType;
     private Integer capacity;
+    private List<String> tags = new ArrayList<>();
+    private EventStatus status = EventStatus.DRAFT;
 
     private LocalDateTime eventStartDate;
     private LocalDateTime eventEndDate;
@@ -33,8 +37,7 @@ public class Event {
 
     public Event(String eventID, String title, String description, User organizer, String location,
                  String eventType, Integer capacity, LocalDateTime eventStartDate,
-                 LocalDateTime eventEndDate, LocalDateTime registrationStart, LocalDateTime registrationEnd,
-                 String qrCodeImageURL, String posterImageURL) {
+                 LocalDateTime eventEndDate, LocalDateTime registrationStart, LocalDateTime registrationEnd) {
         this.eventID = eventID;
         this.title = title;
         this.description = description;
@@ -46,9 +49,6 @@ public class Event {
         this.eventEndDate = eventEndDate;
         this.registrationStart = registrationStart;
         this.registrationEnd = registrationEnd;
-        this.qrCodeImageURL = qrCodeImageURL;
-        this.posterImageURL = posterImageURL;
-
     }
 
     public String getEventID() {
@@ -184,7 +184,35 @@ public class Event {
         this.cancelledListUserIDs = cancelledListUserIDs;
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
 
+    public EventStatus getStatus() {
+        return status;
+    }
+    public void setStatus(EventStatus status) {
+        this.status = status;
+    }
+
+    public String getQrCodeImageID() {
+        return qrCodeImageID;
+    }
+    public void setQrCodeImageID(String qrCodeImageID) {
+        this.qrCodeImageID = qrCodeImageID;
+    }
+
+    public String getQrCodeImageURL() {
+        return qrCodeImageURL;
+    }
+    public void setQrCodeImageURL(String qrCodeImageURL) {
+        this.qrCodeImageURL = qrCodeImageURL;
+    }
+
+    // helpers
     public void addUserToWaitlist(String userID) {
         if (waitListUserIDs.contains(userID)) {
             throw new IllegalArgumentException("User is already on waitlist");
