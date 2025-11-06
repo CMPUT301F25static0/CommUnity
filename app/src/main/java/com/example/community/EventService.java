@@ -117,15 +117,32 @@ public class EventService {
             if (event == null) {
                 throw new IllegalArgumentException("Event not found");
             }
-            return event.getQrCodeImageURL();
+            return event.getQRCodeImageURL();
         });
     }
 
 
     public Task<List<User>> getAttendees(String eventID) {
-        // This would retrieve the list of attendees
-        return Tasks.forResult(java.util.Collections.emptyList());
+        return waitlistRepository
+                .listByEventAndStatus(eventID, EntryStatus.ACCEPTED)
+                .onSuccessTask(entries -> {
+                    java.util.List<Task<User>> reads = new java.util.ArrayList<>();
+                    for (WaitingListEntry e : entries) {
+                        reads.add(userRepository.getByID(e.getUserID()));
+                    }
+                    return com.google.android.gms.tasks.Tasks.whenAllSuccess(reads)
+                            .continueWith(t -> {
+                                java.util.List<?> results = t.getResult();
+                                java.util.List<User> users = new java.util.ArrayList<>();
+                                for (Object o : results) {
+                                    User u = (User) o;
+                                    if (u != null) users.add(u);
+                                }
+                                return users;
+                            });
+                });
     }
+
 
     // public Task<String> exportAttendeesCSV(String organizerID, String eventID) {}
 }
