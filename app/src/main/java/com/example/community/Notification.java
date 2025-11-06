@@ -1,70 +1,65 @@
 package com.example.community;
 
 import com.google.firebase.Timestamp;
-
-import java.util.UUID;
+import com.google.firebase.firestore.DocumentId;
 
 public class Notification {
+    @DocumentId
+    private String notificationId;
 
-    private String notificationID;
-    private String recipientID;
-    private String eventID;
-    private Timestamp issueDate;
-    private String message;
+
+    private String recipientId;
+    private String eventId;
+    private String eventName;
+
     private NotificationType type;
-    private String relatedInvitationId;
+    private String title;
+    private String message;
+    private Timestamp sentAt;
 
 
 
     public Notification() { }
 
-    public Notification(String recipientID, String eventID,
-                        NotificationType type, String message) {
-        this.notificationID = notificationID;
-        this.recipientID = recipientID;
-        this.eventID = eventID;
-        this.issueDate = Timestamp.now();
-        this.message = message;
+    public Notification(String eventId, String recipientId, String eventName,
+                        NotificationType type) {
+        this.notificationId = java.util.UUID.randomUUID().toString();
+        this.eventId = eventId;
+        this.recipientId = recipientId;
+        this.eventName = eventName;
+
         this.type = type;
+//        this.title = title;
+//        this.message = message;
+        this.sentAt = Timestamp.now();
     }
 
-    private String generateNotificationID() {
-        return "NOTIF_" + UUID.randomUUID().toString();
+    public String getEventId() {
+        return eventId;
+    }
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
-    public String getNotificationID() {
-        return notificationID;
+    public String getRecipientId() {
+        return recipientId;
     }
-    public void setNotificationID(String notificationID) {
-        this.notificationID = notificationID;
-    }
-
-    public String getRecipientID() {
-        return recipientID;
-    }
-    public void setRecipientID(String recipientID) {
-        this.recipientID = recipientID;
+    public void setRecipientId(String recipientId) {
+        this.recipientId = recipientId;
     }
 
-    public String getEventID() {
-        return eventID;
+    public String getNotificationId() {
+        return notificationId;
     }
-    public void setEventID(String eventID) {
-        this.eventID = eventID;
-    }
-
-    public Timestamp getIssueDate() {
-        return issueDate;
-    }
-    public void setIssueDate(Timestamp issueDate) {
-        this.issueDate = issueDate;
+    public void setNotificationId(String invitationId) {
+        this.notificationId = invitationId;
     }
 
-    public String getMessage() {
-        return message;
+    public String getEventName() {
+        return eventName;
     }
-    public void setMessage(String message) {
-        this.message = message;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
     public NotificationType getType() {
@@ -74,10 +69,24 @@ public class Notification {
         this.type = type;
     }
 
-    public String getRelatedInvitationId() {
-        return relatedInvitationId;
+    public String getTitle() {
+        return title;
     }
-    public void setRelatedInvitationId(String relatedInvitationId) {
-        this.relatedInvitationId = relatedInvitationId;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Timestamp getSentAt() {
+        return sentAt;
+    }
+    public void setSentAt(Timestamp sentAt) {
+        this.sentAt = sentAt;
     }
 }

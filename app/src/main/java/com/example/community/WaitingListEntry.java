@@ -1,6 +1,7 @@
 package com.example.community;
 
-import java.sql.Timestamp;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentId;
 
 /**
  * Represents a single entry on an event's waiting list.
@@ -10,6 +11,8 @@ import java.sql.Timestamp;
  * timestamps for when state transitions happened.
  */
 public class WaitingListEntry {
+
+    @DocumentId
     private String entryID;
     private String eventID;
     private String userID;
