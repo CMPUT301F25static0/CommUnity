@@ -104,4 +104,17 @@ public class WaitlistRepository {
             return counts;
         });
     }
+
+    public Task<List<WaitingListEntry>> listByUser(String userID) {
+        return db.collectionGroup(SUBCOLLECTION_WAITLIST)
+                .whereEqualTo("userID", userID)
+                .orderBy("joinedAt")
+                .get()
+                .continueWith(task -> {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return task.getResult().toObjects(WaitingListEntry.class);
+                });
+    }
 }

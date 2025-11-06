@@ -2,9 +2,11 @@ package com.example.community;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class WaitingListEntryService {
 
@@ -25,8 +27,8 @@ public class WaitingListEntryService {
                 return Tasks.forException(new IllegalArgumentException("Already on waitlist"));
             }
 
-            // entryID = userID to match /events/{eventID}/waitlist/{userID}
-            WaitingListEntry entry = new WaitingListEntry(userID, eventID, userID);
+            String entryID = UUID.randomUUID().toString();
+            WaitingListEntry entry = new WaitingListEntry(entryID, eventID, userID);
             entry.markAsJoined();
 
             return waitlistRepository.create(entry);
@@ -44,7 +46,7 @@ public class WaitingListEntryService {
             }
 
             entry.markAsCancelled();
-            // delete to keep waitlist tight
+
             return waitlistRepository.delete(eventID, userID);
         });
     }
@@ -56,7 +58,7 @@ public class WaitingListEntryService {
                 return Tasks.forException(new IllegalArgumentException("Entry not found"));
             }
             entry.setStatus(EntryStatus.INVITED);
-            entry.setInvitedAt(new java.sql.Timestamp(System.currentTimeMillis()));
+            entry.setInvitedAt(Timestamp.now());
             return waitlistRepository.update(entry);
         });
     }
@@ -136,8 +138,8 @@ public class WaitingListEntryService {
         return waitlistRepository.countsByEventGrouped(eventID);
     }
 
-    public Task<List<WaitingListEntry>> myHistory(String userID) {
-        return Tasks.forResult(java.util.Collections.emptyList());
+    public Task<List<WaitingListEntry>> getHistory(String userID) {
+        return waitlistRepository.listByUser(userID);
     }
 }
 
