@@ -4,16 +4,13 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 
-import java.util.List;
-import java.util.UUID;
-
-public class NotificationService {
+public class OldNotificationService {
     private static final String TAG = "NotificationManager";
 
-    private NotificationRepository notificationRepository;
+    private OldNotificationRepository oldNotificationRepository;
 
-    NotificationService() {
-        notificationRepository = new NotificationRepository();
+    OldNotificationService() {
+        oldNotificationRepository = new OldNotificationRepository();
     }
 
     public void createNotif() {
@@ -23,10 +20,10 @@ public class NotificationService {
     public Task<Void> setUpNotification(String userId, String eventId, NotificationType type,
                                         String message, String relatedInvitationId) {
 
-        Notification notification = new Notification(userId, eventId, type, message);
-        notification.setRelatedInvitationId(relatedInvitationId);
+        OldNotification oldNotification = new OldNotification(userId, eventId, type, message);
+        oldNotification.setRelatedInvitationId(relatedInvitationId);
 
-        return notificationRepository.createNotification(notification)
+        return oldNotificationRepository.createNotification(oldNotification)
                 .addOnSuccessListener(success -> Log.d(TAG, "Notification created successfully"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error creating notification", e));
     }

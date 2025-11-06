@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp;
 
 import java.util.UUID;
 
-public class Notification {
+public class OldNotification {
 
     private String notificationID;
     private String recipientID;
@@ -16,10 +16,10 @@ public class Notification {
 
 
 
-    public Notification() { }
+    public OldNotification() { }
 
-    public Notification(String recipientID, String eventID,
-                        NotificationType type, String message) {
+    public OldNotification(String recipientID, String eventID,
+                           NotificationType type, String message) {
         this.notificationID = notificationID;
         this.recipientID = recipientID;
         this.eventID = eventID;
