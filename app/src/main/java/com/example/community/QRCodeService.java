@@ -23,6 +23,7 @@ public class QRCodeService {
 
     /**
      * Generates QR code for an event and uploads it to Storage + Firestore
+     * Scenario 2, US 02.01.01
      *
      * @param eventID     The event ID
      * @param generatedBy User ID who generated the QR code
@@ -52,6 +53,7 @@ public class QRCodeService {
 
     /**
      * Deletes event QR code from Storage/Firestore and clears the Event document
+     * No User story
      *
      * @param eventID The event ID
      * @return Task that completes when both Storage/Firestore and Event are updated

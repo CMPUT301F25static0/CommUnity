@@ -15,6 +15,7 @@ public class NotificationService {
         this.waitlistRepository = new WaitlistRepository();
     }
 
+    // US 02.05.01, US 01.04.01,
     public Task<Void> notifyWinners(String organizerID, String eventID) {
         return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.ACCEPTED)
                 .onSuccessTask(entries -> {
@@ -30,6 +31,7 @@ public class NotificationService {
         });
     }
 
+    // US 01.04.02
     public Task<Void> notifyLosers(String organizerID, String eventID) {
         return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.DECLINED)
                 .onSuccessTask(entries -> {
@@ -44,6 +46,7 @@ public class NotificationService {
         });
     }
 
+    // US 02.07.02
     public Task<Void> broadcastToInvited(String organizerID, String eventID, String message) {
         return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.INVITED).
                 onSuccessTask(entries -> {
@@ -58,6 +61,7 @@ public class NotificationService {
         });
     }
 
+    // US 02.07.01
     public Task<Void> broadcastToWaitlist(String organizerID, String eventID, String message) {
         return waitlistRepository.listByEvent(eventID).onSuccessTask(entries -> {
             java.util.List<String> recipientIDs = new java.util.ArrayList<>();
@@ -71,6 +75,7 @@ public class NotificationService {
         });
     }
 
+    // 02.07.x ?
     public Task<Void> sendInfoToUser(String eventID, String userID, String message) {
         Notification n = new Notification();
         n.setNotificationID(java.util.UUID.randomUUID().toString());
@@ -82,6 +87,7 @@ public class NotificationService {
         return notificationRepository.create(n);
     }
 
+    // US 01.04.01, US 01.04.02, US 01.04.03
     public Task<java.util.List<Notification>> listUserNotification(String userID, int limit,
                                                                    String startAfterID) {
         return notificationRepository.listNotificationsByRecipient(userID, limit, startAfterID);

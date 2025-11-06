@@ -7,6 +7,8 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.List;
+
 public class UserService {
     private static final String TAG = "UserService";
     private UserRepository userRepository;
@@ -17,6 +19,7 @@ public class UserService {
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
+    // US 01.07.01
     public Task<FirebaseUser> authenticateByDevice() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
@@ -39,6 +42,7 @@ public class UserService {
 
     }
 
+    // US 01.07.01
     public Task<User> splashScreenDeviceAuthentication() {
         return authenticateByDevice()
                 .onSuccessTask(firebaseUser -> {
@@ -49,6 +53,7 @@ public class UserService {
                 });
     }
 
+    // Helper plus  US 01.02.01, US 01.02.02
     public Task<User> createUser(FirebaseUser firebaseUser) {
         String uid = firebaseUser.getUid();
         User newUser = new User(uid);
@@ -72,18 +77,23 @@ public class UserService {
                 });
     }
 
+
+    // Helper
     public Task<User> getUserByID(String userID) {
         return userRepository.getByID(userID);
     }
 
-    public Task<java.util.List<User>> getAllUsers() {
+    // US 03.05.01, US 03.02.01
+    public Task<List<User>> getAllUsers() {
         return userRepository.getAll();
     }
 
+    // US 01.02.02
     public Task<Void> updateUser(User user) {
         return userRepository.update(user);
     }
 
+    // US 01.02.04. US 03.02.01
     public Task<Void> deleteUser(String userID) {
         return userRepository.delete(userID);
     }

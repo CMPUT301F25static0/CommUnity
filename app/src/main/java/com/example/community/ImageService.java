@@ -15,7 +15,8 @@ public class ImageService {
     }
 
     /**
-     * Uploads event poster and updates the Event document
+     * Uploads event poster and updates the Event document.
+     * US 02.04.01
      *
      * @param eventID    The event ID
      * @param imageData  The image bytes
@@ -49,6 +50,7 @@ public class ImageService {
 
     /**
      * Deletes event poster from both Storage/Firestore and clears the Event document
+     * US 02.04.02
      *
      * @param eventID The event ID
      * @return Task that completes when both Storage/Firestore and Event are updated
@@ -74,6 +76,7 @@ public class ImageService {
     /**
      * Generic helper method for uploading event-related images
      * Can be used by other services (like QRCodeService) for consistency
+     * US 02.04.01, US 02.04.02, US 02.01.01
      *
      * @param eventID    The event ID
      * @param imageData  The image bytes
@@ -87,6 +90,7 @@ public class ImageService {
         return imageRepository.upload(imageData, storagePath, uploadedBy);
     }
 
+    // US 03.06.01
     public Task<List<Image>> listAllImages() {
         return imageRepository.getAll();
     }
