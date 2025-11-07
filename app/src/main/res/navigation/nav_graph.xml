@@ -33,12 +33,6 @@
             >
         </action>
 
-<!--        <action-->
-<!--            android:id="@+id/action_RoleSelectFragment_to_OrganizerHomeFragment"-->
-<!--            app:destination="@id/OrganizerHomeFragment"-->
-<!--            >-->
-<!--        </action>-->
-
         <action
             android:id="@+id/action_RoleSelectFragment_to_AdminHomeFragment"
             app:destination="@id/AdminHomeFragment"
@@ -58,6 +52,7 @@
             android:id="@+id/action_EntrantHomeFragment_to_NotificationsFragment"
             app:destination="@id/EntrantNotificationsFragment"
             >
+
         </action>
 
 <!--        <action-->
@@ -108,6 +103,63 @@
         android:label = "Admin Home"
         tools:layout = "@layout/admin_home_page"
         >
+        <action
+            android:id="@+id/action_AdminHomeFragment_to_AdminEventFragment"
+            app:destination="@+id/AdminEventFragment">
+        </action>
+
+        <action
+            android:id="@+id/action_AdminHomeFragment_to_AdminHostFragment"
+            app:destination="@+id/AdminHostFragment">
+        </action>
+
+        <action
+            android:id="@+id/action_AdminHomeFragment_to_AdminProfileFragment"
+            app:destination="@+id/AdminProfileFragment">
+        </action>
+
+        <action
+            android:id="@+id/action_AdminHomeFragment_to_AdminImageFragment"
+            app:destination="@+id/AdminImageFragment">
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/AdminEventFragment"
+        android:name="com.example.community.Screens.AdminEventFragment"
+        android:label="Admin Events"
+        tools:layout="@layout/admin_event_page">
+
+        <action
+            android:id="@+id/action_AdminEventFragment_to_AdminHomeFragment"
+            app:destination="@id/AdminHomeFragment">
+        </action>
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/AdminHostFragment"
+        android:name="com.example.community.Screens.AdminHostFragment"
+        android:label="Admin Hosts"
+        tools:layout="@layout/admin_host_page">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/AdminProfileFragment"
+        android:name="com.example.community.Screens.AdminProfileFragment"
+        android:label="Admin Users"
+        tools:layout="@layout/admin_profile_page">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/AdminImageFragment"
+        android:name="com.example.community.Screens.AdminImageFragment"
+        android:label="Admin Hosts"
+        tools:layout="@layout/admin_image">
+
     </fragment>
 
 

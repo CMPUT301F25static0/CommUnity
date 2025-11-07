@@ -65,15 +65,17 @@ public class RoleSelectFragment extends Fragment {
 //            }
 //        });
 //
-//        buttonAdmin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                userService.setRole(userId, Role.ADMIN)
-//                        .addOnSuccessListener(task -> {
-//                            NavHostFragment.findNavController(RoleSelectFragment.this)
-//                                    .navigate(R.id.action_RoleSelectFragment_to_AdminHomeFragment);
-//                        });
-//            }
-//        });
+        buttonAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userService
+                        .getUserIDByDeviceToken(deviceToken)
+                        .addOnSuccessListener(userId -> {userService.setRole(userId, Role.ADMIN)
+                        .addOnSuccessListener(task -> {
+                            NavHostFragment.findNavController(RoleSelectFragment.this)
+                                    .navigate(R.id.action_RoleSelectFragment_to_AdminHomeFragment);});
+                        });
+            }
+        });
     }
 }
