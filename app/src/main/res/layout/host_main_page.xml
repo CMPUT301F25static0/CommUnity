@@ -99,11 +99,12 @@
         android:paddingTop="4dp"
         android:paddingBottom="4dp" />
 
-    <!-- Create+ button -->
+    <!-- Create+ and Notify buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:orientation="horizontal"
         android:paddingVertical="10dp">
 
         <Button
@@ -111,8 +112,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create+"
+            android:textAllCaps="false"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/buttonNotify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notify"
             android:textAllCaps="false" />
     </LinearLayout>
+
 
     <!-- Footer divider -->
     <View

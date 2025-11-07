@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="40dp"
+            android:paddingBottom="8dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/headerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CommUnity"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#BDBDBD"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Notify Accepted -->
+        <TextView
+            android:id="@+id/labelNotifyAccepted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Notify Accepted"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputNotifyAccepted"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Message for accepted users..."
+            android:gravity="top|start"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp"
+            android:maxLines="6" />
+
+        <!-- Notify Waiting -->
+        <TextView
+            android:id="@+id/labelNotifyWaiting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Notify Waiting"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputNotifyWaiting"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Message for waitlisted users..."
+            android:gravity="top|start"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp"
+            android:maxLines="6" />
+
+        <!-- Notify Canceled -->
+        <TextView
+            android:id="@+id/labelNotifyCanceled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Notify Canceled"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputNotifyCanceled"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Message for canceled users..."
+            android:gravity="top|start"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginBottom="24dp"
+            android:maxLines="6" />
+
+        <!-- Bottom buttons: Cancel (left), Send (right) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textAllCaps="false" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/buttonSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
