@@ -33,7 +33,6 @@ public class SplashPageFragment extends Fragment {
                     NavHostFragment.findNavController(this)
                             .navigate(R.id.action_SplashPageFragment_to_RoleSelectFragment);
                 });
-//                .addOnFailureListener(req);
     }
 
 
