@@ -9,7 +9,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,101 +25,96 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class OrganizerHomeFragment extends Fragment {
+    ImageButton notificationsButton, cameraButton;
+    Button guideButton, filterButton, createButton, notifyButton;
+    Button eventHistoryButton, myProfileButton;
+    RecyclerView hostEventList;
 
-    // toolbar
-    private ImageButton buttonNotification, buttonCamera;
-    private Button buttonGuide, buttonFilter;
-
-    // main
-    private RecyclerView hostEventView;
-    private Button buttonCreate, buttonNotify;
-
-    // footer
-    private Button buttonEventHistory, buttonMyProfile;
-
-    // data
     private ArrayList<Event> eventsArrayList;
     private EventArrayAdapter eventArrayAdapter;
     private EventService eventService;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.host_main_page, container, false);
-        // ^^^ use your file name here
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View organizerHomeFragment = inflater.inflate(R.layout.host_main_page, container, false);
+        return organizerHomeFragment;
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // bind views
-        buttonNotification = view.findViewById(R.id.buttonNotification);
-        buttonCamera       = view.findViewById(R.id.buttonCamera);
-        buttonGuide        = view.findViewById(R.id.buttonGuide);
-        buttonFilter       = view.findViewById(R.id.buttonFilter);
-
-        hostEventView      = view.findViewById(R.id.HostEventView);
-        buttonCreate       = view.findViewById(R.id.buttonCreate);
-        buttonNotify       = view.findViewById(R.id.buttonNotify);
-
-        buttonEventHistory = view.findViewById(R.id.buttonEventHistory);
-        buttonMyProfile    = view.findViewById(R.id.buttonMyProfile);
-
-        // recycler + data
         eventService = new EventService();
         eventsArrayList = new ArrayList<>();
-        eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
 
-        hostEventView.setLayoutManager(new LinearLayoutManager(getContext()));
-        hostEventView.setAdapter(eventArrayAdapter);
+
+        notificationsButton = view.findViewById(R.id.organizerNotifications);
+        cameraButton = view.findViewById(R.id.buttonCamera);
+        guideButton = view.findViewById(R.id.buttonGuide);
+        filterButton = view.findViewById(R.id.buttonFilter);
+        createButton = view.findViewById(R.id.buttonCreate);
+        notifyButton = view.findViewById(R.id.buttonNotify);
+        eventHistoryButton = view.findViewById(R.id.buttonEventHistory);
+        myProfileButton = view.findViewById(R.id.buttonMyProfile);
+        hostEventList = view.findViewById(R.id.HostEventView);
+
+        hostEventList.setLayoutManager(new LinearLayoutManager(getContext()));
+        eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
+        hostEventList.setAdapter(eventArrayAdapter);
 
         loadEvents();
-        setClicks();
+        setUpClickListeners();
     }
-
     private void loadEvents() {
         String fromDate = DateValidation.getCurrentDate();
-        String toDate = LocalDate.now().plusYears(1)
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        LocalDate futureDate = LocalDate.now().plusYears(1);
+        String toDate = futureDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         if (DateValidation.dateRangeValid(fromDate, toDate)) {
             eventService.listUpcoming(fromDate, toDate, null)
                     .addOnSuccessListener(events -> {
-                        eventsArrayList.clear();
-                        eventsArrayList.addAll(events);
-                        eventArrayAdapter.notifyDataSetChanged();
+                        if (eventsArrayList != null) {
+                            eventsArrayList.clear();
+                            eventsArrayList.addAll(events);
+                            eventArrayAdapter.notifyDataSetChanged();
+                        }
                     });
         }
     }
 
-    private void setClicks() {
-        buttonNotification.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Notifications", Toast.LENGTH_SHORT).show());
+    private void setUpClickListeners() {
+        notificationsButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                    .navigate(R.id.action_OrganizerHomeFragment_to_NotificationsFragment);
+        });
 
-        buttonCamera.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Open Camera", Toast.LENGTH_SHORT).show());
+        myProfileButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                    .navigate(R.id.action_OrganizerHomeFragment_to_OrganizerProfileFragment);
+        });
 
-        buttonGuide.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Guide", Toast.LENGTH_SHORT).show());
+        createButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                    .navigate(R.id.action_OrganizerHomeFragment_to_CreateEventFragment);
+                });
 
-        buttonFilter.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Filter", Toast.LENGTH_SHORT).show());
+        // Temporary toast messages for unimplemented features
+        cameraButton.setOnClickListener(v ->
+                Toast.makeText(getActivity(), "Camera feature not implemented yet", Toast.LENGTH_SHORT).show());
 
-        buttonCreate.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Create+", Toast.LENGTH_SHORT).show());
+        guideButton.setOnClickListener(v ->
+                Toast.makeText(getActivity(), "Guide feature not implemented yet", Toast.LENGTH_SHORT).show());
 
-        buttonNotify.setOnClickListener(v ->
-                NavHostFragment.findNavController(OrganizerHomeFragment.this)
-                        .navigate(R.id.action_OrganizerHomeFragment_to_HostNotifyFragment)
-        );
+        filterButton.setOnClickListener(v ->
+                Toast.makeText(getActivity(), "Filter feature not implemented yet", Toast.LENGTH_SHORT).show());
 
-        buttonEventHistory.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Event History", Toast.LENGTH_SHORT).show());
 
-        buttonMyProfile.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "My Profile", Toast.LENGTH_SHORT).show());
+        notifyButton.setOnClickListener(v ->
+                Toast.makeText(getActivity(), "Notify feature not implemented yet", Toast.LENGTH_SHORT).show());
+
+        eventHistoryButton.setOnClickListener(v ->
+                Toast.makeText(getActivity(), "Event History not implemented yet", Toast.LENGTH_SHORT).show());
     }
 }
