@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/SplashFragment">
+    app:startDestination="@id/SplashPageFragment">
 
     <fragment
-        android:id="@+id/SplashFragment"
+        android:id="@+id/SplashPageFragment"
         android:name="com.example.community.Screens.SplashPageFragment"
         android:label="Start Page"
         tools:layout="@layout/start_page"
@@ -85,7 +85,26 @@
         android:label="Entrant User Profile"
         tools:layout="@layout/entrant_profile"
         >
+        <action
+            android:id="@+id/action_EntrantUserProfileFragment_to_SplashPageFragment"
+            app:destination="@id/SplashPageFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            >
+        </action>
     </fragment>
+
+    <dialog
+        android:id="@+id/DeleteAccountFragment"
+        android:name="com.example.community.Screens.DeleteAccountFragment"
+        android:label="Delete Account"
+        tools:layout="@layout/delete_unity"
+        >
+        <argument
+            android:name="userId"
+            app:argType="string"
+        />
+    </dialog>
 
 <!--    Organizer Fragments -->
 <!--    <fragment-->

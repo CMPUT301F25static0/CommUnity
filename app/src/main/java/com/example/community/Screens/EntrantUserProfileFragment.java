@@ -66,7 +66,9 @@ public class EntrantUserProfileFragment extends Fragment {
             userService.updateUser(currentUser);
         });
 
-
-
+        deleteAccountButton.setOnClickListener(v -> {
+            DeleteAccountFragment deleteDialog = DeleteAccountFragment.newInstance(currentUser.getUserID());
+            deleteDialog.show(getParentFragmentManager(), "DeleteAccountFragment");
+        });
     }
 }
