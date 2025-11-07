@@ -33,7 +33,30 @@ public class EventService {
         e.setEventEndDate(endDate);
         e.setStatus(EventStatus.OPEN);
 
-        return eventRepository.create(e).continueWith(t -> e.getEventID());
+        return eventRepository.create(e)
+                .continueWithTask(t -> {
+                    if (!t.isSuccessful()) throw t.getException();
+                    final String eventID = e.getEventID();
+
+                    // append to organizer.eventsCreatedIDs
+                    return userRepository
+                            .getByUserID(organizerID)
+                            .continueWithTask(ut -> {
+                                User u = ut.getResult();
+                                if (u == null) {
+                                    return Tasks
+                                            .forException(new IllegalArgumentException("Organizer not found"));
+                                }
+                                if (!u.hasEventCreated(eventID)) {
+                                    u.addEventCreated(eventID);
+                                    return userRepository
+                                            .update(u)
+                                            .continueWith(tt -> eventID);
+                                }
+                                // already recorded; just return id
+                                return Tasks.forResult(eventID);
+                            });
+                });
     }
 
     public Task<Void> updateEvent(String organizerID, Event patch) {

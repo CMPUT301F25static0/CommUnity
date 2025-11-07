@@ -7,6 +7,8 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class UserService {
@@ -146,6 +148,42 @@ public class UserService {
                     if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
                     user.disableNotifications();
                     return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> addEventCreated(String userID, String eventID) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User u = t.getResult();
+                    if (u == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    if (u.hasEventCreated(eventID)) {
+                        return Tasks.forException(new IllegalArgumentException("Event already recorded as created"));
+                    }
+                    u.addEventCreated(eventID);
+                    return userRepository.update(u);
+                });
+    }
+
+    public Task<Void> removeEventCreated(String userID, String eventID) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User u = t.getResult();
+                    if (u == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    if (!u.hasEventCreated(eventID)) {
+                        return Tasks.forException(new IllegalArgumentException("Event not in eventsCreatedIDs"));
+                    }
+                    u.removeEventCreated(eventID);
+                    return userRepository.update(u);
+                });
+    }
+
+    public Task<List<String>> listEventsCreated(String userID) {
+        return userRepository.getByUserID(userID)
+                .continueWith(t -> {
+                    User u = t.getResult();
+                    if (u == null) return new ArrayList<String>();
+                    // return live list per your convention; callers should avoid mutating it directly
+                    return u.getEventsCreatedIDs();
                 });
     }
 }

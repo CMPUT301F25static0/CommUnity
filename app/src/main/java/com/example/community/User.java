@@ -28,6 +28,7 @@ public class User {
     List<String> attendingListsIDs = new ArrayList<>();
     List<String> registrationHistoryIDs = new ArrayList<>();
 
+    List<String> eventsCreatedIDs = new ArrayList<>();
 
     /**
      * Default no-arg constructor required for Firebase
@@ -206,6 +207,14 @@ public class User {
         this.registrationHistoryIDs = registrationHistoryIDs;
     }
 
+    public List<String> getEventsCreatedIDs() {
+        return eventsCreatedIDs;
+    }
+
+    public void setEventsCreatedIDs(List<String> eventsCreatedIDs) {
+        this.eventsCreatedIDs = eventsCreatedIDs;
+    }
+
     /**
      * Returns whether the user currently receives push notifications.
      *
@@ -377,6 +386,25 @@ public class User {
      */
     public boolean hasEventInRegistrationHistory(String eventId) {
         return registrationHistoryIDs.contains(eventId);
+    }
+
+    public void addEventCreated(String eventId) {
+        if (eventId == null || eventId.isBlank()) return;
+        if (eventsCreatedIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event already recorded as created");
+        }
+        eventsCreatedIDs.add(eventId);
+    }
+
+    public void removeEventCreated(String eventId) {
+        if (!eventsCreatedIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event not in eventsCreatedIDs");
+        }
+        eventsCreatedIDs.remove(eventId);
+    }
+
+    public boolean hasEventCreated(String eventId) {
+        return eventsCreatedIDs.contains(eventId);
     }
 
     /**
