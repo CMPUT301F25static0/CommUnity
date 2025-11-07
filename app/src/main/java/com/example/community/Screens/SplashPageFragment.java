@@ -2,6 +2,7 @@ package com.example.community.Screens;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class SplashPageFragment extends Fragment {
 
         userService = new UserService();
         loginButton = view.findViewById(R.id.loginButton);
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
 
         loginButton.setOnClickListener(v -> {
             userService.splashScreenDeviceAuthentication()

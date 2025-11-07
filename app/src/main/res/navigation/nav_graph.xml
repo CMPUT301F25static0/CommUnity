@@ -33,11 +33,11 @@
             >
         </action>
 
-<!--        <action-->
-<!--            android:id="@+id/action_RoleSelectFragment_to_OrganizerHomeFragment"-->
-<!--            app:destination="@id/OrganizerHomeFragment"-->
-<!--            >-->
-<!--        </action>-->
+        <action
+            android:id="@+id/action_RoleSelectFragment_to_OrganizerHomeFragment"
+            app:destination="@id/OrganizerHomeFragment"
+            >
+        </action>
 
         <action
             android:id="@+id/action_RoleSelectFragment_to_AdminHomeFragment"
@@ -111,14 +111,23 @@
         />
     </dialog>
 
-<!--    Organizer Fragments -->
-<!--    <fragment-->
-<!--        android:id = "@+id/OrganizerHomeFragment"-->
-<!--        android:name = "com.example.community.Screens.OrganizerHomeFragment"-->
-<!--        android:label = "Organizer Home"-->
-<!--        tools:layout = "@layout/organizer_home"-->
-<!--        >-->
-<!--    </fragment>-->
+<!--    Organizer Fragments-->
+    <fragment
+        android:id = "@+id/OrganizerHomeFragment"
+        android:name = "com.example.community.Screens.OrganizerHomeFragment"
+        android:label = "Organizer Home"
+        tools:layout = "@layout/host_main_page"
+        >
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_NotificationsFragment"
+            app:destination="@id/EntrantNotificationsFragment">
+        </action>
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_OrganizerProfileFragment"
+            app:destination="@id/EntrantUserProfileFragment">
+        </action>
+    </fragment>
+
 
 <!--    Admin Fragments -->
     <fragment
