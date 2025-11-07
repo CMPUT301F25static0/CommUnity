@@ -110,7 +110,9 @@ public class OrganizerHomeFragment extends Fragment {
                 Toast.makeText(getActivity(), "Filter", Toast.LENGTH_SHORT).show());
 
         buttonCreate.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Create+", Toast.LENGTH_SHORT).show());
+                NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                        .navigate(R.id.action_OrganizerHomeFragment_to_HostCreateEventFragment)
+        );
 
         buttonNotify.setOnClickListener(v ->
                 NavHostFragment.findNavController(OrganizerHomeFragment.this)
