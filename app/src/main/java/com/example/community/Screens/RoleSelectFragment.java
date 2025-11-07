@@ -15,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.community.R;
 import com.example.community.Role;
 import com.example.community.UserService;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class RoleSelectFragment extends Fragment {
 
@@ -38,36 +39,41 @@ public class RoleSelectFragment extends Fragment {
 
         userService = new UserService();
 
+        String deviceToken = userService.getDeviceToken();
+//        userService.getUserIDByDeviceToken(deviceToken).getResult();
+
         buttonUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userService.updateUserRole(Role.ENTRANT)
+                userService
+                        .getUserIDByDeviceToken(deviceToken)
+                        .addOnSuccessListener(userId ->{userService.setRole(userId, Role.ENTRANT)
                         .addOnSuccessListener(task ->{
                             NavHostFragment.findNavController(RoleSelectFragment.this)
-                                    .navigate(R.id.action_RoleSelectFragment_to_EntrantHomeFragment);
+                            .navigate(R.id.action_RoleSelectFragment_to_EntrantHomeFragment);});
                         });
             }
         });
 
-        buttonHost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userService.updateUserRole(Role.ORGANIZER);
-                Toast myToast = Toast.makeText(getActivity(), "Not Implemented yet", Toast.LENGTH_SHORT);
-
-                myToast.show();
-            }
-        });
-
-        buttonAdmin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userService.updateUserRole(Role.ADMIN)
-                        .addOnSuccessListener(task -> {
-                            NavHostFragment.findNavController(RoleSelectFragment.this)
-                                    .navigate(R.id.action_RoleSelectFragment_to_AdminHomeFragment);
-                        });
-            }
-        });
+//        buttonHost.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                userService.setRole(userId, Role.ORGANIZER);
+//                Toast myToast = Toast.makeText(getActivity(), "Not Implemented yet", Toast.LENGTH_SHORT);
+//
+//                myToast.show();
+//            }
+//        });
+//
+//        buttonAdmin.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                userService.setRole(userId, Role.ADMIN)
+//                        .addOnSuccessListener(task -> {
+//                            NavHostFragment.findNavController(RoleSelectFragment.this)
+//                                    .navigate(R.id.action_RoleSelectFragment_to_AdminHomeFragment);
+//                        });
+//            }
+//        });
     }
 }

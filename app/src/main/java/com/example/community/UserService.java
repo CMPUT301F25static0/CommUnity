@@ -16,7 +16,7 @@ public class UserService {
     private UserRepository userRepository;
     private FirebaseAuth firebaseAuth;
 
-    UserService() {
+    public UserService() {
         userRepository = new UserRepository();
         firebaseAuth = FirebaseAuth.getInstance();
     }
@@ -77,6 +77,21 @@ public class UserService {
 
     public Task<User> getByDeviceToken(String deviceToken) {
         return userRepository.getByDeviceToken(deviceToken);
+    }
+
+    public String getDeviceToken() {
+        return firebaseAuth.getCurrentUser().getUid();
+    }
+
+    public Task<String> getUserIDByDeviceToken (String deviceToken) {
+        return userRepository.getByDeviceToken(deviceToken)
+                .continueWithTask(lookupTask -> {
+                    User existing = lookupTask.getResult();
+                    if (existing != null) {
+                        return Tasks.forResult(existing.getUserID());
+                    }
+                    return Tasks.forException(new IllegalStateException("User not found: " + deviceToken));
+                });
     }
 
     public Task<java.util.List<User>> getAllUsers() {

@@ -59,6 +59,9 @@ public class EntrantHomeFragment extends Fragment {
         eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
         entrantEventList.setAdapter(eventArrayAdapter);
 
+        loadEvents();
+        setUpClickListener();
+
 
     }
 
@@ -83,11 +86,11 @@ public class EntrantHomeFragment extends Fragment {
             NavHostFragment.findNavController(EntrantHomeFragment.this)
                     .navigate(R.id.action_EntrantHomeFragment_to_NotificationsFragment);
         });
-        eventHistoryButton.setOnClickListener(v -> {
-            NavHostFragment.findNavController(EntrantHomeFragment.this)
-                    .navigate(R.id.action_EntrantHomeFragment_to_EntrantHistoryFragment);
-
-        });
+//        eventHistoryButton.setOnClickListener(v -> {
+//            NavHostFragment.findNavController(EntrantHomeFragment.this)
+//                    .navigate(R.id.action_EntrantHomeFragment_to_EntrantHistoryFragment);
+//
+//        });
         myProfileButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(EntrantHomeFragment.this)
                     .navigate(R.id.action_EntrantHomeFragment_to_EntrantUserProfileFragment);

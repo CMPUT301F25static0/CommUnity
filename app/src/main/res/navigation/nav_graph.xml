@@ -60,15 +60,15 @@
             >
         </action>
 
-        <action
-            android:id="@+id/action_EntrantHomeFragment_to_EntrantHistoryFragment"
-            app:destination="@id/EntrantHistoryFragment"
-            >
-        </action>
+<!--        <action-->
+<!--            android:id="@+id/action_EntrantHomeFragment_to_EntrantHistoryFragment"-->
+<!--            app:destination="@id/EntrantHistoryFragment"-->
+<!--            >-->
+<!--        </action>-->
 
         <action
             android:id="@+id/action_EntrantHomeFragment_to_EntrantUserProfileFragment"
-            app:destination=""
+            app:destination="@id/EntrantUserProfileFragment"
             >
         </action>
 
@@ -81,6 +81,14 @@
         android:name="com.example.community.Screens.NotificationsFragment"
         android:label="Notifications"
         tools:layout="@layout/notification_page"
+        >
+    </fragment>
+
+    <fragment
+        android:id="@+id/EntrantUserProfileFragment"
+        android:name="com.example.community.Screens.EntrantUserProfileFragment"
+        android:label="Entrant User Profile"
+        tools:layout="@layout/entrant_profile"
         >
     </fragment>
 
