@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.community.ArrayAdapters.EventArrayAdapter;
@@ -35,7 +36,7 @@ public class AdminEventFragment extends Fragment {
 
     private ArrayList<Event> eventsArrayList;
     private EventArrayAdapter eventArrayAdapter;
-    private FirebaseFirestore db;
+    private EventService eventService;
 
 
     @Override
@@ -43,34 +44,45 @@ public class AdminEventFragment extends Fragment {
         View view = inflater.inflate(R.layout.admin_event_page, container, false);
 
         adminEventView = view.findViewById(R.id.adminEventView);
+        backButton = view.findViewById(R.id.buttonBack);
+
         adminEventView.setAdapter(eventArrayAdapter);
 
+        eventService = new EventService();
         eventsArrayList = new ArrayList<>();
         eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
         adminEventView.setAdapter(eventArrayAdapter);
 
-        db = FirebaseFirestore.getInstance();
+        adminEventView.setLayoutManager(new LinearLayoutManager(getContext()));
+        eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
+        adminEventView.setAdapter(eventArrayAdapter);
 
-        fetchEvents();
+        loadEvents();
+        setUpClickListener();
 
         return view;
     }
 
-    private void fetchEvents() {
-        db.collection("events")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+    private void loadEvents() {
+        String fromDate = DateValidation.getCurrentDate();
+
+        LocalDate futureDate = LocalDate.now().plusYears(1);
+        String toDate = futureDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        if (DateValidation.dateRangeValid(fromDate, toDate)) {
+            eventService.listUpcoming(fromDate, toDate, null)
+                    .addOnSuccessListener(events -> {
                         eventsArrayList.clear();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Event event = document.toObject(Event.class);
-                            eventsArrayList.add(event);
-                        }
+                        eventsArrayList.addAll(events);
                         eventArrayAdapter.notifyDataSetChanged();
-                    } else {
+                    });
+        }
+    }
 
-                    }
-
-                });
+    private void setUpClickListener() {
+        backButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(AdminEventFragment.this)
+                    .navigate(R.id.action_AdminEventFragment_to_AdminHomeFragment);
+        });
     }
 }
