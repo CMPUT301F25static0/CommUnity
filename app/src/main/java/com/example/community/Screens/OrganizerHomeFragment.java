@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -112,7 +113,9 @@ public class OrganizerHomeFragment extends Fragment {
                 Toast.makeText(getActivity(), "Create+", Toast.LENGTH_SHORT).show());
 
         buttonNotify.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Notify", Toast.LENGTH_SHORT).show());
+                NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                        .navigate(R.id.action_OrganizerHomeFragment_to_HostNotifyFragment)
+        );
 
         buttonEventHistory.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Event History", Toast.LENGTH_SHORT).show());

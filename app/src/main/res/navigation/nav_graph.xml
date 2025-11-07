@@ -118,10 +118,6 @@
         android:label="HostNotifyFragment"
         tools:layout="@layout/host_notify_page">
 
-        <!-- Action: Back to organizer home -->
-        <action
-            android:id="@+id/action_HostNotifyFragment_to_OrganizerHomeFragment"
-            app:destination="@id/OrganizerHomeFragment" />
     </fragment>
 
 </navigation>

@@ -38,17 +38,13 @@ public class HostNotifyFragment extends Fragment {
         buttonCancel        = view.findViewById(R.id.buttonCancel);
         buttonSend          = view.findViewById(R.id.buttonSend);
 
-        // Cancel = back to organizer home
         buttonCancel.setOnClickListener(v ->
-                NavHostFragment.findNavController(HostNotifyFragment.this)
-                        .navigate(R.id.action_HostNotifyFragment_to_OrganizerHomeFragment)
+                NavHostFragment.findNavController(HostNotifyFragment.this).popBackStack()
         );
 
-        // Send = example toast
         buttonSend.setOnClickListener(v -> {
-            Toast.makeText(getActivity(), "Notifications sent", Toast.LENGTH_SHORT).show();
-            NavHostFragment.findNavController(HostNotifyFragment.this)
-                    .navigate(R.id.action_HostNotifyFragment_to_OrganizerHomeFragment);
+            // TODO: send notifications
+            NavHostFragment.findNavController(HostNotifyFragment.this).popBackStack();
         });
     }
 }
