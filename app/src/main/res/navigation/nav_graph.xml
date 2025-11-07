@@ -120,13 +120,15 @@
         >
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_HostNotifyFragment"
-            app:destination="@id/HostNotifyFragment" 
+            app:destination="@id/HostNotifyFragment" >
+
         </action>
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_HostCreateEventFragment"
-            app:destination="@id/HostCreateEventFragment" 
+            app:destination="@id/HostCreateEventFragment" >
         </action>
-            android:id="@+id/action_OrganizerHomeFragment_to_NotificationsFragment"
+        <action
+        android:id="@+id/action_OrganizerHomeFragment_to_NotificationsFragment"
             app:destination="@id/EntrantNotificationsFragment">
         </action>
         <action
@@ -188,4 +190,11 @@
             android:id="@+id/action_HostPosterUploadFragment_to_OrganizerHomeFragment"
             app:destination="@id/OrganizerHomeFragment" />
     </fragment>
+
+    <!--    User Guide Fragments -->
+    <fragment
+        android:id="@+id/UserGuideFragment"
+        android:name="com.example.community.Screens.UserGuideFragment"
+        android:label="UserGuideFragment"
+        tools:layout="@layout/user_guide_page" />
     </navigation>
