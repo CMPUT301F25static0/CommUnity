@@ -33,15 +33,12 @@
             >
         </action>
 
-<<<<<<< HEAD
-=======
         <action
             android:id="@+id/action_RoleSelectFragment_to_OrganizerHomeFragment"
             app:destination="@id/OrganizerHomeFragment"
             >
         </action>
 
->>>>>>> 013bed27a68844273b6603e4a1c9fde400a502b8
         <action
             android:id="@+id/action_RoleSelectFragment_to_AdminHomeFragment"
             app:destination="@id/AdminHomeFragment"
@@ -124,12 +121,13 @@
         >
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_HostNotifyFragment"
-            app:destination="@id/HostNotifyFragment" 
+            app:destination="@id/HostNotifyFragment" >
         </action>
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_HostCreateEventFragment"
-            app:destination="@id/HostCreateEventFragment" 
+            app:destination="@id/HostCreateEventFragment" >
         </action>
+        <action
             android:id="@+id/action_OrganizerHomeFragment_to_NotificationsFragment"
             app:destination="@id/EntrantNotificationsFragment">
         </action>
@@ -249,4 +247,4 @@
             android:id="@+id/action_HostPosterUploadFragment_to_OrganizerHomeFragment"
             app:destination="@id/OrganizerHomeFragment" />
     </fragment>
-    </navigation>
+</navigation>
