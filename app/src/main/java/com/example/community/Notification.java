@@ -4,6 +4,10 @@ import com.google.firebase.firestore.DocumentId;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a notification sent to a user.
+ * Contains message, type, and related event information.
+ */
 public class Notification {
 
     @DocumentId
@@ -14,17 +18,10 @@ public class Notification {
     private String message;
     private NotificationType type;
 
+    /**
+     * Default constructor required for Firebase.
+     */
     public Notification() {
-    }
-
-    public Notification(String notificationID, String recipientID, String eventID,
-                        long issueDate, String message, NotificationType type) {
-        this.notificationID = notificationID;
-        this.recipientID = recipientID;
-        this.eventID = eventID;
-        this.issueDate = issueDate;
-        this.message = message;
-        this.type = type;
     }
 
     public String getNotificationID() {
