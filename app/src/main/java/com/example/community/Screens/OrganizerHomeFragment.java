@@ -107,8 +107,10 @@ public class OrganizerHomeFragment extends Fragment {
         guideButton.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Guide feature not implemented yet", Toast.LENGTH_SHORT).show());
 
-        filterButton.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Filter feature not implemented yet", Toast.LENGTH_SHORT).show());
+        buttonCreate.setOnClickListener(v ->
+                NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                        .navigate(R.id.action_OrganizerHomeFragment_to_HostCreateEventFragment)
+        );
 
 
         notifyButton.setOnClickListener(v ->

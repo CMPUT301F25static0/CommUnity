@@ -119,6 +119,13 @@
         tools:layout = "@layout/host_main_page"
         >
         <action
+            android:id="@+id/action_OrganizerHomeFragment_to_HostNotifyFragment"
+            app:destination="@id/HostNotifyFragment" 
+        </action>
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_HostCreateEventFragment"
+            app:destination="@id/HostCreateEventFragment" 
+        </action>
             android:id="@+id/action_OrganizerHomeFragment_to_NotificationsFragment"
             app:destination="@id/EntrantNotificationsFragment">
         </action>
@@ -159,4 +166,26 @@
 
     </fragment>
 
-</navigation>
+    <!--    Host Create Event Fragments -->
+    <fragment
+        android:id="@+id/HostCreateEventFragment"
+        android:name="com.example.community.Screens.HostCreateEventFragment"
+        android:label="HostCreateEventFragment"
+        tools:layout="@layout/host_create_event_page"   >
+    <action
+    android:id="@+id/action_HostCreateEventFragment_to_HostPosterUploadFragment"
+    app:destination="@id/HostPosterUploadFragment" />
+    </fragment>
+
+    <!--    Host Poster Upload Fragments -->
+    <fragment
+        android:id="@+id/HostPosterUploadFragment"
+        android:name="com.example.community.Screens.HostPosterUploadFragment"
+        android:label="HostPosterUploadFragment"
+        tools:layout="@layout/host_upload_poster_page">
+
+        <action
+            android:id="@+id/action_HostPosterUploadFragment_to_OrganizerHomeFragment"
+            app:destination="@id/OrganizerHomeFragment" />
+    </fragment>
+    </navigation>
