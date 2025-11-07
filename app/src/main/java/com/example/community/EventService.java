@@ -21,9 +21,7 @@ public class EventService {
     }
 
     public Task<String> createEvent(String organizerID, String title, String description,
-                                    Integer maxCapacity, String eventStartDate,
-                                    String eventEndDate) {
-
+                                    Integer maxCapacity, String startDate, String endDate) {
         Event e = new Event();
         e.setEventID(java.util.UUID.randomUUID().toString());
         e.setOrganizerID(organizerID);
@@ -31,8 +29,8 @@ public class EventService {
         e.setDescription(description);
         e.setMaxCapacity(maxCapacity);
         e.setCurrentCapacity(0);
-        e.setEventStartDate(eventStartDate);
-        e.setEventEndDate(eventEndDate);
+        e.setEventStartDate(startDate);
+        e.setEventEndDate(endDate);
         e.setStatus(EventStatus.OPEN);
 
         return eventRepository.create(e).continueWith(t -> e.getEventID());
@@ -141,7 +139,7 @@ public class EventService {
                 .onSuccessTask(entries -> {
                     java.util.List<Task<User>> reads = new java.util.ArrayList<>();
                     for (WaitingListEntry e : entries) {
-                        reads.add(userRepository.getByID(e.getUserID()));
+                        reads.add(userRepository.getByUserID(e.getUserID()));
                     }
                     return com.google.android.gms.tasks.Tasks.whenAllSuccess(reads)
                             .continueWith(t -> {

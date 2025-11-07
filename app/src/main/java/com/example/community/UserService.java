@@ -7,6 +7,8 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.UUID;
+
 public class UserService {
     private static final String TAG = "UserService";
     private UserRepository userRepository;
@@ -36,44 +38,43 @@ public class UserService {
                     Log.d(TAG + "(authenticateByDevice)", "User authenticated with UID: " + user.getUid());
                     return user;
                 });
-
     }
 
     public Task<User> splashScreenDeviceAuthentication() {
         return authenticateByDevice()
-                .onSuccessTask(firebaseUser -> {
-                    String uid = firebaseUser.getUid();
+                .continueWithTask(authTask -> {
+                    FirebaseUser firebaseUser = authTask.getResult();
+                    String deviceUid = firebaseUser.getUid();
 
-                    return createUser(firebaseUser)
-                            .onSuccessTask(v -> userRepository.getByID(uid));
-                });
-    }
-
-    public Task<User> createUser(FirebaseUser firebaseUser) {
-        String uid = firebaseUser.getUid();
-        User newUser = new User(uid);
-
-        return userRepository.getByID(uid)
-                .onSuccessTask(existing -> {
-                    if (existing != null) {
-                        Log.d(TAG + "(createUser)", "User already exists with uid: " + uid);
-                        return Tasks.forResult(existing);
-                    }
-
-                    return userRepository.create(newUser)
-                            .continueWith(task -> {
-                                if (!task.isSuccessful()) {
-                                    Log.e(TAG + "(createUser)", "Failed to create user", task.getException());
-                                    throw task.getException();
+                    return userRepository.getByDeviceToken(deviceUid)
+                            .continueWithTask(lookupTask -> {
+                                User existing = lookupTask.getResult();
+                                if (existing != null) {
+                                    return Tasks.forResult(existing);
                                 }
-                                Log.d(TAG + "(createUser)", "User created successfully with uid: " + uid);
-                                return newUser;
+                                return createUser(firebaseUser);
                             });
                 });
     }
 
-    public Task<User> getUserByID(String userID) {
-        return userRepository.getByID(userID);
+    public Task<User> createUser(FirebaseUser firebaseUser) {
+        String deviceUid = firebaseUser.getUid();
+
+        User u = new User();
+        u.setUserID(UUID.randomUUID().toString());
+        u.setDeviceToken(deviceUid);
+        // role defaults to ENTRANT, optional fields remain null
+
+        return userRepository.create(u)
+                .continueWithTask(v -> Tasks.forResult(u));
+    }
+
+    public Task<User> getByUserID(String userID) {
+        return userRepository.getByUserID(userID);
+    }
+
+    public Task<User> getByDeviceToken(String deviceToken) {
+        return userRepository.getByDeviceToken(deviceToken);
     }
 
     public Task<java.util.List<User>> getAllUsers() {
@@ -86,5 +87,65 @@ public class UserService {
 
     public Task<Void> deleteUser(String userID) {
         return userRepository.delete(userID);
+    }
+
+    public Task<Void> setRole(String userID, Role role) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.setRole(role);
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> setUsername(String userID, String username) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.setUsername(username);
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> setEmail(String userID, String email) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.setEmail(email);
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> setPhoneNumber(String userID, String phone) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.setPhoneNumber(phone);
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> enableNotifications(String userID) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.enableNotifications();
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> disableNotifications(String userID) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.disableNotifications();
+                    return userRepository.update(user);
+                });
     }
 }

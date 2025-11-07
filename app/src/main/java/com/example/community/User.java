@@ -34,22 +34,10 @@ public class User {
      */
     public User() { }
 
-
-
-
-    /**
-     * Constructor for User object
-     *
-     * @param userID unique user id
-     */
-    public User(String userID) {
-        this.userID = userID;
-    }
-
-
     public String getDeviceToken() {
         return deviceToken;
     }
+
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
     }

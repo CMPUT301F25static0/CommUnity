@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class UserRepository {
         return usersRef.document(user.getUserID()).set(user);
     }
 
-    public Task<User> getByID(String userID) {
+    public Task<User> getByUserID(String userID) {
         return usersRef.document(userID).get().continueWith(task -> {
             DocumentSnapshot snapshot = task.getResult();
             return snapshot.exists() ? snapshot.toObject(User.class) : null;
@@ -56,5 +57,22 @@ public class UserRepository {
             }
             return users;
         });
+    }
+
+    public Task<User> getByDeviceToken(String deviceToken) {
+        return usersRef.whereEqualTo("deviceToken", deviceToken)
+                .limit(1)
+                .get()
+                .continueWith(task -> {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    QuerySnapshot qs = task.getResult();
+                    if (qs == null || qs.isEmpty()) {
+                        return null;
+                    }
+                    DocumentSnapshot doc = qs.getDocuments().get(0);
+                    return doc.toObject(User.class);
+                });
     }
 }
