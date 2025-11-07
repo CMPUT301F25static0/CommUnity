@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="40dp"
+            android:paddingBottom="8dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/headerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CommUnity"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <!-- Divider line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#BDBDBD"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Event Name -->
+        <TextView
+            android:id="@+id/labelEventName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event Name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputEventName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter event name"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Event Description -->
+        <TextView
+            android:id="@+id/labelDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Event Description"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputDescription"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:hint="Enter event details"
+            android:gravity="top"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Host Name -->
+        <TextView
+            android:id="@+id/labelHostName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Host Name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputHostName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter host name"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Number of Participants -->
+        <TextView
+            android:id="@+id/labelParticipants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Number of Participants"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputParticipants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter number"
+            android:inputType="number"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Start and End Time -->
+        <TextView
+            android:id="@+id/labelTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start and End Time"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/inputStartTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Start"
+                android:inputType="datetime"
+                android:background="@android:drawable/edit_text"
+                android:padding="10dp"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/inputEndTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="End"
+                android:inputType="datetime"
+                android:background="@android:drawable/edit_text"
+                android:padding="10dp" />
+        </LinearLayout>
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/buttonSubmit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:textAllCaps="false"
+                android:layout_marginStart="12dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
