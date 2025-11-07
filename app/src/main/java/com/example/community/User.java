@@ -13,20 +13,13 @@ import java.util.List;
  * interests and event participation (waitlists, attending lists, and registration history).
  */
 public class User {
-    public enum Role {
-        ENTRANT,
-        ORGANIZER,
-        ADMIN
-    }
-
-    private String deviceToken;
-
 
     @DocumentId
     private String userID;
     private String username;
     private String email;
     private String phoneNumber;
+    private String deviceToken;
     private Role role = Role.ENTRANT;
     Boolean receiveNotifications = true;
 
@@ -35,41 +28,17 @@ public class User {
     List<String> attendingListsIDs = new ArrayList<>();
     List<String> registrationHistoryIDs = new ArrayList<>();
 
+    List<String> eventsCreatedIDs = new ArrayList<>();
 
     /**
      * Default no-arg constructor required for Firebase
      */
     public User() { }
 
-    /**
-     * Constructor for User object
-     *
-     * @param deviceToken device token
-     * @param userID unique user id
-     * @param username display name for the user
-     * @param email user's email address
-     */
-//    public User(String deviceToken, String userID, String username, String email) {
-//        this.deviceToken = deviceToken;
-//        this.userID = userID;
-//        this.username = username;
-//        this.email = email;
-//    }
-
-
-    /**
-     * Constructor for User object
-     *
-     * @param userID unique user id
-     */
-    public User(String userID) {
-        this.userID = userID;
-    }
-
-
     public String getDeviceToken() {
         return deviceToken;
     }
+
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
     }
@@ -236,6 +205,14 @@ public class User {
      */
     public void setRegistrationHistoryIDs(List<String> registrationHistoryIDs) {
         this.registrationHistoryIDs = registrationHistoryIDs;
+    }
+
+    public List<String> getEventsCreatedIDs() {
+        return eventsCreatedIDs;
+    }
+
+    public void setEventsCreatedIDs(List<String> eventsCreatedIDs) {
+        this.eventsCreatedIDs = eventsCreatedIDs;
     }
 
     /**
@@ -409,6 +386,25 @@ public class User {
      */
     public boolean hasEventInRegistrationHistory(String eventId) {
         return registrationHistoryIDs.contains(eventId);
+    }
+
+    public void addEventCreated(String eventId) {
+        if (eventId == null || eventId.isBlank()) return;
+        if (eventsCreatedIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event already recorded as created");
+        }
+        eventsCreatedIDs.add(eventId);
+    }
+
+    public void removeEventCreated(String eventId) {
+        if (!eventsCreatedIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event not in eventsCreatedIDs");
+        }
+        eventsCreatedIDs.remove(eventId);
+    }
+
+    public boolean hasEventCreated(String eventId) {
+        return eventsCreatedIDs.contains(eventId);
     }
 
     /**

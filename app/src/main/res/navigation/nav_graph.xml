@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/SplashFragment">
+
+    <fragment
+        android:id="@+id/SplashFragment"
+        android:name="com.example.community.Screens.SplashPageFragment"
+        android:label="Start Page"
+        tools:layout="@layout/start_page"
+        >
+        <action
+            android:id="@+id/action_SplashPageFragment_to_RoleSelectFragment"
+            app:destination="@id/RoleSelectFragment">
+
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/RoleSelectFragment"
+        android:name="com.example.community.Screens.RoleSelectFragment"
+        android:label="Role Select"
+        tools:layout="@layout/role_select"
+        >
+
+        <action
+            android:id="@+id/action_RoleSelectFragment_to_EntrantHomeFragment"
+            app:destination="@id/EntrantHomeFragment"
+            >
+        </action>
+
+<!--        <action-->
+<!--            android:id="@+id/action_RoleSelectFragment_to_OrganizerHomeFragment"-->
+<!--            app:destination="@id/OrganizerHomeFragment"-->
+<!--            >-->
+<!--        </action>-->
+
+        <action
+            android:id="@+id/action_RoleSelectFragment_to_AdminHomeFragment"
+            app:destination="@id/AdminHomeFragment"
+            >
+        </action>
+    </fragment>
+
+
+<!-- Entrant Fragments -->
+    <fragment
+        android:id = "@+id/EntrantHomeFragment"
+        android:name = "com.example.community.Screens.EntrantHomeFragment"
+        android:label = "Entrant Home"
+        tools:layout = "@layout/user_events"
+        >
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_NotificationsFragment"
+            app:destination="@id/EntrantNotificationsFragment"
+            >
+        </action>
+
+<!--        <action-->
+<!--            android:id="@+id/action_EntrantHomeFragment_to_EntrantHistoryFragment"-->
+<!--            app:destination="@id/EntrantHistoryFragment"-->
+<!--            >-->
+<!--        </action>-->
+
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_EntrantUserProfileFragment"
+            app:destination="@id/EntrantUserProfileFragment"
+            >
+        </action>
+
+<!--        Implement QR action-->
+<!--        Implement Filters action-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/EntrantNotificationsFragment"
+        android:name="com.example.community.Screens.NotificationsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/notification_page"
+        >
+    </fragment>
+
+    <fragment
+        android:id="@+id/EntrantUserProfileFragment"
+        android:name="com.example.community.Screens.EntrantUserProfileFragment"
+        android:label="Entrant User Profile"
+        tools:layout="@layout/entrant_profile"
+        >
+    </fragment>
+
+<!--    Organizer Fragments -->
+<!--    <fragment-->
+<!--        android:id = "@+id/OrganizerHomeFragment"-->
+<!--        android:name = "com.example.community.Screens.OrganizerHomeFragment"-->
+<!--        android:label = "Organizer Home"-->
+<!--        tools:layout = "@layout/organizer_home"-->
+<!--        >-->
+<!--    </fragment>-->
+
+<!--    Admin Fragments -->
+    <fragment
+        android:id = "@+id/AdminHomeFragment"
+        android:name = "com.example.community.Screens.AdminHomeFragment"
+        android:label = "Admin Home"
+        tools:layout = "@layout/admin_home_page"
+        >
+    </fragment>
+
+
+</navigation>

@@ -26,14 +26,14 @@
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintBottom_toTopOf="@+id/topDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/view"
+            android:id="@+id/topDivider"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:layout_marginTop="4dp"
@@ -44,7 +44,7 @@
 
 
         <View
-            android:id="@+id/view2"
+            android:id="@+id/bottomeDivider"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:layout_marginBottom="4dp"

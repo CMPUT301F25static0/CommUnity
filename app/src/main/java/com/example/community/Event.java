@@ -1,62 +1,45 @@
 package com.example.community;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import com.google.firebase.firestore.DocumentId;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 public class Event {
-
-    private String eventID; // need to make a UUID to string helper
+    @DocumentId
+    private String eventID;
     private String title;
     private String description;
-    private User organizer;
+    private String organizerID;
     private String location;
     private String eventType;
-    private Integer capacity;
+    private Integer maxCapacity;
+    private Integer currentCapacity;
+    private List<String> tags = new ArrayList<>();
+    private EventStatus status = EventStatus.DRAFT;
 
-    private LocalDateTime eventStartDate;
-    private LocalDateTime eventEndDate;
-    private LocalDateTime registrationStart;
-    private LocalDateTime registrationEnd;
+    private String eventStartDate;
+    private String eventEndDate;
+    private String registrationStart;
+    private String registrationEnd;
 
-    private String qrCodeImageURL;
+    private String QRCodeImageID;
+    private String QRCodeImageURL;
+    private String posterImageID;
+    private String posterImageURL;
 
     private List<String> waitListUserIDs = new ArrayList<>();
     private List<String> attendeeListUserIDs = new ArrayList<>();
     private List<String> invitedListUserIDs = new ArrayList<>();
     private List<String> cancelledListUserIDs = new ArrayList<>();
 
-    public Event() { }
-
-    public Event(String eventID, String title, String description, User organizer, String location,
-                 String eventType, Integer capacity, LocalDateTime eventStartDate,
-                 LocalDateTime eventEndDate, LocalDateTime registrationStart, LocalDateTime registrationEnd,
-                 String qrCodeImageURL) {
-        this.eventID = eventID;
-        this.title = title;
-        this.description = description;
-        this.organizer = organizer;
-        this.location = location;
-        this.eventType = eventType;
-        this.capacity = capacity;
-        this.eventStartDate = eventStartDate;
-        this.eventEndDate = eventEndDate;
-        this.registrationStart = registrationStart;
-        this.registrationEnd = registrationEnd;
-        this.qrCodeImageURL = qrCodeImageURL;
-
+    public Event() {
     }
 
     public String getEventID() {
         return eventID;
     }
+
     public void setEventID(String eventID) {
         this.eventID = eventID;
     }
@@ -64,6 +47,7 @@ public class Event {
     public String getTitle() {
         return title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -71,20 +55,23 @@ public class Event {
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public User getOrganizer() {
-        return organizer;
+    public String getOrganizerID() {
+        return organizerID;
     }
-    public void setOrganizer(User organizer) {
-        this.organizer = organizer;
+
+    public void setOrganizerID(String organizerID) {
+        this.organizerID = organizerID;
     }
 
     public String getLocation() {
         return location;
     }
+
     public void setLocation(String location) {
         this.location = location;
     }
@@ -92,55 +79,95 @@ public class Event {
     public String getEventType() {
         return eventType;
     }
+
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
 
-    public Integer getCapacity() {
-        return capacity;
-    }
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
+    public Integer getMaxCapacity() {
+        return maxCapacity;
     }
 
-    public LocalDateTime getEventStartDate() {
+    public void setMaxCapacity(Integer maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
+    public Integer getCurrentCapacity() {
+        return currentCapacity;
+    }
+
+    public void setCurrentCapacity(Integer currentCapacity) {
+        this.currentCapacity = currentCapacity;
+    }
+
+    public String getEventStartDate() {
         return eventStartDate;
     }
-    public void setEventStartDate(LocalDateTime eventStartDate) {
+
+    public void setEventStartDate(String eventStartDate) {
         this.eventStartDate = eventStartDate;
     }
 
-    public LocalDateTime getEventEndDate() {
+    public String getEventEndDate() {
         return eventEndDate;
     }
-    public void setEventEndDate(LocalDateTime eventEndDate) {
+
+    public void setEventEndDate(String eventEndDate) {
         this.eventEndDate = eventEndDate;
     }
 
-    public LocalDateTime getRegistrationStart() {
+    public String getRegistrationStart() {
         return registrationStart;
     }
-    public void setRegistrationStart(LocalDateTime registrationStart) {
+
+    public void setRegistrationStart(String registrationStart) {
         this.registrationStart = registrationStart;
     }
 
-    public LocalDateTime getRegistrationEnd() {
+    public String getRegistrationEnd() {
         return registrationEnd;
     }
-    public void setRegistrationEnd(LocalDateTime registrationEnd) {
+
+    public void setRegistrationEnd(String registrationEnd) {
         this.registrationEnd = registrationEnd;
     }
 
-    public String getQrCodeImageURL() {
-        return qrCodeImageURL;
+    public String getQRCodeImageID() {
+        return QRCodeImageID;
     }
-    public void setQrCodeImageURL(String qrCodeImageURL) {
-        this.qrCodeImageURL = qrCodeImageURL;
+
+    public void setQRCodeImageID(String QRCodeImageID) {
+        this.QRCodeImageID = QRCodeImageID;
+    }
+
+    public String getQRCodeImageURL() {
+        return QRCodeImageURL;
+    }
+
+    public void setQRCodeImageURL(String QRCodeImageURL) {
+        this.QRCodeImageURL = QRCodeImageURL;
+    }
+
+    public String getPosterImageID() {
+        return posterImageID;
+    }
+
+    public void setPosterImageID(String posterImageID) {
+        this.posterImageID = posterImageID;
+    }
+
+    public String getPosterImageURL() {
+        return posterImageURL;
+    }
+
+    public void setPosterImageURL(String posterImageURL) {
+        this.posterImageURL = posterImageURL;
     }
 
     public List<String> getWaitListUserIDs() {
         return waitListUserIDs;
     }
+
     public void setWaitListUserIDs(List<String> waitListUserIDs) {
         this.waitListUserIDs = waitListUserIDs;
     }
@@ -148,6 +175,7 @@ public class Event {
     public List<String> getAttendeeListUserIDs() {
         return attendeeListUserIDs;
     }
+
     public void setAttendeeListUserIDs(List<String> attendeeListUserIDs) {
         this.attendeeListUserIDs = attendeeListUserIDs;
     }
@@ -155,6 +183,7 @@ public class Event {
     public List<String> getInvitedListUserIDs() {
         return invitedListUserIDs;
     }
+
     public void setInvitedListUserIDs(List<String> invitedListUserIDs) {
         this.invitedListUserIDs = invitedListUserIDs;
     }
@@ -162,11 +191,28 @@ public class Event {
     public List<String> getCancelledListUserIDs() {
         return cancelledListUserIDs;
     }
+
     public void setCancelledListUserIDs(List<String> cancelledListUserIDs) {
         this.cancelledListUserIDs = cancelledListUserIDs;
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
 
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public EventStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EventStatus status) {
+        this.status = status;
+    }
+
+    // helpers
     public void addUserToWaitlist(String userID) {
         if (waitListUserIDs.contains(userID)) {
             throw new IllegalArgumentException("User is already on waitlist");

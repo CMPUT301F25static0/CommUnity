@@ -13,7 +13,7 @@
 
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/eventScreenAppName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -23,7 +23,7 @@
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/imageButton"
+            app:layout_constraintBottom_toTopOf="@+id/notificationSettings"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,16 +31,16 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <View
-            android:id="@+id/view"
+            android:id="@+id/topDivider"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/eventScreenAppName" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/notificationSettings"
             android:layout_width="48sp"
             android:layout_height="48sp"
             android:layout_marginStart="7dp"
@@ -52,10 +52,10 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+            app:layout_constraintTop_toBottomOf="@+id/topDivider" />
 
         <View
-            android:id="@+id/view2"
+            android:id="@+id/bottomeDivider"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:layout_marginBottom="84dp"
@@ -66,7 +66,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/back"
+            android:id="@+id/backToEntrantHome"
             android:layout_width="150sp"
             android:layout_height="48sp"
             android:layout_marginStart="136dp"
@@ -78,7 +78,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view2"
+            app:layout_constraintTop_toBottomOf="@+id/bottomeDivider"
             app:layout_constraintVertical_bias="0.555" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

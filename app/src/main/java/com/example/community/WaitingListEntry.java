@@ -1,6 +1,6 @@
 package com.example.community;
 
-import java.sql.Timestamp;
+import com.google.firebase.Timestamp;
 
 /**
  * Represents a single entry on an event's waiting list.
@@ -10,16 +10,6 @@ import java.sql.Timestamp;
  * timestamps for when state transitions happened.
  */
 public class WaitingListEntry {
-    /**
-     * Status values for a waiting list entry.
-     */
-    public enum EntryStatus {
-        WAITING, // in waiting list
-        INVITED,  // selected by lottery
-        ACCEPTED, // accepted invitation
-        DECLINED, // declined invitation
-        CANCELLED // left waiting list, left attendee list
-    }
     private String entryID;
     private String eventID;
     private String userID;
@@ -218,7 +208,7 @@ public class WaitingListEntry {
      */
     public void markAsJoined() {
         this.status = EntryStatus.WAITING;
-        this.joinedAt = new Timestamp(System.currentTimeMillis());
+        this.joinedAt = Timestamp.now();
     }
 
     /**
@@ -226,7 +216,7 @@ public class WaitingListEntry {
      */
     public void markAsAccepted() {
         this.status = EntryStatus.ACCEPTED;
-        this.acceptedAt = new Timestamp(System.currentTimeMillis());
+        this.acceptedAt = Timestamp.now();
     }
 
     /**
@@ -234,7 +224,7 @@ public class WaitingListEntry {
      */
     public void markAsDeclined() {
         this.status = EntryStatus.DECLINED;
-        this.declinedAt = new Timestamp(System.currentTimeMillis());
+        this.declinedAt = Timestamp.now();
     }
 
     /**
@@ -242,6 +232,6 @@ public class WaitingListEntry {
      */
     public void markAsCancelled() {
         this.status = EntryStatus.CANCELLED;
-        this.cancelledAt = new Timestamp(System.currentTimeMillis());
+        this.cancelledAt = Timestamp.now();
     }
 }
