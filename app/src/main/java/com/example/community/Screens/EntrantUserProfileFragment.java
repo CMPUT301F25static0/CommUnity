@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.community.R;
 import com.example.community.User;
@@ -64,6 +65,7 @@ public class EntrantUserProfileFragment extends Fragment {
             currentUser.setPhoneNumber(newPhone);
 
             userService.updateUser(currentUser);
+            NavHostFragment.findNavController(EntrantUserProfileFragment.this).popBackStack();
         });
 
 
