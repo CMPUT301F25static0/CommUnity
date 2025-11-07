@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/SplashFragment">
+
+    <fragment
+        android:id="@+id/SplashFragment"
+        android:name="com.example.community.UserScreens.SplashPageFragment"
+        android:label="Start Page"
+        tools:layout="@layout/start_page"
+        >
+        <action
+            android:id="@+id/action_SplashPageFragment_to_RoleSelectFragment"
+            app:destination="@id/RoleSelectFragment">
+
+
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/RoleSelectFragment"
+        android:name="com.example.community.UserScreens.RoleSelectFragment"
+        android:label="Role Select"
+        tools:layout="@layout/role_select"
+        >
+
+    </fragment>
+
+
+</navigation>
