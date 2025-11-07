@@ -17,6 +17,11 @@ import com.example.community.DateValidation;
 import com.example.community.Event;
 import com.example.community.EventService;
 import com.example.community.R;
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,53 +35,42 @@ public class AdminEventFragment extends Fragment {
 
     private ArrayList<Event> eventsArrayList;
     private EventArrayAdapter eventArrayAdapter;
-    private EventService eventService;
+    private FirebaseFirestore db;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.admin_event_page, container, false);
-    }
+        View view = inflater.inflate(R.layout.admin_event_page, container, false);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        backButton = view.findViewById(R.id.buttonBack);
         adminEventView = view.findViewById(R.id.adminEventView);
+        adminEventView.setAdapter(eventArrayAdapter);
 
-        eventService = new EventService();
         eventsArrayList = new ArrayList<>();
-
         eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
         adminEventView.setAdapter(eventArrayAdapter);
 
-        loadEvents();
-        setUpClickListener();
+        db = FirebaseFirestore.getInstance();
 
+        fetchEvents();
+
+        return view;
     }
 
-    private void loadEvents() {
-        String fromDate = DateValidation.getCurrentDate();
-
-        LocalDate futureDate = LocalDate.now().plusYears(1);
-        String toDate = futureDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        if (DateValidation.dateRangeValid(fromDate, toDate)) {
-            eventService.listUpcoming(fromDate, toDate, null)
-                    .addOnSuccessListener(events -> {
+    private void fetchEvents() {
+        db.collection("events")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
                         eventsArrayList.clear();
-                        eventsArrayList.addAll(events);
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Event event = document.toObject(Event.class);
+                            eventsArrayList.add(event);
+                        }
                         eventArrayAdapter.notifyDataSetChanged();
-                    });
-        }
-    }
+                    } else {
 
-    private void setUpClickListener() {
-        backButton.setOnClickListener(v -> {
-            NavHostFragment.findNavController(AdminEventFragment.this)
-                    .navigate(R.id.action_AdminEventFragment_to_AdminHomeFragment);
-        });
+                    }
 
-
+                });
     }
 }
