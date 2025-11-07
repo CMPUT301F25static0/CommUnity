@@ -1,8 +1,8 @@
-package com.example.community;
+package com.example.community.Screens;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;

@@ -25,7 +25,7 @@ public class UserTest {
 
     @Before
     public void SetUP() {
-        user = new User(TEST_USER_ID);
+//        user = new User(TEST_USER_ID);
     }
 
     @Test

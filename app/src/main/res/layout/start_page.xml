@@ -24,4 +24,16 @@
         android:textColor="#888888"
         android:layout_marginTop="8dp" />
 
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#3E50B4"
+        android:visibility="gone"
+        android:text="Log in"
+        android:textAllCaps="false"
+        android:textSize="18sp"></Button>
+
 </LinearLayout>
