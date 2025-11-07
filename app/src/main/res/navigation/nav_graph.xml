@@ -33,11 +33,9 @@
             >
         </action>
 
-<!--        <action-->
-<!--            android:id="@+id/action_RoleSelectFragment_to_OrganizerHomeFragment"-->
-<!--            app:destination="@id/OrganizerHomeFragment"-->
-<!--            >-->
-<!--        </action>-->
+        <action
+            android:id="@+id/action_RoleSelectFragment_to_OrganizerHomeFragment"
+            app:destination="@id/OrganizerHomeFragment" />
 
         <action
             android:id="@+id/action_RoleSelectFragment_to_AdminHomeFragment"
@@ -112,13 +110,16 @@
     </dialog>
 
 <!--    Organizer Fragments -->
-<!--    <fragment-->
-<!--        android:id = "@+id/OrganizerHomeFragment"-->
-<!--        android:name = "com.example.community.Screens.OrganizerHomeFragment"-->
-<!--        android:label = "Organizer Home"-->
-<!--        tools:layout = "@layout/organizer_home"-->
-<!--        >-->
-<!--    </fragment>-->
+    <fragment
+        android:id="@+id/OrganizerHomeFragment"
+        android:name="com.example.community.Screens.OrganizerHomeFragment"
+        android:label="OrganizerHomeFragment"
+        tools:layout="@layout/host_main_page">
+
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_HostNotifyFragment"
+            app:destination="@id/HostNotifyFragment" />
+    </fragment>
 
 <!--    Admin Fragments -->
     <fragment
@@ -129,5 +130,13 @@
         >
     </fragment>
 
+    <!--    Host Notify Fragments -->
+    <fragment
+        android:id="@+id/HostNotifyFragment"
+        android:name="com.example.community.Screens.HostNotifyFragment"
+        android:label="HostNotifyFragment"
+        tools:layout="@layout/host_notify_page">
+
+    </fragment>
 
 </navigation>
