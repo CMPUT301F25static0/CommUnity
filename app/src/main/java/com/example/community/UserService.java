@@ -14,7 +14,7 @@ public class UserService {
     private UserRepository userRepository;
     private FirebaseAuth firebaseAuth;
 
-    UserService() {
+    public UserService() {
         userRepository = new UserRepository();
         firebaseAuth = FirebaseAuth.getInstance();
     }
@@ -35,7 +35,7 @@ public class UserService {
                         Log.d(TAG + "(authenticateByDevice)", "Anonymous auth failed", task.getException());
                         throw task.getException();
                     }
-                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    FirebaseUser user = task.getResult().getUser();
                     Log.d(TAG + "(authenticateByDevice)", "User authenticated with UID: " + user.getUid());
                     return user;
                 });
@@ -78,6 +78,7 @@ public class UserService {
     }
 
 
+
     // Helper
     public Task<User> getUserByID(String userID) {
         return userRepository.getByID(userID);
@@ -96,5 +97,22 @@ public class UserService {
     // US 01.02.04. US 03.02.01
     public Task<Void> deleteUser(String userID) {
         return userRepository.delete(userID);
+    }
+
+    public FirebaseUser getCurrentUser() {
+        return firebaseAuth.getCurrentUser();
+    }
+
+    public Task<Void> updateUserRole(Role role) {
+        String current_user = getCurrentUser().toString();
+        return userRepository.getByID(current_user)
+                .onSuccessTask(user -> {
+                    if (user == null) {
+                        Log.e(TAG + "(updateUserRole)", "User not found with uid: " + userID);
+                        return Tasks.forException(new IllegalArgumentException("User not found"));
+                    }
+                    user.setRole(role);
+                    return userRepository.update(user);
+                });
     }
 }

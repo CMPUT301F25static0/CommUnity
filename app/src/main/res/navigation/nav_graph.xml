@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/SplashFragment"
-        android:name="com.example.community.UserScreens.SplashPageFragment"
+        android:name="com.example.community.Screens.SplashPageFragment"
         android:label="Start Page"
         tools:layout="@layout/start_page"
         >
@@ -22,11 +22,52 @@
 
     <fragment
         android:id="@+id/RoleSelectFragment"
-        android:name="com.example.community.UserScreens.RoleSelectFragment"
+        android:name="com.example.community.Screens.RoleSelectFragment"
         android:label="Role Select"
         tools:layout="@layout/role_select"
         >
 
+        <action
+            android:id="@+id/action_RoleSelectFragment_to_EntrantHomeFragment"
+            app:destination="@id/EntrantHomeFragment"
+            >
+        </action>
+
+<!--        <action-->
+<!--            android:id="@+id/action_RoleSelectFragment_to_OrganizerHomeFragment"-->
+<!--            app:destination="@id/OrganizerHomeFragment"-->
+<!--            >-->
+<!--        </action>-->
+
+        <action
+            android:id="@+id/action_RoleSelectFragment_to_AdminHomeFragment"
+            app:destination="@id/AdminHomeFragment"
+            >
+        </action>
+    </fragment>
+
+    <fragment
+        android:id = "@+id/EntrantHomeFragment"
+        android:name = "com.example.community.Screens.EntrantHomeFragment"
+        android:label = "Entrant Home"
+        tools:layout = "@layout/entrant_home"
+        >
+    </fragment>
+
+<!--    <fragment-->
+<!--        android:id = "@+id/OrganizerHomeFragment"-->
+<!--        android:name = "com.example.community.Screens.OrganizerHomeFragment"-->
+<!--        android:label = "Organizer Home"-->
+<!--        tools:layout = "@layout/organizer_home"-->
+<!--        >-->
+<!--    </fragment>-->
+
+    <fragment
+        android:id = "@+id/AdminHomeFragment"
+        android:name = "com.example.community.Screens.AdminHomeFragment"
+        android:label = "Admin Home"
+        tools:layout = "@layout/admin_home_page"
+        >
     </fragment>
 
 
