@@ -28,6 +28,7 @@ public class RoleSelectFragment extends Fragment {
         return roleSelectFragment;
     }
 
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 

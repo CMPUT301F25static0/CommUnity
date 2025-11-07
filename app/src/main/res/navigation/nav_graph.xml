@@ -46,14 +46,45 @@
         </action>
     </fragment>
 
+
+<!-- Entrant Fragments -->
     <fragment
         android:id = "@+id/EntrantHomeFragment"
         android:name = "com.example.community.Screens.EntrantHomeFragment"
         android:label = "Entrant Home"
-        tools:layout = "@layout/entrant_home"
+        tools:layout = "@layout/user_events"
+        >
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_NotificationsFragment"
+            app:destination="@id/EntrantNotificationsFragment"
+            >
+        </action>
+
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_EntrantHistoryFragment"
+            app:destination="@id/EntrantHistoryFragment"
+            >
+        </action>
+
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_EntrantUserProfileFragment"
+            app:destination=""
+            >
+        </action>
+
+<!--        Implement QR action-->
+<!--        Implement Filters action-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/EntrantNotificationsFragment"
+        android:name="com.example.community.Screens.NotificationsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/notification_page"
         >
     </fragment>
 
+<!--    Organizer Fragments -->
 <!--    <fragment-->
 <!--        android:id = "@+id/OrganizerHomeFragment"-->
 <!--        android:name = "com.example.community.Screens.OrganizerHomeFragment"-->
@@ -62,6 +93,7 @@
 <!--        >-->
 <!--    </fragment>-->
 
+<!--    Admin Fragments -->
     <fragment
         android:id = "@+id/AdminHomeFragment"
         android:name = "com.example.community.Screens.AdminHomeFragment"

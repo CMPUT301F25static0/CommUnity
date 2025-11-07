@@ -22,6 +22,7 @@ public class SplashPageFragment extends Fragment {
         return splashFragment;
     }
 
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
