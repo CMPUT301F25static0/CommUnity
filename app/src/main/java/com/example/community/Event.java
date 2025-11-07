@@ -2,7 +2,6 @@ package com.example.community;
 
 import com.google.firebase.firestore.DocumentId;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,13 +18,13 @@ public class Event {
     private List<String> tags = new ArrayList<>();
     private EventStatus status = EventStatus.DRAFT;
 
-    private String  eventStartDate;
-    private String  eventEndDate;
-    private String  registrationStart;
-    private String  registrationEnd;
+    private String eventStartDate;
+    private String eventEndDate;
+    private String registrationStart;
+    private String registrationEnd;
 
-    private String qrCodeImageID;
-    private String qrCodeImageURL;
+    private String QRCodeImageID;
+    private String QRCodeImageURL;
     private String posterImageID;
     private String posterImageURL;
 
@@ -34,27 +33,13 @@ public class Event {
     private List<String> invitedListUserIDs = new ArrayList<>();
     private List<String> cancelledListUserIDs = new ArrayList<>();
 
-    public Event() { }
-
-    public Event(String eventID, String title, String description, String organizerID, String location,
-                 String eventType, Integer capacity, String  eventStartDate,
-                 String  eventEndDate, String  registrationStart, String  registrationEnd) {
-        this.eventID = eventID;
-        this.title = title;
-        this.description = description;
-        this.organizerID = organizerID;
-        this.location = location;
-        this.eventType = eventType;
-        this.maxCapacity = capacity;
-        this.eventStartDate = eventStartDate;
-        this.eventEndDate = eventEndDate;
-        this.registrationStart = registrationStart;
-        this.registrationEnd = registrationEnd;
+    public Event() {
     }
 
     public String getEventID() {
         return eventID;
     }
+
     public void setEventID(String eventID) {
         this.eventID = eventID;
     }
@@ -62,6 +47,7 @@ public class Event {
     public String getTitle() {
         return title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -69,6 +55,7 @@ public class Event {
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -76,6 +63,7 @@ public class Event {
     public String getOrganizerID() {
         return organizerID;
     }
+
     public void setOrganizerID(String organizerID) {
         this.organizerID = organizerID;
     }
@@ -83,6 +71,7 @@ public class Event {
     public String getLocation() {
         return location;
     }
+
     public void setLocation(String location) {
         this.location = location;
     }
@@ -90,6 +79,7 @@ public class Event {
     public String getEventType() {
         return eventType;
     }
+
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
@@ -97,6 +87,7 @@ public class Event {
     public Integer getMaxCapacity() {
         return maxCapacity;
     }
+
     public void setMaxCapacity(Integer maxCapacity) {
         this.maxCapacity = maxCapacity;
     }
@@ -104,55 +95,63 @@ public class Event {
     public Integer getCurrentCapacity() {
         return currentCapacity;
     }
+
     public void setCurrentCapacity(Integer currentCapacity) {
         this.currentCapacity = currentCapacity;
     }
 
-    public String  getEventStartDate() {
+    public String getEventStartDate() {
         return eventStartDate;
     }
-    public void setEventStartDate(String  eventStartDate) {
+
+    public void setEventStartDate(String eventStartDate) {
         this.eventStartDate = eventStartDate;
     }
 
-    public String  getEventEndDate() {
+    public String getEventEndDate() {
         return eventEndDate;
     }
-    public void setEventEndDate(String  eventEndDate) {
+
+    public void setEventEndDate(String eventEndDate) {
         this.eventEndDate = eventEndDate;
     }
 
-    public String  getRegistrationStart() {
+    public String getRegistrationStart() {
         return registrationStart;
     }
-    public void setRegistrationStart(String  registrationStart) {
+
+    public void setRegistrationStart(String registrationStart) {
         this.registrationStart = registrationStart;
     }
 
-    public String  getRegistrationEnd() {
+    public String getRegistrationEnd() {
         return registrationEnd;
     }
-    public void setRegistrationEnd(String  registrationEnd) {
+
+    public void setRegistrationEnd(String registrationEnd) {
         this.registrationEnd = registrationEnd;
     }
 
     public String getQRCodeImageID() {
-        return qrCodeImageID;
+        return QRCodeImageID;
     }
-    public void setQRCodeImageID(String qrCodeImageID) {
-        this.qrCodeImageID = qrCodeImageID;
+
+    public void setQRCodeImageID(String QRCodeImageID) {
+        this.QRCodeImageID = QRCodeImageID;
     }
 
     public String getQRCodeImageURL() {
-        return qrCodeImageURL;
+        return QRCodeImageURL;
     }
-    public void setQRCodeImageURL(String qrCodeImageURL) {
-        this.qrCodeImageURL = qrCodeImageURL;
+
+    public void setQRCodeImageURL(String QRCodeImageURL) {
+        this.QRCodeImageURL = QRCodeImageURL;
     }
 
     public String getPosterImageID() {
         return posterImageID;
     }
+
     public void setPosterImageID(String posterImageID) {
         this.posterImageID = posterImageID;
     }
@@ -160,6 +159,7 @@ public class Event {
     public String getPosterImageURL() {
         return posterImageURL;
     }
+
     public void setPosterImageURL(String posterImageURL) {
         this.posterImageURL = posterImageURL;
     }
@@ -167,6 +167,7 @@ public class Event {
     public List<String> getWaitListUserIDs() {
         return waitListUserIDs;
     }
+
     public void setWaitListUserIDs(List<String> waitListUserIDs) {
         this.waitListUserIDs = waitListUserIDs;
     }
@@ -174,6 +175,7 @@ public class Event {
     public List<String> getAttendeeListUserIDs() {
         return attendeeListUserIDs;
     }
+
     public void setAttendeeListUserIDs(List<String> attendeeListUserIDs) {
         this.attendeeListUserIDs = attendeeListUserIDs;
     }
@@ -181,6 +183,7 @@ public class Event {
     public List<String> getInvitedListUserIDs() {
         return invitedListUserIDs;
     }
+
     public void setInvitedListUserIDs(List<String> invitedListUserIDs) {
         this.invitedListUserIDs = invitedListUserIDs;
     }
@@ -188,6 +191,7 @@ public class Event {
     public List<String> getCancelledListUserIDs() {
         return cancelledListUserIDs;
     }
+
     public void setCancelledListUserIDs(List<String> cancelledListUserIDs) {
         this.cancelledListUserIDs = cancelledListUserIDs;
     }
@@ -195,6 +199,7 @@ public class Event {
     public List<String> getTags() {
         return tags;
     }
+
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
@@ -202,22 +207,9 @@ public class Event {
     public EventStatus getStatus() {
         return status;
     }
+
     public void setStatus(EventStatus status) {
         this.status = status;
-    }
-
-    public String getQrCodeImageID() {
-        return qrCodeImageID;
-    }
-    public void setQrCodeImageID(String qrCodeImageID) {
-        this.qrCodeImageID = qrCodeImageID;
-    }
-
-    public String getQrCodeImageURL() {
-        return qrCodeImageURL;
-    }
-    public void setQrCodeImageURL(String qrCodeImageURL) {
-        this.qrCodeImageURL = qrCodeImageURL;
     }
 
     // helpers

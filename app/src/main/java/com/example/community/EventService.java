@@ -20,17 +20,49 @@ public class EventService {
         this.userRepository = new UserRepository();
     }
 
+    public Task<String> createEvent(String organizerID, String title, String description,
+                                    Integer maxCapacity, String startDate, String endDate) {
+        Event e = new Event();
+        e.setEventID(java.util.UUID.randomUUID().toString());
+        e.setOrganizerID(organizerID);
+        e.setTitle(title);
+        e.setDescription(description);
+        e.setMaxCapacity(maxCapacity);
+        e.setCurrentCapacity(0);
+        e.setEventStartDate(startDate);
+        e.setEventEndDate(endDate);
+        e.setStatus(EventStatus.OPEN);
 
-    // US 02.01.01, US 02.01.04
-    public Task<String> createEvent(String organizerID, Event draft) {
-        draft.setOrganizerID(organizerID);
-        return eventRepository.create(draft).continueWith(task -> draft.getEventID());
+        return eventRepository.create(e)
+                .continueWithTask(t -> {
+                    if (!t.isSuccessful()) throw t.getException();
+                    final String eventID = e.getEventID();
+
+                    // append to organizer.eventsCreatedIDs
+                    return userRepository
+                            .getByUserID(organizerID)
+                            .continueWithTask(ut -> {
+                                User u = ut.getResult();
+                                if (u == null) {
+                                    return Tasks
+                                            .forException(new IllegalArgumentException("Organizer not found"));
+                                }
+                                if (!u.hasEventCreated(eventID)) {
+                                    u.addEventCreated(eventID);
+                                    return userRepository
+                                            .update(u)
+                                            .continueWith(tt -> eventID);
+                                }
+                                // already recorded; just return id
+                                return Tasks.forResult(eventID);
+                            });
+                });
     }
+
     public Task<Void> updateEvent(String organizerID, Event patch) {
         return eventRepository.update(patch);
     }
 
-    // US 02.01.01, US 02.01.04
     public Task<Void> publishEvent(String organizerID, String eventID) {
         return eventRepository.getByID(eventID).continueWithTask(task -> {
             Event event = task.getResult();
@@ -45,7 +77,6 @@ public class EventService {
         });
     }
 
-    // Might not be needed, no US about cancelling
     public Task<Void> cancelEvent(String organizerID, String eventID) {
         return eventRepository.getByID(eventID).continueWithTask(task -> {
             Event event = task.getResult();
@@ -60,23 +91,18 @@ public class EventService {
         });
     }
 
-    // Might not be needed, no US about listing by organizer
     public Task<List<Event>> listEventsByOrganizer(String organizerID, int limit, String startAfterID) {
         return eventRepository.listEventsByOrganizer(organizerID, limit, startAfterID);
     }
 
-    // US 02.04.01, US 02.04.02
     public Task<String> setPoster(String organizerID, String eventID, byte[] imageData, String uploadedBy) {
         return imageService.uploadEventPoster(eventID, imageData, uploadedBy).continueWith(t -> t.getResult().getImageURL());
     }
 
-
-    // US 02.01.01?
     public Task<String> refreshEventQR(String organizerID, String eventID) {
         return qrCodeService.generateAndUploadQRCode(eventID, organizerID).continueWith(t -> t.getResult().getImageURL());
     }
 
-    // US 01.01.03?
     public Task<List<Event>> listUpcoming(String fromDate, String toDate, List<String> tags) {
         return eventRepository.listUpcoming(fromDate, toDate, tags, 50, null).continueWith(task -> {
             List<Event> all = task.getResult();
@@ -90,7 +116,6 @@ public class EventService {
         });
     }
 
-    //US 01.01.03
     public Task<List<Event>> listJoinable(String userID, String fromDate, String toDate, List<String> tags) {
         return listUpcoming(fromDate, toDate, tags)   // already filtered to OPEN
                 .onSuccessTask(events -> {
@@ -112,32 +137,46 @@ public class EventService {
                 });
     }
 
-    // US 01.01.04
     public Task<List<Event>> listJoinableByInterests(String userID, String fromDate, String toDate) {
         return listJoinable(userID, fromDate, toDate, null);
     }
 
-    // US 01.01.01, US 01.01.02, US 01.06.01, US 01.06.02
     public Task<Event> getEvent(String eventID) {
         return eventRepository.getByID(eventID);
     }
 
-    // US 01.06.01, US 02.01.01
     public Task<String> getEventQRCode(String organizerID, String eventID) {
         return eventRepository.getByID(eventID).continueWith(task -> {
             Event event = task.getResult();
             if (event == null) {
                 throw new IllegalArgumentException("Event not found");
             }
-            return event.getQrCodeImageURL();
+            return event.getQRCodeImageURL();
         });
     }
 
-    // 02.06.x ?
+
     public Task<List<User>> getAttendees(String eventID) {
-        // This would retrieve the list of attendees
-        return Tasks.forResult(java.util.Collections.emptyList());
+        return waitlistRepository
+                .listByEventAndStatus(eventID, EntryStatus.ACCEPTED)
+                .onSuccessTask(entries -> {
+                    java.util.List<Task<User>> reads = new java.util.ArrayList<>();
+                    for (WaitingListEntry e : entries) {
+                        reads.add(userRepository.getByUserID(e.getUserID()));
+                    }
+                    return com.google.android.gms.tasks.Tasks.whenAllSuccess(reads)
+                            .continueWith(t -> {
+                                java.util.List<?> results = t.getResult();
+                                java.util.List<User> users = new java.util.ArrayList<>();
+                                for (Object o : results) {
+                                    User u = (User) o;
+                                    if (u != null) users.add(u);
+                                }
+                                return users;
+                            });
+                });
     }
+
 
     // public Task<String> exportAttendeesCSV(String organizerID, String eventID) {}
 }

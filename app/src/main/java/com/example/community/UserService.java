@@ -7,19 +7,20 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UserService {
     private static final String TAG = "UserService";
     private UserRepository userRepository;
     private FirebaseAuth firebaseAuth;
 
-    public UserService() {
+    UserService() {
         userRepository = new UserRepository();
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
-    // US 01.07.01
     public Task<FirebaseUser> authenticateByDevice() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
@@ -35,84 +36,154 @@ public class UserService {
                         Log.d(TAG + "(authenticateByDevice)", "Anonymous auth failed", task.getException());
                         throw task.getException();
                     }
-                    FirebaseUser user = task.getResult().getUser();
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
                     Log.d(TAG + "(authenticateByDevice)", "User authenticated with UID: " + user.getUid());
                     return user;
                 });
-
     }
 
-    // US 01.07.01
     public Task<User> splashScreenDeviceAuthentication() {
         return authenticateByDevice()
-                .onSuccessTask(firebaseUser -> {
-                    String uid = firebaseUser.getUid();
+                .continueWithTask(authTask -> {
+                    FirebaseUser firebaseUser = authTask.getResult();
+                    String deviceUid = firebaseUser.getUid();
 
-                    return createUser(firebaseUser)
-                            .onSuccessTask(v -> userRepository.getByID(uid));
-                });
-    }
-
-    // Helper plus  US 01.02.01, US 01.02.02
-    public Task<User> createUser(FirebaseUser firebaseUser) {
-        String uid = firebaseUser.getUid();
-        User newUser = new User(uid);
-
-        return userRepository.getByID(uid)
-                .onSuccessTask(existing -> {
-                    if (existing != null) {
-                        Log.d(TAG + "(createUser)", "User already exists with uid: " + uid);
-                        return Tasks.forResult(existing);
-                    }
-
-                    return userRepository.create(newUser)
-                            .continueWith(task -> {
-                                if (!task.isSuccessful()) {
-                                    Log.e(TAG + "(createUser)", "Failed to create user", task.getException());
-                                    throw task.getException();
+                    return userRepository.getByDeviceToken(deviceUid)
+                            .continueWithTask(lookupTask -> {
+                                User existing = lookupTask.getResult();
+                                if (existing != null) {
+                                    return Tasks.forResult(existing);
                                 }
-                                Log.d(TAG + "(createUser)", "User created successfully with uid: " + uid);
-                                return newUser;
+                                return createUser(firebaseUser);
                             });
                 });
     }
 
+    public Task<User> createUser(FirebaseUser firebaseUser) {
+        String deviceUid = firebaseUser.getUid();
 
+        User u = new User();
+        u.setUserID(UUID.randomUUID().toString());
+        u.setDeviceToken(deviceUid);
+        // role defaults to ENTRANT, optional fields remain null
 
-    // Helper
-    public Task<User> getUserByID(String userID) {
-        return userRepository.getByID(userID);
+        return userRepository.create(u)
+                .continueWithTask(v -> Tasks.forResult(u));
     }
 
-    // US 03.05.01, US 03.02.01
-    public Task<List<User>> getAllUsers() {
+    public Task<User> getByUserID(String userID) {
+        return userRepository.getByUserID(userID);
+    }
+
+    public Task<User> getByDeviceToken(String deviceToken) {
+        return userRepository.getByDeviceToken(deviceToken);
+    }
+
+    public Task<java.util.List<User>> getAllUsers() {
         return userRepository.getAll();
     }
 
-    // US 01.02.02
     public Task<Void> updateUser(User user) {
         return userRepository.update(user);
     }
 
-    // US 01.02.04. US 03.02.01
     public Task<Void> deleteUser(String userID) {
         return userRepository.delete(userID);
     }
 
-    public FirebaseUser getCurrentUser() {
-        return firebaseAuth.getCurrentUser();
-    }
-
-    public Task<Void> updateUserRole(Role role) {
-        String current_user = getCurrentUser().toString();
-        return userRepository.getByID(current_user)
-                .onSuccessTask(user -> {
-                    if (user == null) {
-                        Log.e(TAG + "(updateUserRole)", "User not found with uid: " + userID);
-                        return Tasks.forException(new IllegalArgumentException("User not found"));
-                    }
+    public Task<Void> setRole(String userID, Role role) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
                     user.setRole(role);
                     return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> setUsername(String userID, String username) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.setUsername(username);
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> setEmail(String userID, String email) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.setEmail(email);
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> setPhoneNumber(String userID, String phone) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.setPhoneNumber(phone);
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> enableNotifications(String userID) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.enableNotifications();
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> disableNotifications(String userID) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User user = t.getResult();
+                    if (user == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    user.disableNotifications();
+                    return userRepository.update(user);
+                });
+    }
+
+    public Task<Void> addEventCreated(String userID, String eventID) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User u = t.getResult();
+                    if (u == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    if (u.hasEventCreated(eventID)) {
+                        return Tasks.forException(new IllegalArgumentException("Event already recorded as created"));
+                    }
+                    u.addEventCreated(eventID);
+                    return userRepository.update(u);
+                });
+    }
+
+    public Task<Void> removeEventCreated(String userID, String eventID) {
+        return userRepository.getByUserID(userID)
+                .continueWithTask(t -> {
+                    User u = t.getResult();
+                    if (u == null) return Tasks.forException(new IllegalStateException("User not found: " + userID));
+                    if (!u.hasEventCreated(eventID)) {
+                        return Tasks.forException(new IllegalArgumentException("Event not in eventsCreatedIDs"));
+                    }
+                    u.removeEventCreated(eventID);
+                    return userRepository.update(u);
+                });
+    }
+
+    public Task<List<String>> listEventsCreated(String userID) {
+        return userRepository.getByUserID(userID)
+                .continueWith(t -> {
+                    User u = t.getResult();
+                    if (u == null) return new ArrayList<String>();
+                    // return live list per your convention; callers should avoid mutating it directly
+                    return u.getEventsCreatedIDs();
                 });
     }
 }

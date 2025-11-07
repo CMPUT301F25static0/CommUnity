@@ -16,7 +16,7 @@ public class QRCodeService {
     private final ImageRepository imageRepository;
     private final EventRepository eventRepository;
 
-    QRCodeService() {
+    public QRCodeService() {
         this.imageRepository = new ImageRepository();
         this.eventRepository = new EventRepository();
     }
@@ -41,8 +41,8 @@ public class QRCodeService {
                                         if (event == null) {
                                             throw new IllegalArgumentException("Event not found: " + eventID);
                                         }
-                                        event.setQrCodeImageURL(image.getImageURL());
-                                        event.setQrCodeImageID(image.getImageID());
+                                        event.setQRCodeImageURL(image.getImageURL());
+                                        event.setQRCodeImageID(image.getImageID());
                                         return eventRepository.update(event).continueWith(t -> image);
                                     })
                     );
@@ -65,14 +65,14 @@ public class QRCodeService {
                         throw new IllegalArgumentException("Event not found: " + eventID);
                     }
 
-                    String qrCodeImageID = event.getQrCodeImageID();
+                    String qrCodeImageID = event.getQRCodeImageID();
 
                     Task<Void> deleteImageTask = (qrCodeImageID != null)
                             ? imageRepository.delete(qrCodeImageID)
                             : Tasks.forResult(null);
 
-                    event.setQrCodeImageID(null);
-                    event.setQrCodeImageURL(null);
+                    event.setQRCodeImageID(null);
+                    event.setQRCodeImageURL(null);
 
                     return deleteImageTask
                             .continueWithTask(t -> eventRepository.update(event));

@@ -1,6 +1,6 @@
 package com.example.community;
 
-import java.sql.Timestamp;
+import com.google.firebase.Timestamp;
 
 /**
  * Represents a single entry on an event's waiting list.
@@ -208,7 +208,7 @@ public class WaitingListEntry {
      */
     public void markAsJoined() {
         this.status = EntryStatus.WAITING;
-        this.joinedAt = new Timestamp(System.currentTimeMillis());
+        this.joinedAt = Timestamp.now();
     }
 
     /**
@@ -216,7 +216,7 @@ public class WaitingListEntry {
      */
     public void markAsAccepted() {
         this.status = EntryStatus.ACCEPTED;
-        this.acceptedAt = new Timestamp(System.currentTimeMillis());
+        this.acceptedAt = Timestamp.now();
     }
 
     /**
@@ -224,7 +224,7 @@ public class WaitingListEntry {
      */
     public void markAsDeclined() {
         this.status = EntryStatus.DECLINED;
-        this.declinedAt = new Timestamp(System.currentTimeMillis());
+        this.declinedAt = Timestamp.now();
     }
 
     /**
@@ -232,6 +232,6 @@ public class WaitingListEntry {
      */
     public void markAsCancelled() {
         this.status = EntryStatus.CANCELLED;
-        this.cancelledAt = new Timestamp(System.currentTimeMillis());
+        this.cancelledAt = Timestamp.now();
     }
 }

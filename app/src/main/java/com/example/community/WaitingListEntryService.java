@@ -2,9 +2,11 @@ package com.example.community;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class WaitingListEntryService {
 
@@ -18,8 +20,6 @@ public class WaitingListEntryService {
         this.userRepository = new UserRepository();
     }
 
-
-    // US 01.01.01
     public Task<Void> join(String userID, String eventID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry existing = task.getResult();
@@ -27,15 +27,14 @@ public class WaitingListEntryService {
                 return Tasks.forException(new IllegalArgumentException("Already on waitlist"));
             }
 
-            // entryID = userID to match /events/{eventID}/waitlist/{userID}
-            WaitingListEntry entry = new WaitingListEntry(userID, eventID, userID);
+            String entryID = UUID.randomUUID().toString();
+            WaitingListEntry entry = new WaitingListEntry(entryID, eventID, userID);
             entry.markAsJoined();
 
             return waitlistRepository.create(entry);
         });
     }
 
-    // US 01.01.02
     public Task<Void> leave(String userID, String eventID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry entry = task.getResult();
@@ -47,12 +46,11 @@ public class WaitingListEntryService {
             }
 
             entry.markAsCancelled();
-            // delete to keep waitlist tight
+
             return waitlistRepository.delete(eventID, userID);
         });
     }
 
-    // US 02.05.01, US 02.05.02, US 02.06.01
     public Task<Void> invite(String organizerID, String eventID, String userID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry entry = task.getResult();
@@ -60,12 +58,11 @@ public class WaitingListEntryService {
                 return Tasks.forException(new IllegalArgumentException("Entry not found"));
             }
             entry.setStatus(EntryStatus.INVITED);
-            entry.setInvitedAt(new java.sql.Timestamp(System.currentTimeMillis()));
+            entry.setInvitedAt(Timestamp.now());
             return waitlistRepository.update(entry);
         });
     }
 
-    // US 01.05.02
     public Task<Void> acceptInvite(String userID, String eventID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry entry = task.getResult();
@@ -106,7 +103,6 @@ public class WaitingListEntryService {
         });
     }
 
-    // US 01.05.03
     public Task<Void> declineInvite(String userID, String eventID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry entry = task.getResult();
@@ -122,34 +118,28 @@ public class WaitingListEntryService {
         });
     }
 
-    // US 02.02.01
     public Task<List<WaitingListEntry>> getWaitlistEntries(String eventID) {
         return waitlistRepository.listByEvent(eventID);
     }
 
-    // US 02.06.01
     public Task<List<WaitingListEntry>> getInvitedList(String eventID) {
         return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.INVITED);
     }
 
-    // US 02.06.03
     public Task<List<WaitingListEntry>> getAcceptedList(String eventID) {
         return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.ACCEPTED);
     }
 
-    // Ties to lottery I think
     public Task<Long> getWaitlistSize(String eventID) {
         return waitlistRepository.countByEvent(eventID);
     }
 
-    // Ties to lottery I think
     public Task<Map<EntryStatus, Long>> getWaitlistCounts(String eventID) {
         return waitlistRepository.countsByEventGrouped(eventID);
     }
 
-    // US 01.02.03
-    public Task<List<WaitingListEntry>> myHistory(String userID) {
-        return Tasks.forResult(java.util.Collections.emptyList());
+    public Task<List<WaitingListEntry>> getHistory(String userID) {
+        return waitlistRepository.listByUser(userID);
     }
 }
 

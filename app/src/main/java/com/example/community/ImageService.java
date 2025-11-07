@@ -9,7 +9,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final EventRepository eventRepository;
 
-    ImageService() {
+    public ImageService() {
         this.imageRepository = new ImageRepository();
         this.eventRepository = new EventRepository();
     }

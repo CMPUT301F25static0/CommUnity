@@ -28,28 +28,17 @@ public class User {
     List<String> attendingListsIDs = new ArrayList<>();
     List<String> registrationHistoryIDs = new ArrayList<>();
 
+    List<String> eventsCreatedIDs = new ArrayList<>();
 
     /**
      * Default no-arg constructor required for Firebase
      */
     public User() { }
 
-
-
-
-    /**
-     * Constructor for User object
-     *
-     * @param userID unique user id
-     */
-    public User(String userID) {
-        this.userID = userID;
-    }
-
-
     public String getDeviceToken() {
         return deviceToken;
     }
+
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
     }
@@ -216,6 +205,14 @@ public class User {
      */
     public void setRegistrationHistoryIDs(List<String> registrationHistoryIDs) {
         this.registrationHistoryIDs = registrationHistoryIDs;
+    }
+
+    public List<String> getEventsCreatedIDs() {
+        return eventsCreatedIDs;
+    }
+
+    public void setEventsCreatedIDs(List<String> eventsCreatedIDs) {
+        this.eventsCreatedIDs = eventsCreatedIDs;
     }
 
     /**
@@ -389,6 +386,25 @@ public class User {
      */
     public boolean hasEventInRegistrationHistory(String eventId) {
         return registrationHistoryIDs.contains(eventId);
+    }
+
+    public void addEventCreated(String eventId) {
+        if (eventId == null || eventId.isBlank()) return;
+        if (eventsCreatedIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event already recorded as created");
+        }
+        eventsCreatedIDs.add(eventId);
+    }
+
+    public void removeEventCreated(String eventId) {
+        if (!eventsCreatedIDs.contains(eventId)) {
+            throw new IllegalArgumentException("Event not in eventsCreatedIDs");
+        }
+        eventsCreatedIDs.remove(eventId);
+    }
+
+    public boolean hasEventCreated(String eventId) {
+        return eventsCreatedIDs.contains(eventId);
     }
 
     /**
