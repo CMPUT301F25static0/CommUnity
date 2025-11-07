@@ -55,17 +55,18 @@ public class RoleSelectFragment extends Fragment {
             }
         });
 
-        buttonHost.setOnClickListener(v -> {
-            userService.getUserIDByDeviceToken(deviceToken)
-                    .addOnSuccessListener(userId ->
-                            userService.setRole(userId, Role.ORGANIZER)
-                                    .addOnSuccessListener(task -> {
-                                        NavHostFragment.findNavController(RoleSelectFragment.this)
-                                                .navigate(R.id.action_RoleSelectFragment_to_OrganizerHomeFragment);
-                                    })
-                    )
-                    .addOnFailureListener(e ->
-                            Toast.makeText(getActivity(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        buttonHost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userService
+                        .getUserIDByDeviceToken(deviceToken)
+                        .addOnSuccessListener(userId ->{userService.setRole(userId, Role.ORGANIZER)
+                                .addOnSuccessListener(task ->{
+                                    NavHostFragment.findNavController(RoleSelectFragment.this)
+                                            .navigate(R.id.action_RoleSelectFragment_to_OrganizerHomeFragment);
+                                });
+                        });
+            }
         });
 //
 //        buttonAdmin.setOnClickListener(new View.OnClickListener() {

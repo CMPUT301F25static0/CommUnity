@@ -106,7 +106,7 @@
             android:layout_marginBottom="6dp" />
 
         <EditText
-            android:id="@+id/inputParticipants"
+            android:id="@+id/inputMaxParticipants"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter number"
@@ -115,12 +115,32 @@
             android:padding="10dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- Start and End Time -->
+        <!-- Optional Waiting List Size -->
         <TextView
-            android:id="@+id/labelTime"
+            android:id="@+id/labelWaitingListSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start and End Time"
+            android:text="Maximum Waiting List Size (Optional)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <EditText
+            android:id="@+id/inputWaitingListSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter maximum waiting list size"
+            android:inputType="number"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Start and End Time -->
+        <TextView
+            android:id="@+id/labelEventDates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start and End dates"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="6dp" />
@@ -132,7 +152,7 @@
             android:gravity="center">
 
             <EditText
-                android:id="@+id/inputStartTime"
+                android:id="@+id/inputEventStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -143,12 +163,52 @@
                 android:layout_marginEnd="8dp" />
 
             <EditText
-                android:id="@+id/inputEndTime"
+                android:id="@+id/inputEventEnd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="End"
                 android:inputType="datetime"
+                android:background="@android:drawable/edit_text"
+                android:padding="10dp" />
+        </LinearLayout>
+
+<!--        Registration Period-->
+
+        <TextView
+            android:id="@+id/labelRegistrationDates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Registration Period"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:id="@+id/inputRegistrationStart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Start Date"
+                android:focusable="false"
+                android:background="@android:drawable/edit_text"
+                android:padding="10dp"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/inputRegistrationEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="End Date"
+                android:focusable="false"
                 android:background="@android:drawable/edit_text"
                 android:padding="10dp" />
         </LinearLayout>

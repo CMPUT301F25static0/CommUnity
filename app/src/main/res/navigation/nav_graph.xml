@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/SplashFragment">
+    app:startDestination="@id/SplashPageFragment">
 
     <fragment
-        android:id="@+id/SplashFragment"
+        android:id="@+id/SplashPageFragment"
         android:name="com.example.community.Screens.SplashPageFragment"
         android:label="Start Page"
         tools:layout="@layout/start_page"
@@ -35,7 +35,9 @@
 
         <action
             android:id="@+id/action_RoleSelectFragment_to_OrganizerHomeFragment"
-            app:destination="@id/OrganizerHomeFragment" />
+            app:destination="@id/OrganizerHomeFragment"
+            >
+        </action>
 
         <action
             android:id="@+id/action_RoleSelectFragment_to_AdminHomeFragment"
@@ -88,22 +90,63 @@
         android:label="Entrant User Profile"
         tools:layout="@layout/entrant_profile"
         >
+        <action
+            android:id="@+id/action_EntrantUserProfileFragment_to_SplashPageFragment"
+            app:destination="@id/SplashPageFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            >
+        </action>
     </fragment>
 
-<!--    Organizer Fragments -->
-    <fragment
-        android:id="@+id/OrganizerHomeFragment"
-        android:name="com.example.community.Screens.OrganizerHomeFragment"
-        android:label="OrganizerHomeFragment"
-        tools:layout="@layout/host_main_page">
+    <dialog
+        android:id="@+id/DeleteAccountFragment"
+        android:name="com.example.community.Screens.DeleteAccountFragment"
+        android:label="Delete Account"
+        tools:layout="@layout/delete_unity"
+        >
+        <argument
+            android:name="userId"
+            app:argType="string"
+        />
+    </dialog>
 
+<!--    Organizer Fragments-->
+    <fragment
+        android:id = "@+id/OrganizerHomeFragment"
+        android:name = "com.example.community.Screens.OrganizerHomeFragment"
+        android:label = "Organizer Home"
+        tools:layout = "@layout/host_main_page"
+        >
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_HostNotifyFragment"
-            app:destination="@id/HostNotifyFragment" />
+            app:destination="@id/HostNotifyFragment" 
+        </action>
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_HostCreateEventFragment"
-            app:destination="@id/HostCreateEventFragment" />
+            app:destination="@id/HostCreateEventFragment" 
+        </action>
+            android:id="@+id/action_OrganizerHomeFragment_to_NotificationsFragment"
+            app:destination="@id/EntrantNotificationsFragment">
+        </action>
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_OrganizerProfileFragment"
+            app:destination="@id/EntrantUserProfileFragment">
+        </action>
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_CreateEventFragment"
+            app:destination="@id/CreateEventFragment">
+        </action>
     </fragment>
+
+    <fragment
+        android:id="@+id/CreateEventFragment"
+        android:name="com.example.community.Screens.CreateEventFragment"
+        android:label="Create Event"
+        tools:layout="@layout/host_create_event_page"
+        >
+    </fragment>
+
 
 <!--    Admin Fragments -->
     <fragment

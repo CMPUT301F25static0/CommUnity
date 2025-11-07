@@ -68,7 +68,9 @@ public class EntrantUserProfileFragment extends Fragment {
             NavHostFragment.findNavController(EntrantUserProfileFragment.this).popBackStack();
         });
 
-
-
+        deleteAccountButton.setOnClickListener(v -> {
+            DeleteAccountFragment deleteDialog = DeleteAccountFragment.newInstance(currentUser.getUserID());
+            deleteDialog.show(getParentFragmentManager(), "DeleteAccountFragment");
+        });
     }
 }

@@ -21,7 +21,9 @@ public class EventService {
     }
 
     public Task<String> createEvent(String organizerID, String title, String description,
-                                    Integer maxCapacity, String startDate, String endDate) {
+                                    Integer maxCapacity, String startDate, String endDate, Integer maxWaitingListSize,
+                                    String regStart, String regEnd)
+    {
         Event e = new Event();
         e.setEventID(java.util.UUID.randomUUID().toString());
         e.setOrganizerID(organizerID);
@@ -32,6 +34,11 @@ public class EventService {
         e.setEventStartDate(startDate);
         e.setEventEndDate(endDate);
         e.setStatus(EventStatus.OPEN);
+        e.setRegistrationStart(regStart);
+        e.setRegistrationEnd(regEnd);
+        if (maxWaitingListSize != null ) {
+            e.setWaitlistCapacity(maxWaitingListSize);
+        }
 
         return eventRepository.create(e)
                 .continueWithTask(t -> {
