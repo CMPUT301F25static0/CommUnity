@@ -2,7 +2,6 @@ package com.example.community;
 
 import com.google.firebase.firestore.DocumentId;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,22 +34,6 @@ public class Event {
     private List<String> cancelledListUserIDs = new ArrayList<>();
 
     public Event() {
-    }
-
-    public Event(String eventID, String title, String description, String organizerID, String location,
-                 String eventType, Integer capacity, String eventStartDate,
-                 String eventEndDate, String registrationStart, String registrationEnd) {
-        this.eventID = eventID;
-        this.title = title;
-        this.description = description;
-        this.organizerID = organizerID;
-        this.location = location;
-        this.eventType = eventType;
-        this.maxCapacity = capacity;
-        this.eventStartDate = eventStartDate;
-        this.eventEndDate = eventEndDate;
-        this.registrationStart = registrationStart;
-        this.registrationEnd = registrationEnd;
     }
 
     public String getEventID() {

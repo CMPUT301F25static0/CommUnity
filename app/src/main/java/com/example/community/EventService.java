@@ -20,9 +20,22 @@ public class EventService {
         this.userRepository = new UserRepository();
     }
 
-    public Task<String> createEvent(String organizerID, Event draft) {
-        draft.setOrganizerID(organizerID);
-        return eventRepository.create(draft).continueWith(task -> draft.getEventID());
+    public Task<String> createEvent(String organizerID, String title, String description,
+                                    Integer maxCapacity, String eventStartDate,
+                                    String eventEndDate) {
+
+        Event e = new Event();
+        e.setEventID(java.util.UUID.randomUUID().toString());
+        e.setOrganizerID(organizerID);
+        e.setTitle(title);
+        e.setDescription(description);
+        e.setMaxCapacity(maxCapacity);
+        e.setCurrentCapacity(0);
+        e.setEventStartDate(eventStartDate);
+        e.setEventEndDate(eventEndDate);
+        e.setStatus(EventStatus.OPEN);
+
+        return eventRepository.create(e).continueWith(t -> e.getEventID());
     }
 
     public Task<Void> updateEvent(String organizerID, Event patch) {
