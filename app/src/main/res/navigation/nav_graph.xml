@@ -126,6 +126,18 @@
             android:id="@+id/action_OrganizerHomeFragment_to_OrganizerProfileFragment"
             app:destination="@id/EntrantUserProfileFragment">
         </action>
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_CreateEventFragment"
+            app:destination="@id/CreateEventFragment">
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/CreateEventFragment"
+        android:name="com.example.community.Screens.CreateEventFragment"
+        android:label="Create Event"
+        tools:layout="@layout/host_create_event_page"
+        >
     </fragment>
 
 

@@ -95,6 +95,11 @@ public class OrganizerHomeFragment extends Fragment {
                     .navigate(R.id.action_OrganizerHomeFragment_to_OrganizerProfileFragment);
         });
 
+        createButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                    .navigate(R.id.action_OrganizerHomeFragment_to_CreateEventFragment);
+                });
+
         // Temporary toast messages for unimplemented features
         cameraButton.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Camera feature not implemented yet", Toast.LENGTH_SHORT).show());
@@ -105,8 +110,6 @@ public class OrganizerHomeFragment extends Fragment {
         filterButton.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Filter feature not implemented yet", Toast.LENGTH_SHORT).show());
 
-        createButton.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Create feature not implemented yet", Toast.LENGTH_SHORT).show());
 
         notifyButton.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Notify feature not implemented yet", Toast.LENGTH_SHORT).show());

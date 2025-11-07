@@ -15,6 +15,7 @@ public class Event {
     private String eventType;
     private Integer maxCapacity;
     private Integer currentCapacity;
+    private Integer waitlistCapacity;
     private List<String> tags = new ArrayList<>();
     private EventStatus status = EventStatus.DRAFT;
 
@@ -210,6 +211,14 @@ public class Event {
 
     public void setStatus(EventStatus status) {
         this.status = status;
+    }
+
+    public Integer getWaitlistCapacity() {
+        return waitlistCapacity;
+    }
+
+    public void setWaitlistCapacity(Integer waitlistCapacity) {
+        this.waitlistCapacity = waitlistCapacity;
     }
 
     // helpers
