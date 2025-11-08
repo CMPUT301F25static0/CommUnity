@@ -72,8 +72,26 @@
             >
         </action>
 
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_EventDescriptionFragment"
+            app:destination="@id/EventDescriptionFragment"
+            >
+        </action>
+
 <!--        Implement QR action-->
 <!--        Implement Filters action-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/EventDescriptionFragment"
+        android:name="com.example.community.Screens.EventDescrptionFragment"
+        android:label="Event Description"
+        tools:layout="@layout/entrant_event_description"
+        >
+        <argument
+            android:name="event_id"
+            app:argType="string"
+            />
     </fragment>
 
     <fragment

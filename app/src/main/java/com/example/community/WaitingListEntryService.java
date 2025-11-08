@@ -14,7 +14,7 @@ public class WaitingListEntryService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
-    WaitingListEntryService() {
+    public WaitingListEntryService() {
         waitlistRepository = new WaitlistRepository();
         this.eventRepository = new EventRepository();
         this.userRepository = new UserRepository();

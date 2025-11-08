@@ -16,6 +16,7 @@ public class Event {
     private Integer maxCapacity;
     private Integer currentCapacity;
     private Integer waitlistCapacity;
+    private Integer currentWaitingListSize;
     private List<String> tags = new ArrayList<>();
     private EventStatus status = EventStatus.DRAFT;
 
@@ -221,7 +222,29 @@ public class Event {
         this.waitlistCapacity = waitlistCapacity;
     }
 
+    public Integer getCurrentWaitingListSize() {
+        return currentWaitingListSize;
+    }
+
+    public void setCurrentWaitingListSize(Integer size) {
+        this.currentWaitingListSize = size;
+    }
+
+
+
     // helpers
+    public void incrementWaitingListSize() {
+        if (currentWaitingListSize == null) {
+            currentWaitingListSize = 0;
+        }
+        currentWaitingListSize++;
+    }
+
+    public void decrementWaitingListSize() {
+        if (currentWaitingListSize != null && currentWaitingListSize > 0) {
+            currentWaitingListSize--;
+        }
+    }
     public void addUserToWaitlist(String userID) {
         if (waitListUserIDs.contains(userID)) {
             throw new IllegalArgumentException("User is already on waitlist");
