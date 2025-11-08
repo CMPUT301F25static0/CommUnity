@@ -11,7 +11,10 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Repository for managing event data in Firestore.
+ * Handles all database operations for events.
+ */
 public class EventRepository {
 
     private final String TAG = "EventRepository";
@@ -19,15 +22,31 @@ public class EventRepository {
     private FirebaseFirestore db;
     private CollectionReference eventsRef;
 
+    /**
+     * Creates a new EventRepository instance.
+     * Initializes Firestore connection.
+     */
     public EventRepository() {
         this.db = FirebaseFirestore.getInstance();
         this.eventsRef = db.collection("events");
     }
 
+    /**
+     * Saves a new event to the database.
+     *
+     * @param event event to create
+     * @return task that completes when creation finishes
+     */
     public Task<Void> create(Event event) {
         return eventsRef.document(event.getEventID()).set(event);
     }
 
+    /**
+     * Retrieves an event by its ID.
+     *
+     * @param eventID ID of the event
+     * @return task containing the event or null if not found
+     */
     public Task<Event> getByID(String eventID) {
         return eventsRef.document(eventID).get().continueWith(task -> {
             DocumentSnapshot snapshot = task.getResult();
@@ -35,16 +54,32 @@ public class EventRepository {
         });
     }
 
+    /**
+     * Updates an existing event in the database.
+     *
+     * @param event event with updated data
+     * @return task that completes when update finishes
+     */
     public Task<Void> update(Event event) {
         return eventsRef.document(event.getEventID()).set(event);
     }
 
-    // US 03.01.01
+    /**
+     * Deletes an event from the database.
+     *  US 03.01.01
+     *
+     * @param eventID ID of the event to delete
+     * @return task that completes when deletion finishes
+     */
     public Task<Void> delete(String eventID) {
         return eventsRef.document(eventID).delete();
     }
 
-    //
+    /**
+     * Retrieves all events from the database.
+     *
+     * @return task containing list of all events
+     */
     public Task<List<Event>> getAll() {
         return eventsRef.get()
                 .continueWith(task -> {
@@ -63,6 +98,14 @@ public class EventRepository {
                 });
     }
 
+    /**
+     * Lists events created by a specific organizer.
+     *
+     * @param organizerID  ID of the organizer
+     * @param limit        maximum number of events to return
+     * @param startAfterID ID to start pagination after
+     * @return task containing list of events
+     */
     public Task<List<Event>> listEventsByOrganizer(String organizerID, int limit,
                                                    String startAfterID) {
         com.google.firebase.firestore.Query query =
@@ -88,6 +131,16 @@ public class EventRepository {
         });
     }
 
+    /**
+     * Lists upcoming open events within a date range and optional tag filter.
+     *
+     * @param fromDate     earliest event start date
+     * @param toDate       latest event start date
+     * @param tags         optional list of tags to filter by
+     * @param limit        maximum number of events to return
+     * @param startAfterID ID to start pagination after
+     * @return task containing list of matching events
+     */
     public Task<List<Event>> listUpcoming(String fromDate, String toDate, List<String> tags,
                                           int limit, String startAfterID) {
 

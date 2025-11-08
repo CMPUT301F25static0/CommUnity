@@ -2,6 +2,10 @@ package com.example.community;
 
 import com.google.firebase.Timestamp;
 
+/**
+ * Represents an uploaded image with metadata.
+ * Stores storage path, URL, and upload information.
+ */
 public class Image {
     private String imageID;
     private String storagePath;
@@ -9,15 +13,10 @@ public class Image {
     private String uploadedBy;
     private Timestamp uploadedAt;
 
+    /**
+     * Default constructor required for Firebase.
+     */
     public Image() {}
-
-    public Image(String imageID, String storagePath, String imageURL, String uploadedBy, Timestamp uploadedAt) {
-        this.imageID = imageID;
-        this.storagePath = storagePath;
-        this.imageURL = imageURL;
-        this.uploadedBy = uploadedBy;
-        this.uploadedAt = uploadedAt;
-    }
 
     public String getImageID() {
         return imageID;

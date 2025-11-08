@@ -5,6 +5,10 @@ import com.google.firebase.firestore.DocumentId;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents an event in the CommUnity app.
+ * Contains event details, dates, capacity, and user lists
+ */
 public class Event {
     @DocumentId
     private String eventID;
@@ -35,8 +39,10 @@ public class Event {
     private List<String> invitedListUserIDs = new ArrayList<>();
     private List<String> cancelledListUserIDs = new ArrayList<>();
 
-    public Event() {
-    }
+    /**
+     * Default constructor required for Firebase.
+     */
+    public Event() {}
 
     public String getEventID() {
         return eventID;
@@ -230,9 +236,152 @@ public class Event {
         this.currentWaitingListSize = size;
     }
 
+    // ================ helpers ================
 
+    /**
+     * Adds a user to the event's waitlist.
+     *
+     * @param userID ID of the user to add
+     * @throws IllegalArgumentException if user is already on waitlist
+     */
+    public void addUserToWaitlist(String userID) {
+        if (waitListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is already on waitlist");
+        }
+        waitListUserIDs.add(userID);
+    }
 
-    // helpers
+    /**
+     * Removes a user from the event's waitlist.
+     *
+     * @param userID ID of the user to remove
+     * @throws IllegalArgumentException if user is not on waitlist
+     */
+    public void removeUserFromWaitlist(String userID) {
+        if (!waitListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is not on waitlist");
+        }
+        waitListUserIDs.remove(userID);
+    }
+
+    /**
+     * Checks if a user is on the event's waitlist.
+     *
+     * @param userID ID of the user to check
+     * @return true if user is on waitlist, false otherwise
+     */
+    public boolean hasUserInWaitlist(String userID) {
+        return waitListUserIDs.contains(userID);
+    }
+
+    /**
+     * Adds a user to the invited list.
+     *
+     * @param userID ID of the user to invite
+     * @throws IllegalArgumentException if user is already invited
+     */
+    public void addUserToInvitedList(String userID) {
+        if (invitedListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is already invited");
+        }
+        invitedListUserIDs.add(userID);
+    }
+
+    /**
+     * Removes a user from the invited list.
+     *
+     * @param userID ID of the user to remove
+     * @throws IllegalArgumentException if user is not invited
+     */
+    public void removeUserFromInvitedList(String userID) {
+        if (!invitedListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is not invited");
+        }
+        invitedListUserIDs.remove(userID);
+    }
+
+    /**
+     * Checks if a user is on the invited list.
+     *
+     * @param userID ID of the user to check
+     * @return true if user is invited, false otherwise
+     */
+    public boolean hasUserInInvitedList(String userID) {
+        return invitedListUserIDs.contains(userID);
+    }
+
+    /**
+     * Adds a user to the attendee list.
+     *
+     * @param userID ID of the user to add
+     * @throws IllegalArgumentException if user is already on attendee list
+     */
+    public void addUserToAttendeeList(String userID) {
+        if (attendeeListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is already on attendee list");
+        }
+        attendeeListUserIDs.add(userID);
+    }
+
+    /**
+     * Removes a user from the attendee list.
+     *
+     * @param userID ID of the user to remove
+     * @throws IllegalArgumentException if user is not on attendee list
+     */
+    public void removeUserFromAttendeeList(String userID) {
+        if (!attendeeListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is not on attendee list");
+        }
+        attendeeListUserIDs.remove(userID);
+    }
+
+    /**
+     * Checks if a user is on the attendee list.
+     *
+     * @param userID ID of the user to check
+     * @return true if user is attending, false otherwise
+     */
+    public boolean hasUserInAttendeeList(String userID) {
+        return attendeeListUserIDs.contains(userID);
+    }
+
+    /**
+     * Adds a user to the cancelled list.
+     *
+     * @param userID ID of the user to add
+     * @throws IllegalArgumentException if user is already cancelled
+     */
+    public void addUserToCancelledList(String userID) {
+        if (cancelledListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is already cancelled");
+        }
+        cancelledListUserIDs.add(userID);
+    }
+
+    /**
+     * Removes a user from the cancelled list.
+     *
+     * @param userID ID of the user to remove
+     * @throws IllegalArgumentException if user is not cancelled
+     */
+    public void removeUserFromCancelledList(String userID) {
+        if (!cancelledListUserIDs.contains(userID)) {
+            throw new IllegalArgumentException("User is not cancelled");
+        }
+        cancelledListUserIDs.remove(userID);
+    }
+
+    /**
+     * Checks if a user is on the cancelled list.
+     *
+     * @param userID ID of the user to check
+     * @return true if user is cancelled, false otherwise
+     */
+    public boolean hasUserInCancelledList(String userID) {
+        return cancelledListUserIDs.contains(userID);
+    }
+
     public void incrementWaitingListSize() {
         if (currentWaitingListSize == null) {
             currentWaitingListSize = 0;
@@ -244,76 +393,5 @@ public class Event {
         if (currentWaitingListSize != null && currentWaitingListSize > 0) {
             currentWaitingListSize--;
         }
-    }
-    public void addUserToWaitlist(String userID) {
-        if (waitListUserIDs.contains(userID)) {
-            throw new IllegalArgumentException("User is already on waitlist");
-        }
-        waitListUserIDs.add(userID);
-    }
-
-    public void removeUserFromWaitlist(String userID) {
-        if (!waitListUserIDs.contains(userID)) {
-            throw new IllegalArgumentException("User is not on waitlist");
-        }
-        waitListUserIDs.remove(userID);
-    }
-
-    public boolean hasUserInWaitlist(String userID) {
-        return waitListUserIDs.contains(userID);
-    }
-
-    public void addUserToInvitedList(String userID) {
-        if (invitedListUserIDs.contains(userID)) {
-            throw new IllegalArgumentException("User is already invited");
-        }
-        invitedListUserIDs.add(userID);
-    }
-
-    public void removeUserFromInvitedList(String userID) {
-        if (!invitedListUserIDs.contains(userID)) {
-            throw new IllegalArgumentException("User is not invited");
-        }
-        invitedListUserIDs.remove(userID);
-    }
-
-    public boolean hasUserInInvitedList(String userID) {
-        return invitedListUserIDs.contains(userID);
-    }
-
-    public void addUserToAttendeeList(String userID) {
-        if (attendeeListUserIDs.contains(userID)) {
-            throw new IllegalArgumentException("User is already on attendee list");
-        }
-        attendeeListUserIDs.add(userID);
-    }
-
-    public void removeUserFromAttendeeList(String userID) {
-        if (!attendeeListUserIDs.contains(userID)) {
-            throw new IllegalArgumentException("User is not on attendee list");
-        }
-        attendeeListUserIDs.remove(userID);
-    }
-
-    public boolean hasUserInAttendeeList(String userID) {
-        return attendeeListUserIDs.contains(userID);
-    }
-
-    public void addUserToCancelledList(String userID) {
-        if (cancelledListUserIDs.contains(userID)) {
-            throw new IllegalArgumentException("User is already cancelled");
-        }
-        cancelledListUserIDs.add(userID);
-    }
-
-    public void removeUserFromCancelledList(String userID) {
-        if (!cancelledListUserIDs.contains(userID)) {
-            throw new IllegalArgumentException("User is not cancelled");
-        }
-        cancelledListUserIDs.remove(userID);
-    }
-
-    public boolean hasUserInCancelledList(String userID) {
-        return cancelledListUserIDs.contains(userID);
     }
 }
