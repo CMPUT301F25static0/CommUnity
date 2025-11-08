@@ -17,12 +17,11 @@ public class WaitingListEntryService {
     private WaitlistRepository waitlistRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-
     /**
      * Creates a new WaitingListEntryService instance.
      * Initializes required repositories.
      */
-    WaitingListEntryService() {
+    public WaitingListEntryService() {
         waitlistRepository = new WaitlistRepository();
         this.eventRepository = new EventRepository();
         this.userRepository = new UserRepository();
