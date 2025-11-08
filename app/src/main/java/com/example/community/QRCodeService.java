@@ -12,10 +12,18 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Service for generating and managing QR codes for events.
+ * Handles QR code creation and storage.
+ */
 public class QRCodeService {
     private final ImageRepository imageRepository;
     private final EventRepository eventRepository;
 
+    /**
+     * Creates a new QRCodeService instance.
+     * Initializes required repositories.
+     */
     public QRCodeService() {
         this.imageRepository = new ImageRepository();
         this.eventRepository = new EventRepository();
