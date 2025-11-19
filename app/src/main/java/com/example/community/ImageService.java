@@ -5,10 +5,18 @@ import com.google.android.gms.tasks.Tasks;
 
 import java.util.List;
 
+/**
+ * Service layer for image operations.
+ * Handles business logic for uploading and managing event images.
+ */
 public class ImageService {
     private final ImageRepository imageRepository;
     private final EventRepository eventRepository;
 
+    /**
+     * Creates a new ImageService instance.
+     * Initializes required repositories.
+     */
     public ImageService() {
         this.imageRepository = new ImageRepository();
         this.eventRepository = new EventRepository();

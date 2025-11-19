@@ -283,5 +283,9 @@
             android:id="@+id/action_HostPosterUploadFragment_to_OrganizerHomeFragment"
             app:destination="@id/OrganizerHomeFragment" />
     </fragment>
+<<<<<<< HEAD
 
 </navigation>
+=======
+</navigation>
+>>>>>>> 6ec2cee79e610236e91ee1769b8f6ad83aa23ada

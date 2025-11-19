@@ -115,7 +115,9 @@ public class OrganizerHomeFragment extends Fragment  {
 
 
         notifyButton.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Notify feature not implemented yet", Toast.LENGTH_SHORT).show());
+                NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                        .navigate(R.id.action_OrganizerHomeFragment_to_HostNotifyFragment)
+        );
 
         eventHistoryButton.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Event History not implemented yet", Toast.LENGTH_SHORT).show());
