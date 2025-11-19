@@ -1,6 +1,5 @@
 package com.example.community.Screens;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,11 +20,10 @@ import com.example.community.R;
 import com.example.community.UserService;
 import com.example.community.WaitingListEntry;
 import com.example.community.WaitingListEntryService;
-import com.google.android.gms.tasks.Tasks;
 
-public class EventDescrptionFragment extends Fragment {
+public class EntrantEventDescriptionFragment extends Fragment {
 
-    public static final String TAG = "EventDescrptionFragment";
+    public static final String TAG = "EventDescriptionFragment";
 
     private static final String ARG_EVENT_ID = "event_id";
     private Event currentEvent;
@@ -38,8 +36,8 @@ public class EventDescrptionFragment extends Fragment {
             , registrationDates, capacity, waitlistCapacity;
     private Button waitlistButton, backButton;
 
-    public static EventDescrptionFragment newInstance(String eventId) {
-        EventDescrptionFragment fragment = new EventDescrptionFragment();
+    public static EntrantEventDescriptionFragment newInstance(String eventId) {
+        EntrantEventDescriptionFragment fragment = new EntrantEventDescriptionFragment();
         Bundle args = new Bundle();
         args.putString(ARG_EVENT_ID, eventId);
         fragment.setArguments(args);
@@ -76,7 +74,7 @@ public class EventDescrptionFragment extends Fragment {
         loadEventDetails();
 
         backButton.setOnClickListener(v -> {
-            NavHostFragment.findNavController(EventDescrptionFragment.this)
+            NavHostFragment.findNavController(EntrantEventDescriptionFragment.this)
                     .navigateUp();
         });
 
