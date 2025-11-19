@@ -56,7 +56,7 @@ public class EntrantHomeFragment extends Fragment {
         eventsArrayList = new ArrayList<>();
 
         entrantEventList.setLayoutManager(new LinearLayoutManager(getContext()));
-        eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
+        eventArrayAdapter = new EventArrayAdapter(eventsArrayList, false);
         entrantEventList.setAdapter(eventArrayAdapter);
 
         loadEvents();

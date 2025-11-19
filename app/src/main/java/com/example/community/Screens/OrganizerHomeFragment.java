@@ -23,8 +23,9 @@ import com.example.community.R;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
-public class OrganizerHomeFragment extends Fragment {
+public class OrganizerHomeFragment extends Fragment  {
     ImageButton notificationsButton, cameraButton;
     Button guideButton, filterButton, createButton, notifyButton;
     Button eventHistoryButton, myProfileButton;
@@ -60,7 +61,7 @@ public class OrganizerHomeFragment extends Fragment {
         hostEventList = view.findViewById(R.id.HostEventView);
 
         hostEventList.setLayoutManager(new LinearLayoutManager(getContext()));
-        eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
+        eventArrayAdapter = new EventArrayAdapter(eventsArrayList, true);
         hostEventList.setAdapter(eventArrayAdapter);
 
         loadEvents();
