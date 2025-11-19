@@ -79,13 +79,17 @@
             >
         </action>
 
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_UserGuideFragment"
+            app:destination="@id/UserGuideFragment" />
+
 <!--        Implement QR action-->
 <!--        Implement Filters action-->
     </fragment>
 
     <fragment
         android:id="@+id/EventDescriptionFragment"
-        android:name="com.example.community.Screens.EventDescrptionFragment"
+        android:name="com.example.community.Screens.EntrantEventDescriptionFragment"
         android:label="Event Description"
         tools:layout="@layout/entrant_event_description"
         >
@@ -130,6 +134,13 @@
         />
     </dialog>
 
+    <fragment
+        android:id="@+id/UserGuideFragment"
+        android:name="com.example.community.Screens.UserGuideFragment"
+        android:label="User Guide"
+        tools:layout="@layout/user_guide_page">
+    </fragment>
+
 <!--    Organizer Fragments-->
     <fragment
         android:id = "@+id/OrganizerHomeFragment"
@@ -153,6 +164,10 @@
             android:id="@+id/action_OrganizerHomeFragment_to_CreateEventFragment"
             app:destination="@id/CreateEventFragment">
         </action>
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_OrganizerEventDescriptionFragment"
+            app:destination="@id/OrganizerEventDescriptionFragment">
+        </action>
     </fragment>
 
     <fragment
@@ -164,6 +179,18 @@
         <action
             android:id="@+id/action_HostCreateEventFragment_to_HostPosterUploadFragment"
             app:destination="@id/HostPosterUploadFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/OrganizerEventDescriptionFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerEventDescriptionFragment"
+        android:label="Organizer Event Description"
+        tools:layout="@layout/organizer_event_description_page"
+        >
+        <argument
+            android:name="event_id"
+            app:argType="string"
+        />
     </fragment>
 
 
@@ -239,11 +266,6 @@
         android:name="com.example.community.Screens.OrganizerScreens.HostNotifyFragment"
         android:label="HostNotifyFragment"
         tools:layout="@layout/host_notify_page">
-
-    </fragment>
-
-    <!--    Host Create Event Fragments -->
-    <fragment
 
     </fragment>
 
