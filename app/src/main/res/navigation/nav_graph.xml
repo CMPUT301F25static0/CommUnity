@@ -72,6 +72,9 @@
             app:destination="@id/EntrantUserProfileFragment"
             >
         </action>
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_UserFilterFragment"
+            app:destination="@id/FilterFragment" />
 
 <!--        Implement QR action-->
 <!--        Implement Filters action-->
@@ -247,4 +250,31 @@
             android:id="@+id/action_HostPosterUploadFragment_to_OrganizerHomeFragment"
             app:destination="@id/OrganizerHomeFragment" />
     </fragment>
+    <!--    User Guide Fragments -->
+    <fragment
+        android:id="@+id/UserGuideFragment"
+        android:name="com.example.community.Screens.UserGuideFragment"
+        android:label="User Guide"
+        tools:layout="@layout/user_guide_page" />
+    <!--    User Event history Fragments -->
+    <fragment
+        android:id="@+id/UserEventHistoryFragment"
+        android:name="com.example.community.Screens.UserEventHistoryFragment"
+        android:label="Event History"
+        tools:layout="@layout/user_event_page" />
+    <!--    Notification Setting Fragments -->
+    <fragment
+        android:id="@+id/NotificationSettingsFragment"
+        android:name="com.example.community.Screens.NotificationSettingsFragment"
+        android:label="Notification Settings"
+        tools:layout="@layout/notification_settings" />
+    <!--    Filter Fragments -->
+    <fragment
+        android:id="@+id/FilterFragment"
+        android:name="com.example.community.Screens.FilterFragment"
+        android:label="Filter Events"
+        tools:layout="@layout/filter_page" />
+
+
+
 </navigation>
