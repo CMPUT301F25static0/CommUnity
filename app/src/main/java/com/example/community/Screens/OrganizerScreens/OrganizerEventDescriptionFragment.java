@@ -136,7 +136,22 @@ public class OrganizerEventDescriptionFragment extends Fragment {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
             return;
         }
-        Toast.makeText(getContext(), "Edit event not implemented yet", Toast.LENGTH_SHORT).show();
+        Bundle args = new Bundle();
+        args.putString("event_id", currentEvent.getEventID());
+        args.putString("event_name", currentEvent.getTitle());
+        args.putString("event_description", currentEvent.getDescription());
+        args.putString("event_start_date", currentEvent.getEventStartDate());
+        args.putString("event_end_date", currentEvent.getEventEndDate());
+        args.putString("reg_start", currentEvent.getRegistrationStart());
+        args.putString("reg_end", currentEvent.getRegistrationEnd());
+        args.putInt("max_participants", currentEvent.getMaxCapacity());
+        if (currentEvent.getWaitlistCapacity() != null) {
+            args.putInt("waiting_list_size", currentEvent.getWaitlistCapacity());
+        }
+        args.putBoolean("is_edit_mode", true);
+
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_OrganizerEventDescriptionFragment_to_CreateEventFragment, args);
     }
 
     private void viewAttendeesList() {

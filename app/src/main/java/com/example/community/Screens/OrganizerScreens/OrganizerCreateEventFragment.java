@@ -36,6 +36,9 @@ public class OrganizerCreateEventFragment extends Fragment {
     private UserService userService;
     private User currentOrganizer;
 
+    private String editingEventId;
+    private boolean isEditing;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -68,11 +71,28 @@ public class OrganizerCreateEventFragment extends Fragment {
         inputRegStart.setFocusable(false);
         inputRegEnd.setFocusable(false);
 
+        Bundle args = getArguments();
+        if (args != null) {
+            isEditing = args.getBoolean("is_edit_mode", false);
+            if (isEditing) {
+                editingEventId = args.getString("event_id");
+                loadEventDataForEditing(args);
+                submitButton.setText("Update Event");
+                hostNameInput.setFocusable(false);
+            }
+        }
+
         loadOrganizerData();
         setupDatePickers();
 
         cancelButton.setOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
-        submitButton.setOnClickListener(v -> createEvent());
+        submitButton.setOnClickListener(v -> {
+            if (isEditing) {
+                updateEvent();
+            } else {
+                createEvent();
+            }
+        });
 
     }
 
@@ -88,6 +108,28 @@ public class OrganizerCreateEventFragment extends Fragment {
                     currentOrganizer = user;
                 hostNameInput.setText(user.getUsername());
                 });
+    }
+
+    private void loadEventDataForEditing(Bundle args) {
+        String eventName = args.getString("event_name", "");
+        String eventDescription = args.getString("event_description", "");
+        String eventStartDate = args.getString("event_start_date", "");
+        String eventEndDate = args.getString("event_end_date", "");
+        String regStart = args.getString("reg_start", "");
+        String regEnd = args.getString("reg_end", "");
+        int maxParticipants = args.getInt("max_participants", 0);
+        int waitingListSize = args.getInt("waiting_list_size", 0);
+
+        eventNameInput.setText(eventName);
+        eventDescriptionInput.setText(eventDescription);
+        eventStartDateInput.setText(eventStartDate);
+        eventEndDateInput.setText(eventEndDate);
+        inputRegStart.setText(regStart);
+        inputRegEnd.setText(regEnd);
+        eventMaxParticipantsInput.setText(String.valueOf(maxParticipants));
+        if (waitingListSize > 0) {
+            waitingListSizeInput.setText(String.valueOf(waitingListSize));
+        }
     }
 
     private void setupDatePickers() {
@@ -178,6 +220,97 @@ public class OrganizerCreateEventFragment extends Fragment {
                     Log.e(TAG, "Failed to create event", e);
                     Toast.makeText(getContext(), "Failed to create event", Toast.LENGTH_SHORT)
                             .show();
+                });
+    }
+
+    private void updateEvent() {
+        if (currentOrganizer == null || editingEventId == null) {
+            Toast.makeText(getContext(), "Error: Cannot update event", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String eventName = eventNameInput.getText().toString();
+        String eventDescription = eventDescriptionInput.getText().toString();
+        String eventStartDate = eventStartDateInput.getText().toString();
+        String eventEndDate = eventEndDateInput.getText().toString();
+        String registrationStart = inputRegStart.getText().toString();
+        String registrationEnd = inputRegEnd.getText().toString();
+
+        if (eventName.isEmpty() || eventDescription.isEmpty() ||
+                eventStartDate.isEmpty() || eventEndDate.isEmpty() ||
+                registrationStart.isEmpty() || registrationEnd.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int eventMaxParticipants;
+//        Integer waitingListSize;
+
+        try {
+            eventMaxParticipants = Integer.parseInt(eventMaxParticipantsInput.getText().toString().trim());
+            if (eventMaxParticipants <= 0) {
+                Toast.makeText(getContext(), "Number of participants must be positive", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Invalid number of participants", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String waitingListSizeStr = waitingListSizeInput.getText().toString().trim();
+        Integer parsedWaitingListSize = null;
+        if (!waitingListSizeStr.isEmpty()) {
+            try {
+                parsedWaitingListSize = Integer.parseInt(waitingListSizeStr);
+                if (parsedWaitingListSize <= 0) {
+                    Toast.makeText(getContext(), "Waiting list size must be positive", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), "Invalid waiting list size", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        final Integer waitingListSize = parsedWaitingListSize;
+
+        if (!DateValidation.dateRangeValid(registrationStart, registrationEnd)) {
+            Toast.makeText(getContext(), "Invalid registration period", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!DateValidation.dateRangeValid(eventStartDate, eventEndDate)) {
+            Toast.makeText(getContext(), "Invalid event period", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create updated event object
+        eventService.getEvent(editingEventId)
+                .addOnSuccessListener(event -> {
+                    event.setTitle(eventName);
+                    event.setDescription(eventDescription);
+                    event.setEventStartDate(eventStartDate);
+                    event.setEventEndDate(eventEndDate);
+                    event.setRegistrationStart(registrationStart);
+                    event.setRegistrationEnd(registrationEnd);
+                    event.setMaxCapacity(eventMaxParticipants);
+                    if (waitingListSize != null) {
+                        event.setWaitlistCapacity(waitingListSize);
+                    }
+
+                    eventService.updateEvent(currentOrganizer.getUserID(), event)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(getContext(), "Event updated successfully", Toast.LENGTH_SHORT).show();
+                                NavHostFragment.findNavController(this).navigateUp();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Failed to update event", e);
+                                Toast.makeText(getContext(), "Failed to update event", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to fetch event for update", e);
+                    Toast.makeText(getContext(), "Failed to fetch event", Toast.LENGTH_SHORT).show();
                 });
     }
     private void showDatePicker(final EditText editText) {
