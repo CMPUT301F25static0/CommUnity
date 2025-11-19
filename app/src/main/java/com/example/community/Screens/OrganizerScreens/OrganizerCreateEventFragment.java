@@ -1,4 +1,4 @@
-package com.example.community.Screens;
+package com.example.community.Screens.OrganizerScreens;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -21,12 +21,9 @@ import com.example.community.R;
 import com.example.community.User;
 import com.example.community.UserService;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Locale;
 
-public class CreateEventFragment extends Fragment {
+public class OrganizerCreateEventFragment extends Fragment {
 
     private final String TAG = "CreateEventFragment";
 

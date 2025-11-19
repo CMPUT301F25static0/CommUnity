@@ -1,4 +1,4 @@
-package com.example.community.Screens;
+package com.example.community.Screens.OrganizerScreens;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -106,12 +106,6 @@ public class OrganizerHomeFragment extends Fragment {
 
         guideButton.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Guide feature not implemented yet", Toast.LENGTH_SHORT).show());
-
-        createButton.setOnClickListener(v ->
-                NavHostFragment.findNavController(OrganizerHomeFragment.this)
-                        .navigate(R.id.action_OrganizerHomeFragment_to_HostCreateEventFragment)
-        );
-
 
         notifyButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(OrganizerHomeFragment.this)
