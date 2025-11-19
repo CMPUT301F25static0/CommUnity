@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.community.R;
 
@@ -31,8 +32,15 @@ public class NotificationsFragment extends Fragment {
         notificationSettingsButton = view.findViewById(R.id.notificationSettings);
         backButton = view.findViewById(R.id.backToEntrantHome);
 
-        notificationSettingsButton.setOnClickListener(v -> {
-        });
+        notificationSettingsButton.setOnClickListener(v ->
+                NavHostFragment.findNavController(NotificationsFragment.this)
+                        .navigate(R.id.NotificationSettingsFragment)
+        );
+
+        backButton.setOnClickListener(v ->
+                NavHostFragment.findNavController(NotificationsFragment.this)
+                        .navigate(R.id.EntrantHomeFragment)
+        );
 
     }
 
