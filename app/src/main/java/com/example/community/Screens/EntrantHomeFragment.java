@@ -123,7 +123,7 @@ public class EntrantHomeFragment extends Fragment {
         });
         guideButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(EntrantHomeFragment.this)
-                        .navigate(R.id.UserGuideFragment)
+                      //  .navigate(R.id.UserGuideFragment)
         );
     }
 }
