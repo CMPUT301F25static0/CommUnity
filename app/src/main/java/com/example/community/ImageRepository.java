@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Repository for managing image uploads and storage.
+ * Handles Firebase Storage and Firestore operations for images.
+ */
 public class ImageRepository {
     private final FirebaseStorage storage;
     private final StorageReference storageRef;

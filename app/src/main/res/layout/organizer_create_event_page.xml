@@ -76,21 +76,21 @@
             android:padding="10dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- Host Name -->
+        <!-- Event Location-->
         <TextView
-            android:id="@+id/labelHostName"
+            android:id="@+id/labelEventLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Host Name"
+            android:text="Event Location"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="6dp" />
 
         <EditText
-            android:id="@+id/inputHostName"
+            android:id="@+id/inputEventLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter host name"
+            android:hint="Enter event location"
             android:background="@android:drawable/edit_text"
             android:padding="10dp"
             android:layout_marginBottom="16dp" />

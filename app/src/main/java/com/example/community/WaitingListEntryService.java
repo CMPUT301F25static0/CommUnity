@@ -8,18 +8,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Service layer for waitlist entry operations.
+ * Handles joining, leaving, and managing invitations for events.
+ */
 public class WaitingListEntryService {
 
     private WaitlistRepository waitlistRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-
-    WaitingListEntryService() {
+    /**
+     * Creates a new WaitingListEntryService instance.
+     * Initializes required repositories.
+     */
+    public WaitingListEntryService() {
         waitlistRepository = new WaitlistRepository();
         this.eventRepository = new EventRepository();
         this.userRepository = new UserRepository();
     }
 
+    /**
+     * Adds a user to an event's waitlist.
+     *
+     * @param userID ID of the user
+     * @param eventID ID of the event
+     * @return task that completes when user is added
+     */
     public Task<Void> join(String userID, String eventID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry existing = task.getResult();
@@ -35,6 +49,13 @@ public class WaitingListEntryService {
         });
     }
 
+    /**
+     * Removes a user from an event's waitlist.
+     *
+     * @param userID ID of the user
+     * @param eventID ID of the event
+     * @return task that completes when user is removed
+     */
     public Task<Void> leave(String userID, String eventID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry entry = task.getResult();
@@ -51,6 +72,14 @@ public class WaitingListEntryService {
         });
     }
 
+    /**
+     * Sends an invitation to a user on the waitlist.
+     *
+     * @param organizerID ID of the organizer
+     * @param eventID ID of the event
+     * @param userID ID of the user to invite
+     * @return task that completes when invitation is sent
+     */
     public Task<Void> invite(String organizerID, String eventID, String userID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry entry = task.getResult();
@@ -63,6 +92,13 @@ public class WaitingListEntryService {
         });
     }
 
+    /**
+     * Records a user accepting an event invitation.
+     *
+     * @param userID ID of the user
+     * @param eventID ID of the event
+     * @return task that completes when acceptance is recorded
+     */
     public Task<Void> acceptInvite(String userID, String eventID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry entry = task.getResult();
@@ -103,6 +139,13 @@ public class WaitingListEntryService {
         });
     }
 
+    /**
+     * Records a user declining an event invitation.
+     *
+     * @param userID ID of the user
+     * @param eventID ID of the event
+     * @return task that completes when decline is recorded
+     */
     public Task<Void> declineInvite(String userID, String eventID) {
         return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
             WaitingListEntry entry = task.getResult();
@@ -118,26 +161,92 @@ public class WaitingListEntryService {
         });
     }
 
+//    /**
+//     * Gets all waitlist entries for an event.
+//     *
+//     * @param eventID ID of the event
+//     * @return task containing list of waitlist entries
+//     */
+//    public Task<List<WaitingListEntry>> getWaitlistEntries(String eventID) {
+//        return waitlistRepository.listByEvent(eventID);
+//    }
+
+    /**
+     * Gets all waitlist entries for an event (only WAITING status).
+     *
+     * @param eventID ID of the event
+     * @return task containing list of waitlist entries with WAITING status
+     */
     public Task<List<WaitingListEntry>> getWaitlistEntries(String eventID) {
-        return waitlistRepository.listByEvent(eventID);
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.WAITING);
     }
 
+    /**
+     * Gets all invited users for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of invited entries
+     */
     public Task<List<WaitingListEntry>> getInvitedList(String eventID) {
         return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.INVITED);
     }
 
+    /**
+     * Gets all users who accepted invitations for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of accepted entries
+     */
     public Task<List<WaitingListEntry>> getAcceptedList(String eventID) {
         return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.ACCEPTED);
     }
 
+    /**
+     * Counts the total number of users on an event's waitlist.
+     *
+     * @param eventID ID of the event
+     * @return task containing the count
+     */
     public Task<Long> getWaitlistSize(String eventID) {
         return waitlistRepository.countByEvent(eventID);
     }
 
+    /**
+     * Gets all users who declined invitations for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of declined entries
+     */
+    public Task<List<WaitingListEntry>> getDeclinedList(String eventID) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.DECLINED);
+    }
+
+    /**
+     * Gets all users whose invitations were cancelled for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of cancelled entries
+     */
+    public Task<List<WaitingListEntry>> getCancelledList(String eventID) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.CANCELLED);
+    }
+
+    /**
+     * Counts waitlist entries grouped by status.
+     *
+     * @param eventID ID of the event
+     * @return task containing map of status to count
+     */
     public Task<Map<EntryStatus, Long>> getWaitlistCounts(String eventID) {
         return waitlistRepository.countsByEventGrouped(eventID);
     }
 
+    /**
+     * Gets all waitlist entries for a specific user across all events.
+     *
+     * @param userID ID of the user
+     * @return task containing list of entries
+     */
     public Task<List<WaitingListEntry>> getHistory(String userID) {
         return waitlistRepository.listByUser(userID);
     }

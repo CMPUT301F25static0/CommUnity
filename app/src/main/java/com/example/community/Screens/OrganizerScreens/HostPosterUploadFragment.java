@@ -1,4 +1,4 @@
-package com.example.community.Screens;
+package com.example.community.Screens.OrganizerScreens;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
