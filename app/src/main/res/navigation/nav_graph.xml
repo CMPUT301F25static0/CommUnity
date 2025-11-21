@@ -73,8 +73,30 @@
             >
         </action>
 
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_EventDescriptionFragment"
+            app:destination="@id/EventDescriptionFragment"
+            >
+        </action>
+
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_UserGuideFragment"
+            app:destination="@id/UserGuideFragment" />
+
 <!--        Implement QR action-->
 <!--        Implement Filters action-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/EventDescriptionFragment"
+        android:name="com.example.community.Screens.EntrantEventDescriptionFragment"
+        android:label="Event Description"
+        tools:layout="@layout/entrant_event_description"
+        >
+        <argument
+            android:name="event_id"
+            app:argType="string"
+            />
     </fragment>
 
     <fragment
@@ -112,20 +134,23 @@
         />
     </dialog>
 
+    <fragment
+        android:id="@+id/UserGuideFragment"
+        android:name="com.example.community.Screens.UserGuideFragment"
+        android:label="User Guide"
+        tools:layout="@layout/user_guide_page">
+    </fragment>
+
 <!--    Organizer Fragments-->
     <fragment
         android:id = "@+id/OrganizerHomeFragment"
-        android:name = "com.example.community.Screens.OrganizerHomeFragment"
+        android:name = "com.example.community.Screens.OrganizerScreens.OrganizerHomeFragment"
         android:label = "Organizer Home"
         tools:layout = "@layout/host_main_page"
         >
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_HostNotifyFragment"
             app:destination="@id/HostNotifyFragment" >
-        </action>
-        <action
-            android:id="@+id/action_OrganizerHomeFragment_to_HostCreateEventFragment"
-            app:destination="@id/HostCreateEventFragment" >
         </action>
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_NotificationsFragment"
@@ -139,14 +164,37 @@
             android:id="@+id/action_OrganizerHomeFragment_to_CreateEventFragment"
             app:destination="@id/CreateEventFragment">
         </action>
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_OrganizerEventDescriptionFragment"
+            app:destination="@id/OrganizerEventDescriptionFragment">
+        </action>
     </fragment>
 
     <fragment
         android:id="@+id/CreateEventFragment"
-        android:name="com.example.community.Screens.CreateEventFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerCreateEventFragment"
         android:label="Create Event"
-        tools:layout="@layout/host_create_event_page"
+        tools:layout="@layout/organizer_create_event_page"
         >
+        <action
+            android:id="@+id/action_HostCreateEventFragment_to_HostPosterUploadFragment"
+            app:destination="@id/HostPosterUploadFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/OrganizerEventDescriptionFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerEventDescriptionFragment"
+        android:label="Organizer Event Description"
+        tools:layout="@layout/organizer_event_description_page"
+        >
+        <argument
+            android:name="event_id"
+            app:argType="string"
+        />
+
+        <action
+            android:id="@+id/action_OrganizerEventDescriptionFragment_to_CreateEventFragment"
+            app:destination="@id/CreateEventFragment" />
     </fragment>
 
 
@@ -219,27 +267,16 @@
     <!--    Host Notify Fragments -->
     <fragment
         android:id="@+id/HostNotifyFragment"
-        android:name="com.example.community.Screens.HostNotifyFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.HostNotifyFragment"
         android:label="HostNotifyFragment"
         tools:layout="@layout/host_notify_page">
 
     </fragment>
 
-    <!--    Host Create Event Fragments -->
-    <fragment
-        android:id="@+id/HostCreateEventFragment"
-        android:name="com.example.community.Screens.HostCreateEventFragment"
-        android:label="HostCreateEventFragment"
-        tools:layout="@layout/host_create_event_page"   >
-    <action
-    android:id="@+id/action_HostCreateEventFragment_to_HostPosterUploadFragment"
-    app:destination="@id/HostPosterUploadFragment" />
-    </fragment>
-
     <!--    Host Poster Upload Fragments -->
     <fragment
         android:id="@+id/HostPosterUploadFragment"
-        android:name="com.example.community.Screens.HostPosterUploadFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.HostPosterUploadFragment"
         android:label="HostPosterUploadFragment"
         tools:layout="@layout/host_upload_poster_page">
 

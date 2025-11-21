@@ -39,7 +39,7 @@ public class EventService {
      * @param endDate     event end date
      * @return task containing the new event ID
      */
-    public Task<String> createEvent(String organizerID, String title, String description,
+    public Task<String> createEvent(String organizerID, String title, String description, String location,
                                     Integer maxCapacity, String startDate, String endDate, Integer maxWaitingListSize,
                                     String regStart, String regEnd)
     {
@@ -48,6 +48,7 @@ public class EventService {
         e.setOrganizerID(organizerID);
         e.setTitle(title);
         e.setDescription(description);
+        e.setLocation(location);
         e.setMaxCapacity(maxCapacity);
         e.setCurrentCapacity(0);
         e.setEventStartDate(startDate);

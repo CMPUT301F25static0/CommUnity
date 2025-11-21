@@ -1,4 +1,4 @@
-package com.example.community.Screens;
+package com.example.community.Screens.OrganizerScreens;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +19,7 @@ import com.example.community.DateValidation;
 import com.example.community.Event;
 import com.example.community.EventService;
 import com.example.community.R;
+import com.example.community.UserService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -31,8 +32,10 @@ public class OrganizerHomeFragment extends Fragment {
     RecyclerView hostEventList;
 
     private ArrayList<Event> eventsArrayList;
+    String currentOrganizerID;
     private EventArrayAdapter eventArrayAdapter;
     private EventService eventService;
+    private UserService userService;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,6 +50,7 @@ public class OrganizerHomeFragment extends Fragment {
 
         eventService = new EventService();
         eventsArrayList = new ArrayList<>();
+        userService = new UserService();
 
 
         notificationsButton = view.findViewById(R.id.organizerNotifications);
@@ -61,27 +65,60 @@ public class OrganizerHomeFragment extends Fragment {
 
         hostEventList.setLayoutManager(new LinearLayoutManager(getContext()));
         eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
+        eventArrayAdapter.setOnEventClickListener(event -> {
+            Bundle args = new Bundle();
+            args.putString("event_id", event.getEventID());
+            NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                    .navigate(R.id.action_OrganizerHomeFragment_to_OrganizerEventDescriptionFragment, args);
+        });
         hostEventList.setAdapter(eventArrayAdapter);
 
-        loadEvents();
+        loadOrganizerData();
         setUpClickListeners();
     }
+
+    private void loadOrganizerData() {
+        String deviceToken = userService.getDeviceToken();
+        userService.getByDeviceToken(deviceToken)
+                .addOnSuccessListener(user -> {
+                    if (user == null) {
+                        Toast.makeText(getContext(), "User not found", Toast.LENGTH_SHORT).show();
+                    }
+                    currentOrganizerID = user.getUserID();
+                    loadEvents();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to load organizer data", Toast.LENGTH_SHORT).show();
+                });
+    }
     private void loadEvents() {
-        String fromDate = DateValidation.getCurrentDate();
 
-        LocalDate futureDate = LocalDate.now().plusYears(1);
-        String toDate = futureDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        if (DateValidation.dateRangeValid(fromDate, toDate)) {
-            eventService.listUpcoming(fromDate, toDate, null)
-                    .addOnSuccessListener(events -> {
-                        if (eventsArrayList != null) {
-                            eventsArrayList.clear();
-                            eventsArrayList.addAll(events);
-                            eventArrayAdapter.notifyDataSetChanged();
-                        }
-                    });
-        }
+        eventService.listEventsByOrganizer(currentOrganizerID, 100, null)
+                .addOnSuccessListener(events -> {
+                    if (eventsArrayList != null) {
+                        eventsArrayList.clear();
+                        eventsArrayList.addAll(events);
+                        eventArrayAdapter.notifyDataSetChanged();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to load events", Toast.LENGTH_SHORT).show();
+                });
+//        String fromDate = DateValidation.getCurrentDate();
+//
+//        LocalDate futureDate = LocalDate.now().plusYears(1);
+//        String toDate = futureDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//
+//        if (DateValidation.dateRangeValid(fromDate, toDate)) {
+//            eventService.listUpcoming(fromDate, toDate, null)
+//                    .addOnSuccessListener(events -> {
+//                        if (eventsArrayList != null) {
+//                            eventsArrayList.clear();
+//                            eventsArrayList.addAll(events);
+//                            eventArrayAdapter.notifyDataSetChanged();
+//                        }
+//                    });
+//        }
     }
 
     private void setUpClickListeners() {
@@ -106,12 +143,6 @@ public class OrganizerHomeFragment extends Fragment {
 
         guideButton.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Guide feature not implemented yet", Toast.LENGTH_SHORT).show());
-
-        createButton.setOnClickListener(v ->
-                NavHostFragment.findNavController(OrganizerHomeFragment.this)
-                        .navigate(R.id.action_OrganizerHomeFragment_to_HostCreateEventFragment)
-        );
-
 
         notifyButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(OrganizerHomeFragment.this)
