@@ -113,6 +113,11 @@
         android:label="Entrant User Profile"
         tools:layout="@layout/entrant_profile"
         >
+        <argument
+            android:name="userID"
+            app:argType="string"
+            />
+
         <action
             android:id="@+id/action_EntrantUserProfileFragment_to_SplashPageFragment"
             app:destination="@id/SplashPageFragment"
@@ -238,13 +243,32 @@
             android:id="@+id/action_AdminHomeFragment_to_AdminImageFragment"
             app:destination="@+id/AdminImageFragment">
         </action>
+
+    </fragment>
+
+    <!--    Admin Event Fragments -->
+
+    <!--    Host Poster Update Fragments -->
+    <fragment
+        android:id="@+id/HostPosterUpdatePageFragment"
+        android:name="com.example.community.Screens.HostPosterUpdatePageFragment"
+        android:label="HostPosterUpdatePageFragment"
+        tools:layout="@layout/host_poster_update_page">
+
+        <action
+            android:id="@+id/action_HostPosterUpdatePageFragment_to_AdminEventFragment"
+            app:destination="@id/AdminEventFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/AdminEventFragment"
         android:name="com.example.community.Screens.AdminEventFragment"
         android:label="Admin Events"
-        tools:layout="@layout/admin_event_page">
+        tools:layout="@layout/admin_event">
+
+        <action
+            android:id="@+id/action_AdminEventFragment_to_hostPosterUpdatePageFragment"
+            app:destination="@id/HostPosterUpdatePageFragment" />
 
         <action
             android:id="@+id/action_AdminEventFragment_to_AdminHomeFragment"
@@ -252,16 +276,28 @@
         </action>
 
 
-    </fragment>
 
+
+    </fragment>
+    <!--    Admin Host Fragments -->
     <fragment
         android:id="@+id/AdminHostFragment"
         android:name="com.example.community.Screens.AdminHostFragment"
         android:label="Admin Hosts"
-        tools:layout="@layout/admin_host_page">
+        tools:layout="@layout/admin_host_profile">
+
+        <action
+            android:id="@+id/action_AdminHostFragment_to_EntrantUserProfileFragment"
+            app:destination="@id/EntrantUserProfileFragment" />
+
+
+        <action
+            android:id="@+id/action_AdminHostFragment_to_AdminHomeFragment"
+            app:destination="@id/AdminHomeFragment">
+        </action>
 
     </fragment>
-
+    <!--    Admin Profile Fragments -->
     <fragment
         android:id="@+id/AdminProfileFragment"
         android:name="com.example.community.Screens.AdminProfileFragment"
@@ -269,7 +305,7 @@
         tools:layout="@layout/admin_profile_page">
 
     </fragment>
-
+    <!--    Admin image Fragments -->
     <fragment
         android:id="@+id/AdminImageFragment"
         android:name="com.example.community.Screens.AdminImageFragment"
