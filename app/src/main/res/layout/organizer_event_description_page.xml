@@ -141,6 +141,26 @@
         android:layout_marginBottom="16dp"/>
 
     <Button
+        android:id="@+id/viewCancelledButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View Cancelled"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/viewDeclinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View Declined"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
         android:id="@+id/organizerEventDescriptionBackButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

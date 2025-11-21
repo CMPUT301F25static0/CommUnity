@@ -35,7 +35,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
 
     private TextView eventTitle, eventDescription, eventDates
             , registrationDates, capacity, waitlistCount, attendeeCount, invitedCount;
-    private Button editButton, viewAttendeesButton, viewWaitlistButton, viewInvitedButton, backButton;
+    private Button editButton, viewAttendeesButton, viewWaitlistButton, viewInvitedButton, viewDeclinedButton, viewCancelledButton, backButton;
 
     @Nullable
     @Override
@@ -68,6 +68,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         viewAttendeesButton = view.findViewById(R.id.viewAttendeesButton);
         viewWaitlistButton = view.findViewById(R.id.viewWaitlistButton);
         viewInvitedButton = view.findViewById(R.id.viewInvitedButton);
+        viewCancelledButton = view.findViewById(R.id.viewCancelledButton);
+        viewDeclinedButton = view.findViewById(R.id.viewDeclinedButton);
         backButton = view.findViewById(R.id.organizerEventDescriptionBackButton);
 
         loadEventDetails();
@@ -82,6 +84,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         viewAttendeesButton.setOnClickListener(v -> viewAttendeesList());
         viewWaitlistButton.setOnClickListener(v -> viewWaitlist());
         viewInvitedButton.setOnClickListener(v -> viewInvitedList());
+        viewCancelledButton.setOnClickListener(v -> viewCancelledList());
+        viewDeclinedButton.setOnClickListener(v -> viewDeclinedList());
     }
 
     private void loadEventDetails() {
@@ -154,20 +158,21 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                 .navigate(R.id.action_OrganizerEventDescriptionFragment_to_CreateEventFragment, args);
     }
 
-    private void viewAttendeesList() {
-        if (currentEvent == null) {
-            Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Toast.makeText(getContext(), "View attendees not implemented yet", Toast.LENGTH_SHORT).show();
-    }
-
     private void viewWaitlist() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
             return;
         }
-        Toast.makeText(getContext(), "View waitlist not implemented yet", Toast.LENGTH_SHORT).show();
+        OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "invited");
+        fragment.show(getChildFragmentManager(), "invited_list");
+    }
+    private void viewAttendeesList() {
+        if (currentEvent == null) {
+            Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "attendees");
+        fragment.show(getChildFragmentManager(), "attendees_list");
     }
 
     private void viewInvitedList() {
@@ -175,7 +180,26 @@ public class OrganizerEventDescriptionFragment extends Fragment {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
             return;
         }
-        Toast.makeText(getContext(), "View invited not implemented yet", Toast.LENGTH_SHORT).show();
+        OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "invited");
+        fragment.show(getChildFragmentManager(), "invited_list");
+    }
+
+    private void viewCancelledList() {
+        if (currentEvent == null) {
+            Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "cancelled");
+        fragment.show(getChildFragmentManager(), "cancelled_list");
+    }
+
+    private void viewDeclinedList() {
+        if (currentEvent == null) {
+            Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "declined");
+        fragment.show(getChildFragmentManager(), "declined_list");
     }
 
 }

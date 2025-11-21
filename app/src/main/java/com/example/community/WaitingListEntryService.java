@@ -202,6 +202,26 @@ public class WaitingListEntryService {
     }
 
     /**
+     * Gets all users who declined invitations for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of declined entries
+     */
+    public Task<List<WaitingListEntry>> getDeclinedList(String eventID) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.DECLINED);
+    }
+
+    /**
+     * Gets all users whose invitations were cancelled for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of cancelled entries
+     */
+    public Task<List<WaitingListEntry>> getCancelledList(String eventID) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.CANCELLED);
+    }
+
+    /**
      * Counts waitlist entries grouped by status.
      *
      * @param eventID ID of the event
