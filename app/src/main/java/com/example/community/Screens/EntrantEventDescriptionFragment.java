@@ -32,8 +32,9 @@ public class EntrantEventDescriptionFragment extends Fragment {
     private EventService eventService;
     private String currentEntrantId;
 
-    private TextView eventTitle, eventDescription, eventDates
-            , registrationDates, capacity, waitlistCapacity;
+    private TextView eventTitle, eventDescription, eventLocation, eventDates
+            , registrationDates, capacity, organizerUsername, organizerEmail, organizerPhone,
+            waitlistCapacity;
     private Button waitlistButton, backButton;
 
     public static EntrantEventDescriptionFragment newInstance(String eventId) {
@@ -64,9 +65,13 @@ public class EntrantEventDescriptionFragment extends Fragment {
 
         eventTitle = view.findViewById(R.id.eventTitle);
         eventDescription = view.findViewById(R.id.eventDescription);
+        eventLocation = view.findViewById(R.id.eventLocation);
         eventDates = view.findViewById(R.id.eventDates);
         registrationDates = view.findViewById(R.id.registrationDates);
         capacity = view.findViewById(R.id.capacity);
+        organizerUsername = view.findViewById(R.id.eventOrganizerName);
+        organizerEmail = view.findViewById(R.id.eventOrganizerEmail);
+        organizerPhone = view.findViewById(R.id.eventOrganizerPhone);
         waitlistCapacity = view.findViewById(R.id.waitlistCount);
         waitlistButton = view.findViewById(R.id.waitlistButton);
         backButton = view.findViewById(R.id.backButton);
@@ -95,6 +100,7 @@ public class EntrantEventDescriptionFragment extends Fragment {
                     capacity.setText(String.format("Capacity: %d/%d",
                             event.getCurrentCapacity(), event.getMaxCapacity()));
                     checkWaitlistStatus();
+                    loadOrganizerDetails(event.getOrganizerID());
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to load event details", e);
@@ -103,9 +109,25 @@ public class EntrantEventDescriptionFragment extends Fragment {
                 });
     }
 
-    private void setUpButtons() {
-        backButton.setOnClickListener(v ->
-                NavHostFragment.findNavController(this).navigateUp());
+    private void loadOrganizerDetails(String organizerID) {
+        userService.getByUserID(organizerID)
+                .addOnSuccessListener(organizer -> {
+                    if (organizer != null) {
+                        organizerUsername.setText("Organizer Username: " + organizer.getUsername());
+                        organizerEmail.setText("Organizer Email: " +organizer.getEmail());
+                        if (organizer.getPhoneNumber() != null  && !organizer.getPhoneNumber().isEmpty()) {
+                            organizerPhone.setText("Organizer Phone: " + organizer.getPhoneNumber());
+                        } else {
+                            organizerPhone.setText("Organizer Phone: No phone number provided");
+                        }
+
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to load organizer details", e);
+                    Toast.makeText(getContext(), "Failed to load organizer details", Toast.LENGTH_SHORT)
+                            .show();
+                });
     }
 
     private void checkWaitlistStatus() {
