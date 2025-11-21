@@ -26,15 +26,16 @@ public class OrganizerEventDescriptionFragment extends Fragment {
     private static final String ARG_EVENT_ID = "event_id";
 
     private Event currentEvent;
-    private String currentOrganizerId;
+//    private String currentOrganizerId;
 
     private WaitingListEntryService waitingListEntryService;
     private UserService userService;
     private EventService eventService;
 
 
-    private TextView eventTitle, eventDescription, eventDates
-            , registrationDates, capacity, waitlistCount, attendeeCount, invitedCount;
+    private TextView eventTitle, eventDescription, eventLocation, eventDates
+            , registrationDates, capacity, organizerUsername, organizerEmail, organizerPhone
+            , waitlistCount, attendeeCount, invitedCount;
     private Button editButton, viewAttendeesButton, viewWaitlistButton, viewInvitedButton, viewDeclinedButton, viewCancelledButton, backButton;
 
     @Nullable
@@ -51,15 +52,19 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         waitingListEntryService = new WaitingListEntryService();
         userService = new UserService();
         eventService = new EventService();
-        String deviceToken = userService.getDeviceToken();
-        userService.getUserIDByDeviceToken(deviceToken)
-                .addOnSuccessListener(userId -> currentOrganizerId = userId);
+//        String deviceToken = userService.getDeviceToken();
+//        userService.getUserIDByDeviceToken(deviceToken)
+//                .addOnSuccessListener(userId -> currentOrganizerId = userId);
 
         eventTitle = view.findViewById(R.id.eventTitle);
         eventDescription = view.findViewById(R.id.eventDescription);
+        eventLocation = view.findViewById(R.id.eventLocation);
         eventDates = view.findViewById(R.id.eventDates);
         registrationDates = view.findViewById(R.id.registrationDates);
         capacity = view.findViewById(R.id.capacity);
+        organizerUsername = view.findViewById(R.id.eventOrganizerName);
+        organizerEmail = view.findViewById(R.id.eventOrganizerEmail);
+        organizerPhone = view.findViewById(R.id.eventOrganizerPhone);
         waitlistCount = view.findViewById(R.id.organizerWaitlistCount);
         attendeeCount = view.findViewById(R.id.organizerAttendeeCount);
         invitedCount = view.findViewById(R.id.organizerInvitedCount);
@@ -101,6 +106,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                     currentEvent = event;
                     eventTitle.setText(event.getTitle());
                     eventDescription.setText(event.getDescription());
+                    eventLocation.setText("Event Location: " +event.getLocation());
                     eventDates.setText(String.format("Event Dates: %s - %s",
                             event.getEventStartDate(), event.getEventEndDate()));
                     registrationDates.setText(String.format("Registration Period: %s - %s",
@@ -108,10 +114,32 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                     capacity.setText(String.format("Amount Attendees: %d/%d",
                             event.getCurrentCapacity(), event.getMaxCapacity()));
                     loadWaitlistCount();
+                    loadOrganizerDetails(event.getOrganizerID());
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to load event details", e);
                     Toast.makeText(getContext(), "Failed to load event details", Toast.LENGTH_SHORT)
+                            .show();
+                });
+    }
+
+    private void loadOrganizerDetails(String organizerID) {
+        userService.getByUserID(organizerID)
+                .addOnSuccessListener(organizer -> {
+                    if (organizer != null) {
+                        organizerUsername.setText("Organizer Username: " + organizer.getUsername());
+                        organizerEmail.setText("Organizer Email: " +organizer.getEmail());
+                        if (organizer.getPhoneNumber() != null  && !organizer.getPhoneNumber().isEmpty()) {
+                            organizerPhone.setText("Organizer Phone: " + organizer.getPhoneNumber());
+                        } else {
+                            organizerPhone.setText("Organizer Phone: No phone number provided");
+                        }
+
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to load organizer details", e);
+                    Toast.makeText(getContext(), "Failed to load organizer details", Toast.LENGTH_SHORT)
                             .show();
                 });
     }
@@ -144,6 +172,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         args.putString("event_id", currentEvent.getEventID());
         args.putString("event_name", currentEvent.getTitle());
         args.putString("event_description", currentEvent.getDescription());
+        args.putString("event_location", currentEvent.getLocation());
         args.putString("event_start_date", currentEvent.getEventStartDate());
         args.putString("event_end_date", currentEvent.getEventEndDate());
         args.putString("reg_start", currentEvent.getRegistrationStart());

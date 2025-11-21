@@ -174,7 +174,7 @@
         android:id="@+id/CreateEventFragment"
         android:name="com.example.community.Screens.OrganizerScreens.OrganizerCreateEventFragment"
         android:label="Create Event"
-        tools:layout="@layout/host_create_event_page"
+        tools:layout="@layout/organizer_create_event_page"
         >
         <action
             android:id="@+id/action_HostCreateEventFragment_to_HostPosterUploadFragment"
