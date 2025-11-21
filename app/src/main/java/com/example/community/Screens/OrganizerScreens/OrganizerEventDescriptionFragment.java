@@ -192,8 +192,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
             return;
         }
-        OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "invited");
-        fragment.show(getChildFragmentManager(), "invited_list");
+        OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "waitlist");
+        fragment.show(getChildFragmentManager(), "waitlist_list");
     }
     private void viewAttendeesList() {
         if (currentEvent == null) {

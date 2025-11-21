@@ -26,11 +26,14 @@ public class UserArrayAdapter extends RecyclerView.Adapter<UserArrayAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView userNameTextView;
-        TextView userEntryStatusTextView;
+        TextView userEmailTextView;
+        TextView userPhoneNumberTextView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             userNameTextView = itemView.findViewById(R.id.userNameInList);
+            userEmailTextView = itemView.findViewById(R.id.userEmailInList);
+            userPhoneNumberTextView = itemView.findViewById(R.id.userPhoneInList);
         }
     }
 
@@ -49,10 +52,14 @@ public class UserArrayAdapter extends RecyclerView.Adapter<UserArrayAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = users.get(position);
-        String displayName = (user.getUsername() != null && !user.getUsername().isEmpty())
-                ? user.getUsername()
-                : user.getUserID();
+        String displayName = user.getUsername();
         holder.userNameTextView.setText(displayName);
+        holder.userEmailTextView.setText(user.getEmail());
+
+        String phone = (user.getPhoneNumber() != null && !user.getPhoneNumber().isEmpty())
+                ? "Phone: " + user.getPhoneNumber()
+                : "Phone: No phone number provided";
+        holder.userPhoneNumberTextView.setText(phone);
     }
 
     @Override

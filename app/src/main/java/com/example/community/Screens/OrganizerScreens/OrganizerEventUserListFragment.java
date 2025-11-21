@@ -82,7 +82,7 @@ public class OrganizerEventUserListFragment extends DialogFragment {
             listType = getArguments().getString(ARG_LIST_TYPE);
         }
 
-
+        loadUsersList();
 
     }
 

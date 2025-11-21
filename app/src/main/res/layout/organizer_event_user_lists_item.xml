@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/userNameInList"
@@ -11,5 +12,20 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/userEmailInList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginBottom="2dp"/>
+
+    <TextView
+        android:id="@+id/userPhoneInList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"/>
 
 </LinearLayout>

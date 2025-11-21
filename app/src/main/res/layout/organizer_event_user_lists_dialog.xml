@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:minHeight="400dp"
+    android:minWidth="600dp">
 
     <TextView
         android:id="@+id/listTitle"
@@ -18,7 +20,10 @@
         android:id="@+id/userListRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp">
     </androidx.recyclerview.widget.RecyclerView>
 
     <Button

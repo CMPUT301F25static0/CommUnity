@@ -161,14 +161,24 @@ public class WaitingListEntryService {
         });
     }
 
+//    /**
+//     * Gets all waitlist entries for an event.
+//     *
+//     * @param eventID ID of the event
+//     * @return task containing list of waitlist entries
+//     */
+//    public Task<List<WaitingListEntry>> getWaitlistEntries(String eventID) {
+//        return waitlistRepository.listByEvent(eventID);
+//    }
+
     /**
-     * Gets all waitlist entries for an event.
+     * Gets all waitlist entries for an event (only WAITING status).
      *
      * @param eventID ID of the event
-     * @return task containing list of waitlist entries
+     * @return task containing list of waitlist entries with WAITING status
      */
     public Task<List<WaitingListEntry>> getWaitlistEntries(String eventID) {
-        return waitlistRepository.listByEvent(eventID);
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.WAITING);
     }
 
     /**
