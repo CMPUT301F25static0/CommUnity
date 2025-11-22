@@ -14,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,8 +28,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-// 1. Implement the interface from your Adapter
-public class AdminEventFragment extends Fragment implements EventArrayAdapter.OnItemClickListener {
+// 1. Implement the interface exactly as defined in your Adapter
+public class AdminEventFragment extends Fragment implements EventArrayAdapter.OnEventClickListener {
 
     Button backButton;
     RecyclerView adminEventView;
@@ -39,34 +37,37 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
     private ArrayList<Event> eventsArrayList;
     private EventArrayAdapter eventArrayAdapter;
     private EventService eventService;
-    private NavController navController;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.admin_event_page, container, false);
+        return inflater.inflate(R.layout.admin_event_page, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         // Initialize Views
         adminEventView = view.findViewById(R.id.adminEventView);
         backButton = view.findViewById(R.id.buttonBack);
 
-        // Initialize Navigation
-        navController = Navigation.findNavController(container); // Use container to find controller early if needed, or view in onViewCreated
-
         // Initialize Service and List
         eventService = new EventService();
         eventsArrayList = new ArrayList<>();
 
-        // Initialize RecyclerView Layout Manager
+        // Initialize RecyclerView
         adminEventView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        eventArrayAdapter = new EventArrayAdapter(eventsArrayList, true);
-        eventArrayAdapter.setOnItemClickListener(this);
+        // 2. Initialize adapter using your specific constructor (List only)
+        eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
+
+        // 3. Set the listener
+        eventArrayAdapter.setOnEventClickListener(this);
+
         adminEventView.setAdapter(eventArrayAdapter);
 
         loadEvents();
         setUpClickListener();
-
-        return view;
     }
 
     private void loadEvents() {
@@ -76,7 +77,6 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
         String toDate = futureDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         if (DateValidation.dateRangeValid(fromDate, toDate)) {
-            // Assuming 'listUpcoming' returns a Task<List<Event>>
             eventService.listUpcoming(fromDate, toDate, null)
                     .addOnSuccessListener(events -> {
                         eventsArrayList.clear();
@@ -85,54 +85,69 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Error loading events", e);
-                        Toast.makeText(getContext(), "Failed to load events", Toast.LENGTH_SHORT).show();
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "Failed to load events", Toast.LENGTH_SHORT).show();
+                        }
                     });
         }
     }
 
-    // 2. Handle the "View" Click
+    // 4. Handle "View" Click (Single Tap)
     @Override
-    public void onItemClick(Event event) {
-        Toast.makeText(getContext(), "Viewing event: " + event.getTitle(), Toast.LENGTH_SHORT).show();
-
-        Bundle bundle = new Bundle();
-        bundle.putString("eventID", event.getEventID());
-        navController.navigate(R.id.action_AdminEventFragment_to_hostPosterUpdatePageFragment, bundle);
+    public void onEventClick(Event event) {
+        // Since your adapter lacks a delete button, we can offer a choice dialog here
+        // or just navigate to details. Let's offer a choice for Admin.
+        showActionDialog(event);
     }
 
-    // 3. Handle the "Delete" Click
-    @Override
-    public void onDeleteClick(Event event, int position) {
+    private void showActionDialog(Event event) {
+        CharSequence[] options = new CharSequence[]{"View Event", "Delete Event"};
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle(event.getTitle())
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        // View Event
+                        navigateToUpdatePage(event);
+                    } else {
+                        // Delete Event
+                        confirmDelete(event);
+                    }
+                })
+                .show();
+    }
+
+    private void navigateToUpdatePage(Event event) {
+        Bundle bundle = new Bundle();
+        bundle.putString("eventID", event.getEventID());
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_AdminEventFragment_to_hostPosterUpdatePageFragment, bundle);
+    }
+
+    private void confirmDelete(Event event) {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Delete Event")
-                .setMessage("Are you sure you want to delete " + event.getTitle() + "? This action cannot be undone.")
-                .setPositiveButton("Delete", (dialog, which) -> {
-
-                    // Assuming eventService has a delete method (e.g., deleteEvent or cancelEvent)
-                    // Check your EventService.java to confirm the method name!
-                    eventService.cancelEvent(event.getOrganizerID(),event.getEventID()).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "Event deleted successfully: " + event.getEventID());
-
-                            // Remove from local list
-                            eventsArrayList.remove(position);
-
-                            // Notify Adapter
-                            eventArrayAdapter.notifyItemRemoved(position);
-                            // Fix: Use eventsArrayList, not userList
-                            if (position < eventsArrayList.size()) {
-                                eventArrayAdapter.notifyItemRangeChanged(position, eventsArrayList.size() - position);
-                            }
-
-                            Toast.makeText(getContext(), "Event deleted.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e(TAG, "Failed to delete event", task.getException());
-                            Toast.makeText(getContext(), "Failed to delete event.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                })
+                .setMessage("Are you sure you want to delete " + event.getTitle() + "?")
+                .setPositiveButton("Delete", (dialog, which) -> deleteEvent(event))
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    private void deleteEvent(Event event) {
+        eventService.cancelEvent(event.getOrganizerID(), event.getEventID())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        int position = eventsArrayList.indexOf(event);
+                        if (position != -1) {
+                            eventsArrayList.remove(position);
+                            eventArrayAdapter.notifyItemRemoved(position);
+                            eventArrayAdapter.notifyItemRangeChanged(position, eventsArrayList.size() - position);
+                        }
+                        Toast.makeText(getContext(), "Event deleted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void setUpClickListener() {
