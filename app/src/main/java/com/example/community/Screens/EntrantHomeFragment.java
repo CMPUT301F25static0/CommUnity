@@ -93,7 +93,7 @@ public class EntrantHomeFragment extends Fragment {
                         Log.e("EntrantHomeFragment", "Failed to load events", e);
                         Toast.makeText(getContext(), "Failed to load events", Toast.LENGTH_SHORT).show();
                     });
-            }
+        }
     }
 
     private void setUpClickListener() {
@@ -123,7 +123,7 @@ public class EntrantHomeFragment extends Fragment {
         });
         guideButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(EntrantHomeFragment.this)
-                      //  .navigate(R.id.UserGuideFragment)
+                        .navigate(R.id.UserGuideFragment)
         );
     }
 }

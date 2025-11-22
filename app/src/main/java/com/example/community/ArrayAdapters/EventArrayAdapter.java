@@ -69,4 +69,3 @@ public class EventArrayAdapter extends RecyclerView.Adapter<EventArrayAdapter.Vi
     }
 }
 
-
