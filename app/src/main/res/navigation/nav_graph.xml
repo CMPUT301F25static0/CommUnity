@@ -285,6 +285,16 @@
         android:label="Admin Users"
         tools:layout="@layout/admin_profile_page">
 
+        <action
+            android:id="@+id/action_AdminProfileFragment_to_EntrantUserProfileFragment"
+            app:destination="@id/EntrantUserProfileFragment" />
+
+
+        <action
+            android:id="@+id/action_AdminProfileFragment_to_AdminHomeFragment"
+            app:destination="@id/AdminHomeFragment">
+        </action>
+
     </fragment>
     <!--    Admin image Fragments -->
     <fragment

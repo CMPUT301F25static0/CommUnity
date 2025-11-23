@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -21,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.community.R;
 import com.example.community.User;
 import com.example.community.UserService;
+import com.example.community.Role;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,6 @@ import java.util.List;
         @Nullable
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            // Inflate the fragment's layout
             return inflater.inflate(R.layout.admin_host_page, container, false);
         }
 
@@ -48,13 +47,12 @@ import java.util.List;
         public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
 
-            // Initialize NavController, UserService, and user list
+
             navController = Navigation.findNavController(view);
             backButton = view.findViewById(R.id.buttonBack);
             userService = new UserService();
             userList = new ArrayList<>();
 
-            // Setup RecyclerView
             recyclerView = view.findViewById(R.id.adminHostView);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             adapter = new com.example.community.ArrayAdapters.AdminHostAdapter(getContext(), userList, this);
@@ -66,20 +64,17 @@ import java.util.List;
                     (requestKey, result) -> {
                         if (result.getBoolean(DeleteAccountConfirmDialogFragment.RESULT_CONFIRMED)) {
 
-                            // 1. Retrieve the data we stored in the dialog's arguments earlier
                             Fragment dialogFragment = getParentFragmentManager().findFragmentByTag("DeleteAccountConfirmDialog");
                             if (dialogFragment != null && dialogFragment.getArguments() != null) {
                                 String userID = dialogFragment.getArguments().getString("userID");
                                 int position = dialogFragment.getArguments().getInt("position");
 
-                                // 2. Perform the actual deletion
                                 performDeleteUser(userID, position);
                             }
                         }
                     }
             );
 
-            // Fetch user data
             loadUsers();
             setUpClickListener();
         }
@@ -106,7 +101,14 @@ import java.util.List;
             userService.getAllUsers().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     userList.clear();
-                    userList.addAll(task.getResult());
+                    List<User> allUsers = task.getResult();
+
+                    for (User user : allUsers) {
+                        if (user.getRole() == Role.ORGANIZER) {
+                            userList.addAll(task.getResult());
+
+                        }
+                    }
                     adapter.notifyDataSetChanged(); // Refresh the list in the UI
                     Log.d(TAG, "Successfully loaded " + userList.size() + " users.");
                 } else {
@@ -118,11 +120,9 @@ import java.util.List;
 
         @Override
         public void onViewClicked(User user) {
-            // Create a bundle to pass the data
             Bundle bundle = new Bundle();
             bundle.putString("userID", user.getUserID());
 
-            // Navigate using the ID directly, passing the bundle
             navController.navigate(R.id.action_AdminHostFragment_to_EntrantUserProfileFragment, bundle);
         }
 

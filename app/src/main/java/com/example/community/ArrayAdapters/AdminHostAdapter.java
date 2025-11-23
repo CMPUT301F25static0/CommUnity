@@ -43,6 +43,7 @@ public class AdminHostAdapter extends RecyclerView.Adapter<AdminHostAdapter.Host
     @Override
     public HostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
+
                 .inflate(R.layout.admin_host_profile, parent, false);
         return new HostViewHolder(view);
     }
@@ -51,9 +52,7 @@ public class AdminHostAdapter extends RecyclerView.Adapter<AdminHostAdapter.Host
     public void onBindViewHolder(@NonNull HostViewHolder holder, int position) {
         User user = userList.get(position);
 
-        String displayName = (user.getUsername() != null && !user.getUsername().isEmpty())
-                ? user.getUsername()
-                : user.getUserID();
+        String displayName = (user.getUsername() != null && !user.getUsername().isEmpty()) ? user.getUsername() : user.getUserID();
         holder.hostNameTextView.setText(displayName);
 
         // Set click listener for the "View" button
