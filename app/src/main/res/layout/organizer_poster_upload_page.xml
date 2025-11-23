@@ -36,6 +36,16 @@
             android:layout_height="1dp"
             android:background="#BDBDBD"
             android:layout_marginBottom="24dp" />
+        
+        <TextView
+            android:id="@+id/previewTextLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Preview:"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"/>
 
         <!-- Poster preview -->
         <ImageView
@@ -43,10 +53,10 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_gallery"
             android:contentDescription="Poster preview"
             android:background="#EEEEEE"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"/>
 
         <!-- Upload button -->
         <Button

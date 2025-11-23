@@ -195,6 +195,20 @@
         <action
             android:id="@+id/action_OrganizerEventDescriptionFragment_to_CreateEventFragment"
             app:destination="@id/CreateEventFragment" />
+
+        <action
+            android:id="@+id/action_OrganizerEventDescriptionFragment_to_OrganizerPosterUploadFragment"
+            app:destination="@id/OrganizerPosterUploadFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/OrganizerPosterUploadFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerPosterUploadFragment"
+        android:label="Upload Event Poster"
+        tools:layout="@layout/organizer_poster_upload_page">
+        <argument
+            android:name="event_id"
+            app:argType="string" />
     </fragment>
 
 
@@ -276,9 +290,9 @@
     <!--    Host Poster Upload Fragments -->
     <fragment
         android:id="@+id/HostPosterUploadFragment"
-        android:name="com.example.community.Screens.OrganizerScreens.HostPosterUploadFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerPosterUploadFragment"
         android:label="HostPosterUploadFragment"
-        tools:layout="@layout/host_upload_poster_page">
+        tools:layout="@layout/organizer_poster_upload_page">
 
         <action
             android:id="@+id/action_HostPosterUploadFragment_to_OrganizerHomeFragment"
