@@ -1,7 +1,10 @@
 package com.example.community.Screens.OrganizerScreens;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -18,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -32,11 +36,9 @@ import java.io.InputStream;
 
 public class OrganizerPosterUploadFragment extends Fragment {
     private static final String TAG = "OrganizerPosterUploadFragment";
-    private static final int PICK_IMAGE_REQUEST = 1001;
     private static final String ARG_EVENT_ID = "event_id";
 
     private String eventId;
-    private String selectedImageUri;
     private byte[] selectedImageData;
     private String currentOrganizerId;
 
@@ -49,6 +51,7 @@ public class OrganizerPosterUploadFragment extends Fragment {
     private UserService userService;
 
     private ActivityResultLauncher<Intent> imagePicker;
+    private ActivityResultLauncher<String> requestPermissionsLauncher;
 
     @Nullable
     @Override
@@ -93,12 +96,7 @@ public class OrganizerPosterUploadFragment extends Fragment {
         cancelButton.setOnClickListener(v -> clearImage());
 
         imagePicker();
-    }
-
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        imagePicker.launch(intent);
+        requestPermissions();
     }
 
     private void imagePicker() {
@@ -111,8 +109,6 @@ public class OrganizerPosterUploadFragment extends Fragment {
 
 
                         if (imageUri != null) {
-                            selectedImageUri = imageUri.toString();
-
                             previewTextLabel.setVisibility(View.VISIBLE);
                             Picasso.get()
                                     .load(imageUri)
@@ -134,8 +130,55 @@ public class OrganizerPosterUploadFragment extends Fragment {
                 });
     }
 
+    private void requestPermissions() {
+        requestPermissionsLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        openImagePicker();
+                    } else {
+                        Toast.makeText(getActivity(), "Permission denied. Please grant permission to upload an image", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void openImagePicker() {
+        if (areMediaPermissionsGranted()) {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            imagePicker.launch(intent);
+        } else {
+            requestMediaPermissions();
+        }
+    }
+
+    private boolean areMediaPermissionsGranted() {
+        boolean isImagePermissionGranted = false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            isImagePermissionGranted = ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED;
+        } else {
+            isImagePermissionGranted = ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        }
+        return isImagePermissionGranted;
+    }
+
+    private void requestMediaPermissions() {
+        String permission;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permission = Manifest.permission.READ_MEDIA_IMAGES;
+        } else {
+            permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        }
+
+        requestPermissionsLauncher.launch(permission);
+    }
+
     private void clearImage() {
-        selectedImageUri = null;
         selectedImageData = null;
         buttonSubmitPoster.setEnabled(false);
         previewTextLabel.setVisibility(View.GONE);
@@ -195,6 +238,7 @@ public class OrganizerPosterUploadFragment extends Fragment {
                     buttonSubmitPoster.setEnabled(true);
                     cancelButton.setEnabled(true);
                     Toast.makeText(getContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                    NavHostFragment.findNavController(this).navigateUp();
                 })
                 .addOnFailureListener(e -> {
                     progressBar.setVisibility(View.GONE);

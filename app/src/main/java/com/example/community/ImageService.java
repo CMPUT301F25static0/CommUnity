@@ -102,6 +102,20 @@ public class ImageService {
 
     }
 
+    public Task<String> getEventPosterURL(String eventID) {
+        return eventRepository.getByID(eventID)
+                .continueWith(eventTask -> {
+                    if (!eventTask.isSuccessful()) {
+                        throw eventTask.getException();
+                    }
+                    Event event = eventTask.getResult();
+                    if (event == null) {
+                        throw new IllegalArgumentException("Event not found");
+                    }
+                    return event.getPosterImageURL();
+                });
+    }
+
     /**
      * Deletes event poster from both Storage/Firestore and clears the Event document
      * US 02.04.02
