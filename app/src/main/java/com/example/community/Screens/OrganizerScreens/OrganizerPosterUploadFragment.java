@@ -21,7 +21,7 @@ public class HostPosterUploadFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.host_upload_poster_page, container, false);
+        return inflater.inflate(R.layout.organizer_upload_poster_page, container, false);
     }
 
     @Override
