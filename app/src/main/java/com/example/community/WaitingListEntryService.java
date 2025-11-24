@@ -17,12 +17,11 @@ public class WaitingListEntryService {
     private WaitlistRepository waitlistRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-
     /**
      * Creates a new WaitingListEntryService instance.
      * Initializes required repositories.
      */
-    WaitingListEntryService() {
+    public WaitingListEntryService() {
         waitlistRepository = new WaitlistRepository();
         this.eventRepository = new EventRepository();
         this.userRepository = new UserRepository();
@@ -162,14 +161,24 @@ public class WaitingListEntryService {
         });
     }
 
+//    /**
+//     * Gets all waitlist entries for an event.
+//     *
+//     * @param eventID ID of the event
+//     * @return task containing list of waitlist entries
+//     */
+//    public Task<List<WaitingListEntry>> getWaitlistEntries(String eventID) {
+//        return waitlistRepository.listByEvent(eventID);
+//    }
+
     /**
-     * Gets all waitlist entries for an event.
+     * Gets all waitlist entries for an event (only WAITING status).
      *
      * @param eventID ID of the event
-     * @return task containing list of waitlist entries
+     * @return task containing list of waitlist entries with WAITING status
      */
     public Task<List<WaitingListEntry>> getWaitlistEntries(String eventID) {
-        return waitlistRepository.listByEvent(eventID);
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.WAITING);
     }
 
     /**
@@ -200,6 +209,26 @@ public class WaitingListEntryService {
      */
     public Task<Long> getWaitlistSize(String eventID) {
         return waitlistRepository.countByEvent(eventID);
+    }
+
+    /**
+     * Gets all users who declined invitations for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of declined entries
+     */
+    public Task<List<WaitingListEntry>> getDeclinedList(String eventID) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.DECLINED);
+    }
+
+    /**
+     * Gets all users whose invitations were cancelled for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of cancelled entries
+     */
+    public Task<List<WaitingListEntry>> getCancelledList(String eventID) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.CANCELLED);
     }
 
     /**

@@ -82,7 +82,7 @@ public class AdminEventFragment extends Fragment {
     private void setUpClickListener() {
         backButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(AdminEventFragment.this)
-                    .navigate(R.id.action_AdminEventFragment_to_AdminHomeFragment);
+                    .navigateUp();
         });
     }
 }
