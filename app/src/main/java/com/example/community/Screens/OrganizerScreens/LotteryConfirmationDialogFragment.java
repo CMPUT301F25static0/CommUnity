@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +30,14 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
     private static final String ARG_EVENT_ID = "event_id";
 
     private String eventID;
+    private int availableSlots;
 
     private EventService eventService;
     private LotteryService lotteryService;
     private UserService userService;
 
     private TextView lotteryMessageTextView;
+    private NumberPicker lotteryNumberPicker;
     private ProgressBar lotteryLoadingProgressBar;
     private Button lotteryConfirmButton;
     private Button lotteryCancelButton;
@@ -71,15 +74,42 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         lotteryMessageTextView = view.findViewById(R.id.lotteryMessageTextView);
+        lotteryNumberPicker = view.findViewById(R.id.lotteryNumberPicker);
         lotteryLoadingProgressBar = view.findViewById(R.id.lotteryLoadingProgressBar);
         lotteryConfirmButton = view.findViewById(R.id.lotteryConfirmButton);
         lotteryCancelButton = view.findViewById(R.id.lotteryCancelButton);
+
+        eventService.getEvent(eventID)
+                .addOnSuccessListener(event -> {
+                    if (event != null) {
+                        availableSlots = event.getMaxCapacity() - event.getCurrentCapacity();
+                    } else {
+                        availableSlots = 100;
+                    }
+                    setupNumberPicker(availableSlots);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to get event data", e);
+                    availableSlots = 100;
+                    setupNumberPicker(availableSlots);
+                });
+
+//        setupNumberPicker(availableSlots);
 
         lotteryConfirmButton.setOnClickListener(v -> runLottery());
         lotteryCancelButton.setOnClickListener(v -> dismiss());
     }
 
+    private void setupNumberPicker(int availableSlots) {
+        lotteryNumberPicker.setMinValue(1);
+        lotteryNumberPicker.setMaxValue(availableSlots);
+        lotteryNumberPicker.setValue(1);
+        lotteryNumberPicker.setWrapSelectorWheel(false);
+    }
+
     private void runLottery() {
+        int sampleSize = lotteryNumberPicker.getValue();
+
         // Get current organizer ID
         String deviceToken = userService.getDeviceToken();
         userService.getUserIDByDeviceToken(deviceToken)
@@ -102,7 +132,7 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
                                 showLoading();
                                 Toast.makeText(getContext(), "Running lottery...", Toast.LENGTH_SHORT).show();
 
-                                lotteryService.runLottery(organizerID, eventID)
+                                lotteryService.runLottery(organizerID, eventID, sampleSize)
                                         .addOnSuccessListener(aVoid -> {
                                             hideLoading();
                                             Toast.makeText(getContext(), "Lottery finished successfully!", Toast.LENGTH_SHORT).show();

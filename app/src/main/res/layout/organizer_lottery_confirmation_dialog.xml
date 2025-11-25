@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:minHeight="400dp"
+    android:minWidth="600dp"
     android:padding="24dp">
 
     <TextView
@@ -18,11 +20,17 @@
     <ProgressBar
         android:id="@+id/lotteryLoadingProgressBar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:visibility="gone"
         android:layout_marginBottom="24dp" />
 
+    <NumberPicker
+        android:id="@+id/lotteryNumberPicker"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

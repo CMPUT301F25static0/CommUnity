@@ -23,7 +23,7 @@ public class LotteryService {
         this.waitingListEntryService = new WaitingListEntryService();
     }
 
-    public Task<Void> runLottery(String organizerID, String eventID) {
+    public Task<Void> runLottery(String organizerID, String eventID, int sampleSize) {
         return eventRepository.getByID(eventID)
                 .continueWithTask(eventTask -> {
                     Event event = eventTask.getResult();
@@ -45,6 +45,13 @@ public class LotteryService {
                         return Tasks.forException(new IllegalArgumentException("No available slots for event"));
                     }
 
+                    if (sampleSize < 1) {
+                        return Tasks.forException(new IllegalArgumentException("Sample size must be at least 1"));
+                    }
+                    if (sampleSize > availableSlots) {
+                        return Tasks.forException(new IllegalArgumentException("Sample size must be less than or equal to available slots"));
+                    }
+
                     return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.WAITING)
                             .continueWithTask(entriesTask -> {
                                 if (!entriesTask.isSuccessful()) {
@@ -55,7 +62,7 @@ public class LotteryService {
                                     return Tasks.forException(new IllegalArgumentException("No users on waitlist"));
                                 }
 
-                                int slotsToFill = Math.min(availableSlots, waitingEntries.size());
+                                int slotsToFill = Math.min(sampleSize, waitingEntries.size());
                                 List<WaitingListEntry> lotteryWinners = selectLotteryWinners(waitingEntries, slotsToFill);
                                 List<WaitingListEntry> lotteryLosers = getLotteryLosers(waitingEntries, lotteryWinners);
 
