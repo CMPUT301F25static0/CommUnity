@@ -40,7 +40,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
             , waitlistCount, attendeeCount, invitedCount;
     private Button editButton, uploadPosterButton, viewAttendeesButton,
             viewWaitlistButton, viewInvitedButton, viewDeclinedButton,
-            viewCancelledButton, backButton;
+            viewCancelledButton, runLotteryButton, backButton;
 
     @Nullable
     @Override
@@ -81,6 +81,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         viewInvitedButton = view.findViewById(R.id.viewInvitedButton);
         viewCancelledButton = view.findViewById(R.id.viewCancelledButton);
         viewDeclinedButton = view.findViewById(R.id.viewDeclinedButton);
+        runLotteryButton = view.findViewById(R.id.runLotteryButton);
         backButton = view.findViewById(R.id.organizerEventDescriptionBackButton);
 
 
@@ -108,6 +109,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         viewInvitedButton.setOnClickListener(v -> viewInvitedList());
         viewCancelledButton.setOnClickListener(v -> viewCancelledList());
         viewDeclinedButton.setOnClickListener(v -> viewDeclinedList());
+        runLotteryButton.setOnClickListener(v -> showLotteryConfirmationDialog());
     }
 
     private void loadEventDetails() {
@@ -127,7 +129,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                     eventDates.setText(String.format("Event Dates: %s - %s",
                             event.getEventStartDate(), event.getEventEndDate()));
                     registrationDates.setText(String.format("Registration Period: %s - %s",
-                            event.getRegistrationStart(), event.getEventEndDate()));
+                            event.getRegistrationStart(), event.getRegistrationEnd()));
                     capacity.setText(String.format("Amount Attendees: %d/%d",
                             event.getCurrentCapacity(), event.getMaxCapacity()));
 
@@ -281,6 +283,15 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         }
         OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "declined");
         fragment.show(getChildFragmentManager(), "declined_list");
+    }
+
+    private void showLotteryConfirmationDialog() {
+        if (currentEvent == null) {
+            Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        LotteryConfirmationDialogFragment fragment = LotteryConfirmationDialogFragment.newInstance(currentEvent.getEventID());
+        fragment.show(getChildFragmentManager(), "lottery_confirmation");
     }
 
 }
