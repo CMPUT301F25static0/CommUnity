@@ -108,6 +108,10 @@
         android:label="Notifications"
         tools:layout="@layout/notification_page"
         >
+        <action
+            android:id="@+id/action_EntrantNotificationsFragment_to_NotificationSettingsFragment"
+            app:destination="@id/NotificationSettingsFragment" />
+
     </fragment>
 
     <fragment
@@ -301,12 +305,6 @@
             android:id="@+id/action_HostPosterUploadFragment_to_OrganizerHomeFragment"
             app:destination="@id/OrganizerHomeFragment" />
     </fragment>
-    <!--    User Guide Fragments -->
-    <fragment
-        android:id="@+id/UserGuideFragment"
-        android:name="com.example.community.Screens.UserGuideFragment"
-        android:label="User Guide"
-        tools:layout="@layout/user_guide_page" />
     <!--    User Event history Fragments -->
     <fragment
         android:id="@+id/UserEventHistoryFragment"
