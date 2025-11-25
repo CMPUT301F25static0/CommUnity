@@ -27,45 +27,41 @@ public class NotificationService {
      * Sends notifications to users who were selected for an event.
      * US 02.05.01, US 01.04.01,
      *
-     * @param organizerID ID of the organizer
      * @param eventID ID of the event
      * @return task that completes when notifications are sent
      */
-    public Task<Void> notifyWinners(String organizerID, String eventID) {
-        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.ACCEPTED)
-                .onSuccessTask(entries -> {
-            java.util.List<String> recipientIDs = new java.util.ArrayList<>();
-            for (WaitingListEntry e : entries) {
-                recipientIDs.add(e.getUserID());
-            }
-            return notificationRepository.createMany(
-                    eventID,
-                    recipientIDs,
-                    NotificationType.WIN,
-                    "You were selected for this event! Accept or Decline invitation?");
-        });
+    public Task<Void> notifyWinners(String eventID, List<WaitingListEntry> lotteryWinners) {
+        List<String> recipientIDs = new ArrayList<>();
+
+        for (WaitingListEntry e : lotteryWinners) {
+            recipientIDs.add(e.getUserID());
+        }
+        return notificationRepository.createMany(
+                eventID,
+                recipientIDs,
+                NotificationType.WIN,
+                "You were selected for this event! Please accept or decline the invitation."
+        );
     }
 
     /**
      * Sends notifications to users who were not selected for an event.
      * US 01.04.02
      *
-     * @param organizerID ID of the organizer
      * @param eventID ID of the event
      * @return task that completes when notifications are sent
      */
-    public Task<Void> notifyLosers(String organizerID, String eventID) {
-        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.DECLINED)
-                .onSuccessTask(entries -> {
-            java.util.List<String> recipientIDs = new java.util.ArrayList<>();
-            for (WaitingListEntry e : entries) {
-                recipientIDs.add(e.getUserID());
-            }
-            return notificationRepository.createMany(eventID,
-                    recipientIDs,
-                    NotificationType.LOSE,
-                    "You were not selected this time.");
-        });
+    public Task<Void> notifyLosers(String eventID, List<WaitingListEntry> lotteryLosers) {
+        List<String> recipientIDS = new ArrayList<>();
+        for (WaitingListEntry e : lotteryLosers) {
+            recipientIDS.add(e.getUserID());
+        }
+        return notificationRepository.createMany(
+                eventID,
+                recipientIDS,
+                NotificationType.LOSE,
+                "The lottery was ran but you were not selected at this time."
+        );
     }
 
     /**
