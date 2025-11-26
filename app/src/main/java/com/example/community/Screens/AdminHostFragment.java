@@ -100,12 +100,12 @@ import java.util.List;
         private void loadUsers() {
             userService.getAllUsers().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    userList.clear();
                     List<User> allUsers = task.getResult();
+                    userList.clear();
 
                     for (User user : allUsers) {
                         if (user.getRole() == Role.ORGANIZER) {
-                            userList.addAll(task.getResult());
+                            userList.add(user);
 
                         }
                     }
@@ -117,15 +117,6 @@ import java.util.List;
                 }
             });
         }
-
-        @Override
-        public void onViewClicked(User user) {
-            Bundle bundle = new Bundle();
-            bundle.putString("userID", user.getUserID());
-
-            navController.navigate(R.id.action_AdminHostFragment_to_EntrantUserProfileFragment, bundle);
-        }
-
 
         @Override
         public void onDeleteClicked(User user, int position) {

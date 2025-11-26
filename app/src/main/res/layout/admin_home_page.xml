@@ -89,6 +89,15 @@
             android:textAllCaps="false"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/buttonNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Notification Log"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
+
     </LinearLayout>
 
 </LinearLayout>

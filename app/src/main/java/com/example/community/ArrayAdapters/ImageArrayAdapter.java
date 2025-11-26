@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.community.Image;
 import com.example.community.R;
-
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
 
     public interface OnImageClickListener {
         void onItemClick(Image image);
+
         void onDeleteClick(Image image, int position);
     }
 
@@ -34,7 +35,6 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.admin_image, parent, false);
         return new ImageViewHolder(view);
@@ -43,11 +43,21 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Image image = imageList.get(position);
+        String uploaderName = image.getUploadedBy();
+        String displayText = "Uploaded by: " + (uploaderName != null && !uploaderName.isEmpty() ? uploaderName : "Unknown");
 
-        String displayText = "Uploaded by: " + (image.getUploadedBy() != null ? image.getUploadedBy() : "Unknown");
         holder.imageInfo.setText(displayText);
 
-        holder.imageView.setImageResource(android.R.drawable.ic_menu_gallery); // Fallback icon
+
+        if (image.getImageURL() != null && !image.getImageURL().isEmpty()) {
+            Picasso.get()
+                    .load(image.getImageURL())
+                    .placeholder(android.R.drawable.ic_menu_gallery)
+                    .error(android.R.drawable.stat_notify_error)
+                    .into(holder.imageView);
+        } else {
+            holder.imageView.setImageResource(android.R.drawable.ic_menu_gallery);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(image);
@@ -70,7 +80,6 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
-
             imageView = itemView.findViewById(R.id.imgContent);
             imageInfo = itemView.findViewById(R.id.posterName);
             deleteButton = itemView.findViewById(R.id.buttonRemove);

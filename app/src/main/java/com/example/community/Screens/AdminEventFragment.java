@@ -28,7 +28,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-// 1. Implement the interface exactly as defined in your Adapter
 public class AdminEventFragment extends Fragment implements EventArrayAdapter.OnEventClickListener {
 
     Button backButton;
@@ -47,21 +46,18 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialize Views
         adminEventView = view.findViewById(R.id.adminEventView);
         backButton = view.findViewById(R.id.buttonBack);
 
-        // Initialize Service and List
+
         eventService = new EventService();
         eventsArrayList = new ArrayList<>();
 
-        // Initialize RecyclerView
+
         adminEventView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // 2. Initialize adapter using your specific constructor (List only)
         eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
 
-        // 3. Set the listener
         eventArrayAdapter.setOnEventClickListener(this);
 
         adminEventView.setAdapter(eventArrayAdapter);
@@ -95,33 +91,18 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
     // 4. Handle "View" Click (Single Tap)
     @Override
     public void onEventClick(Event event) {
-        // Since your adapter lacks a delete button, we can offer a choice dialog here
-        // or just navigate to details. Let's offer a choice for Admin.
         showActionDialog(event);
     }
 
     private void showActionDialog(Event event) {
-        CharSequence[] options = new CharSequence[]{"View Event", "Delete Event"};
+        CharSequence[] options = new CharSequence[]{"Delete Event"};
 
         new AlertDialog.Builder(requireContext())
                 .setTitle(event.getTitle())
                 .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        // View Event
-                        navigateToUpdatePage(event);
-                    } else {
-                        // Delete Event
-                        confirmDelete(event);
-                    }
+                    confirmDelete(event);
                 })
                 .show();
-    }
-
-    private void navigateToUpdatePage(Event event) {
-        Bundle bundle = new Bundle();
-        bundle.putString("eventID", event.getEventID());
-        NavHostFragment.findNavController(this)
-                .navigate(R.id.action_AdminEventFragment_to_hostPosterUpdatePageFragment, bundle);
     }
 
     private void confirmDelete(Event event) {

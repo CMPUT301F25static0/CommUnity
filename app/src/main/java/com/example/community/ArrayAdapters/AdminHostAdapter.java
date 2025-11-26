@@ -24,9 +24,7 @@ public class AdminHostAdapter extends RecyclerView.Adapter<AdminHostAdapter.Host
     private final UserService userService;
     private final Context context;
 
-    // Interface to handle button clicks in the Fragment
     public interface OnHostListener {
-        void onViewClicked(User user);
         void onDeleteClicked(User user, int position);
     }
 
@@ -55,13 +53,6 @@ public class AdminHostAdapter extends RecyclerView.Adapter<AdminHostAdapter.Host
         String displayName = (user.getUsername() != null && !user.getUsername().isEmpty()) ? user.getUsername() : user.getUserID();
         holder.hostNameTextView.setText(displayName);
 
-        // Set click listener for the "View" button
-        holder.viewButton.setOnClickListener(v -> {
-            if (onHostListener != null) {
-                onHostListener.onViewClicked(user);
-            }
-        });
-
         // Set click listener for the "Delete" button
         holder.deleteButton.setOnClickListener(v -> {
             if (onHostListener != null) {
@@ -78,13 +69,11 @@ public class AdminHostAdapter extends RecyclerView.Adapter<AdminHostAdapter.Host
     // ViewHolder class that holds the views for each item
     public static class HostViewHolder extends RecyclerView.ViewHolder {
         TextView hostNameTextView;
-        Button viewButton;
         Button deleteButton;
 
         public HostViewHolder(@NonNull View itemView) {
             super(itemView);
             hostNameTextView = itemView.findViewById(R.id.hostName);
-            viewButton = itemView.findViewById(R.id.buttonView);
             deleteButton = itemView.findViewById(R.id.buttonDelete);
         }
     }

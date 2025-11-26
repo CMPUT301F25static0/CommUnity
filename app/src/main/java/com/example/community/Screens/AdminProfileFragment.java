@@ -111,14 +111,6 @@ public class AdminProfileFragment extends Fragment implements com.example.commun
         });
     }
 
-    @Override
-    public void onViewClicked(User user) {
-        Bundle bundle = new Bundle();
-        bundle.putString("userID", user.getUserID());
-
-        navController.navigate(R.id.action_AdminHostFragment_to_EntrantUserProfileFragment, bundle);
-    }
-
 
     @Override
     public void onDeleteClicked(User user, int position) {
