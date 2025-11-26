@@ -14,7 +14,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.community.R;
 
-public class HostNotifyFragment extends Fragment {
+public class OrganizerNotifiyFragment extends Fragment {
 
     private EditText inputNotifyAccepted, inputNotifyWaiting, inputNotifyCanceled;
     private Button buttonCancel, buttonSend;
@@ -24,7 +24,7 @@ public class HostNotifyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.host_notify_page, container, false);
+        return inflater.inflate(R.layout.organizer_notify_page, container, false);
     }
 
     @Override
@@ -38,12 +38,12 @@ public class HostNotifyFragment extends Fragment {
         buttonSend          = view.findViewById(R.id.buttonSend);
 
         buttonCancel.setOnClickListener(v ->
-                NavHostFragment.findNavController(HostNotifyFragment.this).popBackStack()
+                NavHostFragment.findNavController(OrganizerNotifiyFragment.this).popBackStack()
         );
 
         buttonSend.setOnClickListener(v -> {
             // TODO: send notifications
-            NavHostFragment.findNavController(HostNotifyFragment.this).popBackStack();
+            NavHostFragment.findNavController(OrganizerNotifiyFragment.this).popBackStack();
         });
     }
 }
