@@ -225,6 +225,11 @@
             app:destination="@+id/AdminImageFragment">
         </action>
 
+        <action
+            android:id="@+id/action_AdminHomeFragment_to_AdminNotificationFragment"
+            app:destination="@+id/AdminNotificationFragment">
+        </action>
+
     </fragment>
 
     <!--    Admin Event Fragments -->
@@ -295,6 +300,7 @@
             app:destination="@id/AdminHomeFragment">
         </action>
 
+
     </fragment>
     <!--    Admin image Fragments -->
     <fragment
@@ -304,6 +310,20 @@
         tools:layout="@layout/admin_image">
 
     </fragment>
+
+    <!--    Admin Notification Fragments -->
+    <fragment
+        android:id="@+id/AdminNotificationFragment"
+        android:name="com.example.community.Screens.AdminNotificationFragment"
+        android:label="Admin Users"
+        tools:layout="@layout/admin_notification_page">
+
+        <action
+            android:id="@+id/action_AdminNotificationFragment_to_AdminHomeFragment"
+            app:destination="@id/AdminHomeFragment">
+        </action>
+    </fragment>
+
 
     <!--    Host Notify Fragments -->
     <fragment

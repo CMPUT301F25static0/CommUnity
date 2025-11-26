@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.community.R;
+import com.example.community.Role;
 import com.example.community.User;
 import com.example.community.UserService;
 
@@ -35,7 +37,6 @@ public class AdminProfileFragment extends Fragment implements com.example.commun
     private com.example.community.ArrayAdapters.AdminHostAdapter adapter;
     private List<User> userList;
     private UserService userService;
-    private NavController navController;
 
     @Nullable
     @Override
@@ -47,8 +48,9 @@ public class AdminProfileFragment extends Fragment implements com.example.commun
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        TextView headerTitle = view.findViewById(R.id.headerTitle);
+        headerTitle.setText("Entrant");
 
-        navController = Navigation.findNavController(view);
         backButton = view.findViewById(R.id.buttonBack);
         userService = new UserService();
         userList = new ArrayList<>();
@@ -100,9 +102,16 @@ public class AdminProfileFragment extends Fragment implements com.example.commun
     private void loadUsers() {
         userService.getAllUsers().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                List<User> allUsers = task.getResult();
                 userList.clear();
-                userList.addAll(task.getResult());
-                adapter.notifyDataSetChanged(); // Refresh the list in the UI
+
+                for (User user : allUsers) {
+                    if (user.getRole() == Role.ENTRANT) {
+                        userList.add(user);
+
+                    }
+                }
+                adapter.notifyDataSetChanged();
                 Log.d(TAG, "Successfully loaded " + userList.size() + " users.");
             } else {
                 Log.e(TAG, "Failed to load users", task.getException());
@@ -116,7 +125,6 @@ public class AdminProfileFragment extends Fragment implements com.example.commun
     public void onDeleteClicked(User user, int position) {
         DeleteAccountConfirmDialogFragment dialog = new DeleteAccountConfirmDialogFragment();
 
-        // Pass the User ID and Position to the dialog so we know WHO to delete later
         Bundle args = new Bundle();
         args.putString("userID", user.getUserID());
         args.putInt("position", position);
@@ -132,4 +140,5 @@ public class AdminProfileFragment extends Fragment implements com.example.commun
                     .navigate(R.id.action_AdminProfileFragment_to_AdminHomeFragment);
         });
     }
+
 }

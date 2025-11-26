@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.community.Image;
 import com.example.community.R;
+import com.example.community.UserRepository;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -19,17 +20,14 @@ import java.util.List;
 public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.ImageViewHolder> {
 
     private final List<Image> imageList;
-    private final OnImageClickListener listener;
+    private final OnImageDeleteListener listener;
 
-    public interface OnImageClickListener {
-        void onItemClick(Image image);
-
+    public interface OnImageDeleteListener {
         void onDeleteClick(Image image, int position);
     }
-
-    public ImageArrayAdapter(List<Image> imageList) {
+    public ImageArrayAdapter(List<Image> imageList, OnImageDeleteListener listener) {
         this.imageList = imageList;
-        this.listener = null;
+        this.listener = listener;
     }
 
     @NonNull
@@ -43,11 +41,29 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Image image = imageList.get(position);
-        String uploaderName = image.getUploadedBy();
-        String displayText = "Uploaded by: " + (uploaderName != null && !uploaderName.isEmpty() ? uploaderName : "Unknown");
+        String uploaderID = image.getUploadedBy();
 
-        holder.imageInfo.setText(displayText);
+        if (uploaderID != null && !uploaderID.isEmpty()) {
+            UserRepository userRepository = new UserRepository();
 
+            userRepository.getByUserID(uploaderID)
+                    .addOnSuccessListener(user -> {
+                        if (user != null) {
+                            String displayName = (user.getUsername() != null && !user.getUsername().isEmpty())
+                                    ? user.getUsername()
+                                    : "Unknown Name";
+
+                            holder.imageInfo.setText("Uploaded by: " + displayName);
+                        } else {
+                            holder.imageInfo.setText("Uploaded by: Unknown User");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        holder.imageInfo.setText("Uploaded by: Error loading name");
+                    });
+        } else {
+            holder.imageInfo.setText("Uploaded by: Unknown");
+        }
 
         if (image.getImageURL() != null && !image.getImageURL().isEmpty()) {
             Picasso.get()
@@ -59,12 +75,10 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
             holder.imageView.setImageResource(android.R.drawable.ic_menu_gallery);
         }
 
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onItemClick(image);
-        });
-
         holder.deleteButton.setOnClickListener(v -> {
-            if (listener != null) listener.onDeleteClick(image, holder.getAdapterPosition());
+            if (listener != null) {
+                listener.onDeleteClick(image, holder.getAdapterPosition());
+            }
         });
     }
 

@@ -51,7 +51,14 @@ public class AdminImageFragment extends Fragment {
         imagesArrayList = new ArrayList<>();
 
         adminImageView.setLayoutManager(new LinearLayoutManager(getContext()));
-        imageArrayAdapter = new ImageArrayAdapter(imagesArrayList);
+
+        imageArrayAdapter = new ImageArrayAdapter(imagesArrayList, new ImageArrayAdapter.OnImageDeleteListener() {
+            @Override
+            public void onDeleteClick(Image image, int position) {
+                onDeleteClicked(image, position);
+            }
+        });
+
         adminImageView.setAdapter(imageArrayAdapter);
 
         loadImages();
@@ -71,9 +78,8 @@ public class AdminImageFragment extends Fragment {
                         Toast.makeText(getContext(), "Failed to load images", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
     }
+
     private void setUpClickListener() {
         backButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(AdminImageFragment.this).navigateUp();
@@ -85,24 +91,24 @@ public class AdminImageFragment extends Fragment {
                 .setTitle("Delete Image")
                 .setMessage("Are you sure you want to delete this image?")
                 .setPositiveButton("Delete", (dialog, which) -> {
+                    // Assuming imageService has a delete method. If not, ensure this matches your service.
                     new ImageService().deleteEventPoster(image.getImageID())
                             .addOnCompleteListener(task -> {
-                                if (position >= 0 && position < imagesArrayList.size()) {
-                                    imagesArrayList.remove(position);
-                                    imageArrayAdapter.notifyItemRemoved(position);
-                                    imageArrayAdapter.notifyItemRangeChanged(position, imagesArrayList.size() - position);
+                                if (task.isSuccessful()) { // Check if task was successful
+                                    if (position >= 0 && position < imagesArrayList.size()) {
+                                        imagesArrayList.remove(position);
+                                        imageArrayAdapter.notifyItemRemoved(position);
+                                        imageArrayAdapter.notifyItemRangeChanged(position, imagesArrayList.size() - position);
+                                    }
+                                    Toast.makeText(getContext(), "Image deleted", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getContext(), "Failed to delete image", Toast.LENGTH_SHORT).show();
                                 }
-                                Toast.makeText(getContext(), "Image deleted", Toast.LENGTH_SHORT).show();
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(getContext(), "Failed to delete image", Toast.LENGTH_SHORT).show();
                             });
                 })
                 .setNegativeButton("Cancel", null).show();
-
     }
-    public void onItemClicked(Image image) {
-        Toast.makeText(getContext(), "Image clicked: " + image.getImageID(), Toast.LENGTH_SHORT).show();
-    }
-
 }
