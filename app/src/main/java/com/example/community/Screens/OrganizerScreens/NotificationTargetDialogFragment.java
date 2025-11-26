@@ -1,5 +1,6 @@
 package com.example.community.Screens.OrganizerScreens;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,14 @@ public class NotificationTargetDialogFragment extends DialogFragment {
         return view;
     }
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setCanceledOnTouchOutside(true);
+        return dialog;
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -60,7 +69,7 @@ public class NotificationTargetDialogFragment extends DialogFragment {
         toCancelledButton = view.findViewById(R.id.cancelledNotificationButton);
 
         toWaitlistButton.setOnClickListener(v ->
-                navigateToCreateNotification("WAITLIST"));
+                navigateToCreateNotification("WAITING"));
         toInvitedButton.setOnClickListener(v ->
                 navigateToCreateNotification("INVITED"));
         toCancelledButton.setOnClickListener(v ->
