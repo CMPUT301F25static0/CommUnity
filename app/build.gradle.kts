@@ -54,6 +54,7 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
 
     implementation("com.google.zxing:core:3.5.3")
+    implementation("com.journeyapps:zxing-android-embedded:4.1.0")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

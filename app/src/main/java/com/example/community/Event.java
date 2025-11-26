@@ -39,6 +39,8 @@ public class Event {
     private List<String> invitedListUserIDs = new ArrayList<>();
     private List<String> cancelledListUserIDs = new ArrayList<>();
 
+    private boolean requiresGeolocation = false;
+
     /**
      * Default constructor required for Firebase.
      */
@@ -393,5 +395,13 @@ public class Event {
         if (currentWaitingListSize != null && currentWaitingListSize > 0) {
             currentWaitingListSize--;
         }
+    }
+
+    public boolean getRequiresGeolocation() {
+        return requiresGeolocation;
+    }
+
+    public void setRequiresGeolocation(boolean requiresGeolocation) {
+        this.requiresGeolocation = requiresGeolocation;
     }
 }
