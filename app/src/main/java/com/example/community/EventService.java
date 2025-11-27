@@ -384,4 +384,20 @@ public class EventService {
         }
         return field;
     }
+
+    /**
+     * Gets the organizer ID for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing the organizer ID
+     */
+    public Task<String> getOrganizerID(String eventID) {
+        return eventRepository.getByID(eventID).continueWith(task -> {
+            Event event = task.getResult();
+            if (event == null) {
+                throw new IllegalArgumentException("Event not found");
+            }
+            return event.getOrganizerID();
+        });
+    }
 }
