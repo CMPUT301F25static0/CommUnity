@@ -3,7 +3,6 @@ package com.example.community;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -233,11 +232,10 @@ public class EventService {
      * @param userID   ID of the user
      * @param fromDate earliest event start date
      * @param toDate   latest event start date
-     * @param tags     optional list of tags to filter by
      * @return task containing list of matching events
      */
-    public Task<List<Event>> listJoinableByInterests(String userID, String fromDate, String toDate, List<String> tags) {
-        return listJoinable(userID, fromDate, toDate, tags);
+    public Task<List<Event>> listJoinableByInterests(String userID, String fromDate, String toDate) {
+        return listJoinable(userID, fromDate, toDate, null);
     }
 
     /**
@@ -294,94 +292,6 @@ public class EventService {
                 });
     }
 
-    /**
-     * Gets all users who cancelled their participation in an event.
-     *
-     * @param eventID ID of the event
-     * @return task containing list of cancelled users
-     */
-    public Task<List<User>> getCancelledUsers(String eventID) {
-        return waitlistRepository
-                .listByEventAndStatus(eventID, EntryStatus.CANCELLED)
-                .onSuccessTask(entries -> {
-                    java.util.List<Task<User>> reads = new java.util.ArrayList<>();
-                    for (WaitingListEntry e : entries) {
-                        reads.add(userRepository.getByUserID(e.getUserID()));
-                    }
-                    return com.google.android.gms.tasks.Tasks.whenAllSuccess(reads)
-                            .continueWith(t -> {
-                                java.util.List<?> results = t.getResult();
-                                java.util.List<User> users = new java.util.ArrayList<>();
-                                for (Object o : results) {
-                                    User u = (User) o;
-                                    if (u != null) users.add(u);
-                                }
-                                return users;
-                            });
-                });
-    }
 
-    /**
-     * Gets all users who declined invitations to an event.
-     *
-     * @param eventID ID of the event
-     * @return task containing list of declined users
-     */
-    public Task<List<User>> getDeclinedUsers(String eventID) {
-        return waitlistRepository
-                .listByEventAndStatus(eventID, EntryStatus.DECLINED)
-                .onSuccessTask(entries -> {
-                    java.util.List<Task<User>> reads = new java.util.ArrayList<>();
-                    for (WaitingListEntry e : entries) {
-                        reads.add(userRepository.getByUserID(e.getUserID()));
-                    }
-                    return com.google.android.gms.tasks.Tasks.whenAllSuccess(reads)
-                            .continueWith(t -> {
-                                java.util.List<?> results = t.getResult();
-                                java.util.List<User> users = new java.util.ArrayList<>();
-                                for (Object o : results) {
-                                    User u = (User) o;
-                                    if (u != null) users.add(u);
-                                }
-                                return users;
-                            });
-                });
-    }
-
-    /**
-     * Exports final list of entrants in CSV format.
-     *
-     * @param eventID ID of the event
-     * @return task containing CSV string of enrolled entrants
-     */
-    public Task<String> exportAttendeesCSV(String organizerID, String eventID) {
-        return getAttendees(eventID).continueWith(task -> {
-            List<User> attendees = task.getResult();
-            StringBuilder csvBuilder = new StringBuilder();
-
-            // CSV header
-            csvBuilder.append("Name,Email,Phone Number\n");
-
-            // CSV rows
-            for (User user : attendees) {
-                csvBuilder.append(String.format("%s,%s,%s\n",
-                        escapeCSVField(user.getUsername()),
-                        escapeCSVField(user.getEmail()),
-                        escapeCSVField(user.getPhoneNumber() != null ? user.getPhoneNumber() : "")));
-            }
-
-            return csvBuilder.toString();
-        });
-    }
-
-    /**
-     * Helper method to escape CSV fields.
-     */
-    private String escapeCSVField(String field) {
-        if (field == null) return "";
-        if (field.contains(",") || field.contains("\"") || field.contains("\n")) {
-            return "\"" + field.replace("\"", "\"\"") + "\"";
-        }
-        return field;
-    }
+    // public Task<String> exportAttendeesCSV(String organizerID, String eventID) {}
 }
