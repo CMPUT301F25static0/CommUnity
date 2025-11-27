@@ -337,5 +337,20 @@ public class WaitingListEntryService {
         });
     }
 
+    public Task<Void> cancelInvite(String userID, String eventID) {
+        return waitlistRepository.getByID(eventID, userID). continueWithTask(task -> {
+            WaitingListEntry entry = task. getResult();
+            if (entry == null) {
+                return Tasks.forException(new IllegalArgumentException("Not on waitlist"));
+            }
+            if (!entry.hasStatus(EntryStatus.INVITED)) {
+                return Tasks.forException(new IllegalStateException("User is not invited"));
+            }
+
+            entry.markAsCancelled();
+            return waitlistRepository.update(entry);
+        });
+    }
+
 }
 
