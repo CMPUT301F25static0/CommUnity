@@ -15,7 +15,6 @@ import com.example.community.NotificationType;
 import com.example.community.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
@@ -25,16 +24,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         void onViewEvent(Notification notification);
     }
 
-    private List<Notification> notifications = new ArrayList<>();
+    private final ArrayList<Notification> notifications;
     private final NotificationActionListener listener;
 
-    public NotificationAdapter(NotificationActionListener listener) {
-        this.listener = listener;
-    }
-
-    public void setNotifications(List<Notification> notifications) {
+    public NotificationAdapter(ArrayList<Notification> notifications,
+                               NotificationActionListener listener) {
         this.notifications = notifications;
-        notifyDataSetChanged();
+        this.listener = listener;
     }
 
     @NonNull
@@ -49,13 +45,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Notification n = notifications.get(position);
 
-        // Show message as main text
+        // Main text
         holder.messageText.setText(n.getMessage());
 
-        // For now, show a generic label on the middle button
+        // Middle button – you can later put event title here if you fetch it
         holder.eventButton.setText("View Event");
 
-        // Show/hide Accept/Decline depending on type (WIN typically needs response)
+        // Only show Accept/Decline for WIN-type notifications
         if (n.getType() == NotificationType.WIN) {
             holder.acceptButton.setVisibility(View.VISIBLE);
             holder.declineButton.setVisibility(View.VISIBLE);
@@ -65,28 +61,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         holder.eventButton.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onViewEvent(n);
-            } else {
-                Toast.makeText(v.getContext(), "View event: " + n.getEventID(),
-                        Toast.LENGTH_SHORT).show();
-            }
+            if (listener != null) listener.onViewEvent(n);
+            else Toast.makeText(v.getContext(), "View event " + n.getEventID(),
+                    Toast.LENGTH_SHORT).show();
         });
 
         holder.acceptButton.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onAccept(n);
-            } else {
-                Toast.makeText(v.getContext(), "Accepted", Toast.LENGTH_SHORT).show();
-            }
+            if (listener != null) listener.onAccept(n);
+            else Toast.makeText(v.getContext(), "Accepted", Toast.LENGTH_SHORT).show();
         });
 
         holder.declineButton.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onDecline(n);
-            } else {
-                Toast.makeText(v.getContext(), "Declined", Toast.LENGTH_SHORT).show();
-            }
+            if (listener != null) listener.onDecline(n);
+            else Toast.makeText(v.getContext(), "Declined", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -110,4 +97,3 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
     }
 }
-

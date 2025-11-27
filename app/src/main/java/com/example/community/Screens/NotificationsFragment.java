@@ -19,8 +19,9 @@ import com.example.community.ArrayAdapters.NotificationAdapter;
 import com.example.community.Notification;
 import com.example.community.NotificationService;
 import com.example.community.R;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.community.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationsFragment extends Fragment {
@@ -28,8 +29,12 @@ public class NotificationsFragment extends Fragment {
     ImageButton notificationSettingsButton;
     Button backButton;
     RecyclerView notificationList;
-    NotificationAdapter notificationAdapter;
-    NotificationService notificationService;
+
+    private ArrayList<Notification> notifications;
+    private NotificationAdapter notificationAdapter;
+
+    private NotificationService notificationService;
+    private UserService userService;
 
     @Nullable
     @Override
@@ -48,48 +53,50 @@ public class NotificationsFragment extends Fragment {
         backButton = view.findViewById(R.id.backToEntrantHome);
         notificationList = view.findViewById(R.id.notificationList);
 
+        notifications = new ArrayList<>();
         notificationService = new NotificationService();
+        userService = new UserService();
 
-        // Set up RecyclerView
-        notificationAdapter = new NotificationAdapter(new NotificationAdapter.NotificationActionListener() {
-            @Override
-            public void onAccept(Notification notification) {
-                // TODO: Update waitlist entry to ACCEPTED, etc.
-                Toast.makeText(getContext(),
-                        "Accepted invitation for event " + notification.getEventID(),
-                        Toast.LENGTH_SHORT).show();
-            }
+        // RecyclerView
+        notificationAdapter = new NotificationAdapter(
+                notifications,
+                new NotificationAdapter.NotificationActionListener() {
+                    @Override
+                    public void onAccept(Notification notification) {
+                        // TODO: update waitlist status in backend
+                        Toast.makeText(getContext(),
+                                "Accepted invitation for event " + notification.getEventID(),
+                                Toast.LENGTH_SHORT).show();
+                    }
 
-            @Override
-            public void onDecline(Notification notification) {
-                // TODO: Update waitlist entry / mark declined
-                Toast.makeText(getContext(),
-                        "Declined invitation for event " + notification.getEventID(),
-                        Toast.LENGTH_SHORT).show();
-            }
+                    @Override
+                    public void onDecline(Notification notification) {
+                        // TODO: update waitlist / mark notification as rejected
+                        Toast.makeText(getContext(),
+                                "Declined invitation for event " + notification.getEventID(),
+                                Toast.LENGTH_SHORT).show();
+                    }
 
-            @Override
-            public void onViewEvent(Notification notification) {
-                // TODO: Navigate to event description using notification.getEventID()
-                // For now just toast:
-                Toast.makeText(getContext(),
-                        "View event: " + notification.getEventID(),
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onViewEvent(Notification notification) {
+                        // TODO: navigate to event details using notification.getEventID()
+                        Toast.makeText(getContext(),
+                                "View event: " + notification.getEventID(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         notificationList.setLayoutManager(new LinearLayoutManager(getContext()));
         notificationList.setAdapter(notificationAdapter);
 
+        // Load notifications
         loadNotificationsForCurrentUser();
 
-        // Settings → NotificationSettingsFragment (you already have this in nav_graph)
         notificationSettingsButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(NotificationsFragment.this)
                         .navigate(R.id.action_EntrantNotificationsFragment_to_NotificationSettingsFragment)
         );
 
-        // Back → previous screen (user home)
         backButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(NotificationsFragment.this)
                         .popBackStack()
@@ -97,20 +104,36 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void loadNotificationsForCurrentUser() {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Toast.makeText(getContext(), "Not logged in", Toast.LENGTH_SHORT).show();
+        String deviceToken = userService.getDeviceToken();
+        if (deviceToken == null || deviceToken.isEmpty()) {
+            Toast.makeText(getContext(),
+                    "Device token not found – cannot load notifications",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        userService.getUserIDByDeviceToken(deviceToken)
+                .addOnSuccessListener(userId -> {
 
-        notificationService.listUserNotification(userId, 50, null)
-                .addOnSuccessListener(notifications -> {
-                    notificationAdapter.setNotifications(notifications);
+                    notificationService.listUserNotification(userId, 50, null)
+                            .addOnSuccessListener(fetchedNotifications -> {
+                                // Explicitly fill the RecyclerView’s backing array
+                                notifications.clear();
+                                notifications.addAll(fetchedNotifications);
+                                notificationAdapter.notifyDataSetChanged();
+                            })
+                            .addOnFailureListener(e -> {
+                                e.printStackTrace();
+                                Toast.makeText(getContext(),
+                                        "Failed to load notifications: " + e.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                            });
+
                 })
                 .addOnFailureListener(e -> {
+                    e.printStackTrace();
                     Toast.makeText(getContext(),
-                            "Failed to load notifications: " + e.getMessage(),
+                            "Failed to resolve user from device token: " + e.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 });
     }
