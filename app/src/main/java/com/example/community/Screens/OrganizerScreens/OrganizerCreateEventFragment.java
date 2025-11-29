@@ -23,30 +23,85 @@ import com.example.community.UserService;
 
 import java.time.LocalDate;
 
+/**
+ * Fragment for organizers to create or edit an event.
+ * Allows input of event details including name, description, location, capacity,
+ * waiting list, and start/end dates for both registration and the event itself.
+ */
 public class OrganizerCreateEventFragment extends Fragment {
 
+    /** Tag used for logging */
     private final String TAG = "CreateEventFragment";
 
-    private EditText eventNameInput, eventDescriptionInput, eventLocationInput;
-    private EditText eventMaxParticipantsInput, waitingListSizeInput;
-    private EditText eventStartDateInput, eventEndDateInput, inputRegStart, inputRegEnd;
-    private Button cancelButton, submitButton;
+    /** Input field for the event name */
+    private EditText eventNameInput;
 
+    /** Input field for the event description */
+    private EditText eventDescriptionInput;
+
+    /** Input field for the event location */
+    private EditText eventLocationInput;
+
+    /** Input field for the maximum number of participants */
+    private EditText eventMaxParticipantsInput;
+
+    /** Input field for the waiting list size (optional) */
+    private EditText waitingListSizeInput;
+
+    /** Input field for the event start date */
+    private EditText eventStartDateInput;
+
+    /** Input field for the event end date */
+    private EditText eventEndDateInput;
+
+    /** Input field for registration start date */
+    private EditText inputRegStart;
+
+    /** Input field for registration end date */
+    private EditText inputRegEnd;
+
+    /** Button to cancel event creation/editing */
+    private Button cancelButton;
+
+    /** Button to submit the new or edited event */
+    private Button submitButton;
+
+    /** Service for event-related database operations */
     private EventService eventService;
+
+    /** Service for user-related database operations */
     private UserService userService;
+
+    /** Currently logged-in organizer */
     private User currentOrganizer;
 
+    /** ID of the event being edited (null if creating a new event) */
     private String editingEventId;
+
+    /** Flag indicating if the fragment is in editing mode */
     private boolean isEditing;
 
-
+    /**
+     * Inflates the fragment layout.
+     *
+     * @param inflater LayoutInflater to inflate views
+     * @param container Parent view that fragment's UI should attach to
+     * @param savedInstanceState Previously saved state of the fragment
+     * @return Root View of the fragment layout
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View createEventFragment = inflater.inflate(R.layout.organizer_create_event_page, container, false);
-        return createEventFragment;
+        return inflater.inflate(R.layout.organizer_create_event_page, container, false);
     }
 
+    /**
+     * Initializes UI components, loads organizer data, sets up date pickers,
+     * and sets click listeners for submit and cancel buttons.
+     *
+     * @param view Root view of the fragment
+     * @param savedInstanceState Previously saved state of the fragment
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -93,9 +148,12 @@ public class OrganizerCreateEventFragment extends Fragment {
                 createEvent();
             }
         });
-
     }
 
+    /**
+     * Loads current organizer's data from the UserService.
+     * Navigates back if user data cannot be found or profile is incomplete.
+     */
     private void loadOrganizerData() {
         String deviceToken = userService.getDeviceToken();
 
@@ -106,7 +164,7 @@ public class OrganizerCreateEventFragment extends Fragment {
                         throw new IllegalArgumentException("User not found: " + deviceToken);
                     }
                     if (user.getUsername() == null || user.getUsername().isEmpty() ||
-                        user.getEmail() == null || user.getEmail().isEmpty()) {
+                            user.getEmail() == null || user.getEmail().isEmpty()) {
                         Toast.makeText(getContext(), "Please complete your profile first (username and email)", Toast.LENGTH_SHORT).show();
                         NavHostFragment.findNavController(this).navigateUp();
                         return;
@@ -120,30 +178,27 @@ public class OrganizerCreateEventFragment extends Fragment {
                 });
     }
 
+    /**
+     * Loads existing event data into the form for editing.
+     *
+     * @param args Bundle containing the event's existing data
+     */
     private void loadEventDataForEditing(Bundle args) {
-        String eventName = args.getString("event_name", "");
-        String eventDescription = args.getString("event_description", "");
-        String eventLocation = args.getString("event_location", "");
-        String eventStartDate = args.getString("event_start_date", "");
-        String eventEndDate = args.getString("event_end_date", "");
-        String regStart = args.getString("reg_start", "");
-        String regEnd = args.getString("reg_end", "");
-        int maxParticipants = args.getInt("max_participants", 0);
+        eventNameInput.setText(args.getString("event_name", ""));
+        eventDescriptionInput.setText(args.getString("event_description", ""));
+        eventLocationInput.setText(args.getString("event_location", ""));
+        eventStartDateInput.setText(args.getString("event_start_date", ""));
+        eventEndDateInput.setText(args.getString("event_end_date", ""));
+        inputRegStart.setText(args.getString("reg_start", ""));
+        inputRegEnd.setText(args.getString("reg_end", ""));
+        eventMaxParticipantsInput.setText(String.valueOf(args.getInt("max_participants", 0)));
         int waitingListSize = args.getInt("waiting_list_size", 0);
-
-        eventNameInput.setText(eventName);
-        eventDescriptionInput.setText(eventDescription);
-        eventLocationInput.setText(eventLocation);
-        eventStartDateInput.setText(eventStartDate);
-        eventEndDateInput.setText(eventEndDate);
-        inputRegStart.setText(regStart);
-        inputRegEnd.setText(regEnd);
-        eventMaxParticipantsInput.setText(String.valueOf(maxParticipants));
-        if (waitingListSize > 0) {
-            waitingListSizeInput.setText(String.valueOf(waitingListSize));
-        }
+        if (waitingListSize > 0) waitingListSizeInput.setText(String.valueOf(waitingListSize));
     }
 
+    /**
+     * Sets up click listeners on date input fields to open a DatePickerDialog.
+     */
     private void setupDatePickers() {
         eventStartDateInput.setOnClickListener(v -> showDatePicker(eventStartDateInput));
         eventEndDateInput.setOnClickListener(v -> showDatePicker(eventEndDateInput));
@@ -151,6 +206,11 @@ public class OrganizerCreateEventFragment extends Fragment {
         inputRegEnd.setOnClickListener(v -> showDatePicker(inputRegEnd));
     }
 
+    /**
+     * Creates a new event using the input fields.
+     * Performs validation on all fields including dates and numeric values.
+     * Generates a QR code for the event upon successful creation.
+     */
     private void createEvent() {
         if (currentOrganizer == null) {
             Log.d(TAG, "createEvent: Organizer not found");
@@ -167,7 +227,7 @@ public class OrganizerCreateEventFragment extends Fragment {
         String registrationEnd = inputRegEnd.getText().toString();
 
         if (eventName.isEmpty() || eventDescription.isEmpty() || eventLocation.isEmpty() ||
-                eventStartDate.toString().isEmpty() || eventEndDate.isEmpty() ||
+                eventStartDate.isEmpty() || eventEndDate.isEmpty() ||
                 registrationStart.isEmpty() || registrationEnd.isEmpty()) {
             Toast.makeText(getContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
@@ -175,7 +235,6 @@ public class OrganizerCreateEventFragment extends Fragment {
 
         int eventMaxParticipants;
         Integer waitingListSize = null;
-
 
         try {
             eventMaxParticipants = Integer.parseInt(eventMaxParticipantsInput.getText().toString().trim());
@@ -188,7 +247,6 @@ public class OrganizerCreateEventFragment extends Fragment {
             return;
         }
 
-        // For optional waiting list size
         String waitingListSizeStr = waitingListSizeInput.getText().toString().trim();
         if (!waitingListSizeStr.isEmpty()) {
             try {
@@ -218,9 +276,8 @@ public class OrganizerCreateEventFragment extends Fragment {
             return;
         }
 
-
         eventService.createEvent(currentOrganizer.getUserID(), eventName, eventDescription, eventLocation,
-                eventMaxParticipants, eventStartDate, eventEndDate, waitingListSize, registrationStart, registrationEnd)
+                        eventMaxParticipants, eventStartDate, eventEndDate, waitingListSize, registrationStart, registrationEnd)
                 .addOnSuccessListener(eventId -> {
                     eventService.refreshEventQR(currentOrganizer.getUserID(), eventId)
                             .addOnSuccessListener(imageUrl -> {
@@ -241,6 +298,10 @@ public class OrganizerCreateEventFragment extends Fragment {
                 });
     }
 
+    /**
+     * Updates an existing event with values from input fields.
+     * Performs validation and updates event in the database.
+     */
     private void updateEvent() {
         if (currentOrganizer == null || editingEventId == null) {
             Toast.makeText(getContext(), "Error: Cannot update event", Toast.LENGTH_SHORT).show();
@@ -263,8 +324,6 @@ public class OrganizerCreateEventFragment extends Fragment {
         }
 
         int eventMaxParticipants;
-//        Integer waitingListSize;
-
         try {
             eventMaxParticipants = Integer.parseInt(eventMaxParticipantsInput.getText().toString().trim());
             if (eventMaxParticipants <= 0) {
@@ -290,26 +349,21 @@ public class OrganizerCreateEventFragment extends Fragment {
                 return;
             }
         }
-
         final Integer waitingListSize = parsedWaitingListSize;
 
         if (!DateValidation.dateRangeValid(registrationStart, registrationEnd)) {
             Toast.makeText(getContext(), "Invalid registration period", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (!DateValidation.dateRangeValid(eventStartDate, eventEndDate)) {
             Toast.makeText(getContext(), "Invalid event period", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (!DateValidation.dateRangeValid(registrationEnd, eventStartDate)) {
             Toast.makeText(getContext(), "Registration must end before the event starts", Toast.LENGTH_SHORT).show();
             return;
         }
 
-
-        // Create updated event object
         eventService.getEvent(editingEventId)
                 .addOnSuccessListener(event -> {
                     event.setTitle(eventName);
@@ -320,9 +374,7 @@ public class OrganizerCreateEventFragment extends Fragment {
                     event.setRegistrationStart(registrationStart);
                     event.setRegistrationEnd(registrationEnd);
                     event.setMaxCapacity(eventMaxParticipants);
-                    if (waitingListSize != null) {
-                        event.setWaitlistCapacity(waitingListSize);
-                    }
+                    if (waitingListSize != null) event.setWaitlistCapacity(waitingListSize);
 
                     eventService.updateEvent(currentOrganizer.getUserID(), event)
                             .addOnSuccessListener(aVoid -> {
@@ -339,6 +391,12 @@ public class OrganizerCreateEventFragment extends Fragment {
                     Toast.makeText(getContext(), "Failed to fetch event", Toast.LENGTH_SHORT).show();
                 });
     }
+
+    /**
+     * Displays a DatePickerDialog for the given EditText input field.
+     *
+     * @param editText EditText to receive the selected date
+     */
     private void showDatePicker(final EditText editText) {
         LocalDate minDate = LocalDate.now();
         LocalDate initialDate = LocalDate.now();
@@ -348,12 +406,12 @@ public class OrganizerCreateEventFragment extends Fragment {
                 (view, year, month, dayOfMonth) -> {
                     LocalDate selectedDate = LocalDate.of(year, month + 1, dayOfMonth);
                     editText.setText(selectedDate.format(DateValidation.DATE_FORMAT));
-
                 },
                 initialDate.getYear(),
-                initialDate.getMonthValue() - 1 ,
+                initialDate.getMonthValue() - 1,
                 initialDate.getDayOfMonth()
         );
+
         datePickerDialog.getDatePicker().setMinDate(minDate.toEpochDay());
         datePickerDialog.show();
     }

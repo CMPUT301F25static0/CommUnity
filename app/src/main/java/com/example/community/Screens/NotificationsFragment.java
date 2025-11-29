@@ -22,8 +22,11 @@ import com.example.community.R;
 import com.example.community.UserService;
 
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Fragment that displays notifications for the current user.
+ * Users can view, accept, or decline invitations and navigate to notification settings.
+ */
 public class NotificationsFragment extends Fragment {
 
     ImageButton notificationSettingsButton;
@@ -36,6 +39,14 @@ public class NotificationsFragment extends Fragment {
     private NotificationService notificationService;
     private UserService userService;
 
+    /**
+     * Inflates the notifications layout.
+     *
+     * @param inflater           LayoutInflater to inflate views
+     * @param container          Parent view container
+     * @param savedInstanceState Saved state bundle
+     * @return Inflated fragment view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -44,6 +55,13 @@ public class NotificationsFragment extends Fragment {
         return inflater.inflate(R.layout.notification_page, container, false);
     }
 
+    /**
+     * Called after the fragment's view is created.
+     * Initializes UI components, sets up RecyclerView, and loads notifications.
+     *
+     * @param view               The fragment's view
+     * @param savedInstanceState Saved state bundle
+     */
     @Override
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
@@ -57,13 +75,12 @@ public class NotificationsFragment extends Fragment {
         notificationService = new NotificationService();
         userService = new UserService();
 
-        // RecyclerView
+        // Initialize RecyclerView adapter
         notificationAdapter = new NotificationAdapter(
                 notifications,
                 new NotificationAdapter.NotificationActionListener() {
                     @Override
                     public void onAccept(Notification notification) {
-                        // TODO: update waitlist status in backend
                         Toast.makeText(getContext(),
                                 "Accepted invitation for event " + notification.getEventID(),
                                 Toast.LENGTH_SHORT).show();
@@ -71,7 +88,6 @@ public class NotificationsFragment extends Fragment {
 
                     @Override
                     public void onDecline(Notification notification) {
-                        // TODO: update waitlist / mark notification as rejected
                         Toast.makeText(getContext(),
                                 "Declined invitation for event " + notification.getEventID(),
                                 Toast.LENGTH_SHORT).show();
@@ -79,7 +95,6 @@ public class NotificationsFragment extends Fragment {
 
                     @Override
                     public void onViewEvent(Notification notification) {
-                        // TODO: navigate to event details using notification.getEventID()
                         Toast.makeText(getContext(),
                                 "View event: " + notification.getEventID(),
                                 Toast.LENGTH_SHORT).show();
@@ -89,7 +104,6 @@ public class NotificationsFragment extends Fragment {
         notificationList.setLayoutManager(new LinearLayoutManager(getContext()));
         notificationList.setAdapter(notificationAdapter);
 
-        // Load notifications
         loadNotificationsForCurrentUser();
 
         notificationSettingsButton.setOnClickListener(v ->
@@ -103,6 +117,10 @@ public class NotificationsFragment extends Fragment {
         );
     }
 
+    /**
+     * Loads the list of notifications for the current user based on device token.
+     * Updates the RecyclerView adapter with the fetched notifications.
+     */
     private void loadNotificationsForCurrentUser() {
         String deviceToken = userService.getDeviceToken();
         if (deviceToken == null || deviceToken.isEmpty()) {
@@ -117,7 +135,6 @@ public class NotificationsFragment extends Fragment {
 
                     notificationService.listUserNotification(userId, 50, null)
                             .addOnSuccessListener(fetchedNotifications -> {
-                                // Explicitly fill the RecyclerView’s backing array
                                 notifications.clear();
                                 notifications.addAll(fetchedNotifications);
                                 notificationAdapter.notifyDataSetChanged();

@@ -12,6 +12,10 @@ public class DeleteAccountConfirmDialogFragment extends DialogFragment {
 
     public static final String REQUEST_KEY = "delete_account_request";
     public static final String RESULT_CONFIRMED = "confirmed";
+    /**
+     * DialogFragment that asks the user to confirm deletion of their account.
+     * Sends the result back to the parent fragment via setFragmentResult.
+     */
 
     @NonNull
     @Override

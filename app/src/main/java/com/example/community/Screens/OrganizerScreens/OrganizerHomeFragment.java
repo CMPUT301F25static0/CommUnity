@@ -15,44 +15,68 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.community.ArrayAdapters.EventArrayAdapter;
-import com.example.community.DateValidation;
 import com.example.community.Event;
 import com.example.community.EventService;
 import com.example.community.R;
 import com.example.community.UserService;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * Fragment representing the Organizer Home screen.
+ * Displays the list of events hosted by the current organizer and provides navigation
+ * to features such as creating events, notifications, profile, and other organizer actions.
+ */
 public class OrganizerHomeFragment extends Fragment {
-    ImageButton notificationsButton, cameraButton;
-    Button guideButton, filterButton, createButton, notifyButton;
-    Button eventHistoryButton, myProfileButton;
-    RecyclerView hostEventList;
 
+    /** UI Buttons */
+    private ImageButton notificationsButton, cameraButton;
+    private Button guideButton, filterButton, createButton, notifyButton;
+    private Button eventHistoryButton, myProfileButton;
+
+    /** RecyclerView displaying the organizer's events */
+    private RecyclerView hostEventList;
+
+    /** Data for the events */
     private ArrayList<Event> eventsArrayList;
-    String currentOrganizerID;
     private EventArrayAdapter eventArrayAdapter;
+
+    /** Current organizer ID */
+    private String currentOrganizerID;
+
+    /** Services for interacting with events and users */
     private EventService eventService;
     private UserService userService;
 
+    /**
+     * Inflates the fragment layout.
+     *
+     * @param inflater LayoutInflater to inflate the view
+     * @param container Parent container
+     * @param savedInstanceState Previously saved state
+     * @return Root view of the fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View organizerHomeFragment = inflater.inflate(R.layout.host_main_page, container, false);
-        return organizerHomeFragment;
+        return inflater.inflate(R.layout.host_main_page, container, false);
     }
 
+    /**
+     * Initializes UI elements, sets up RecyclerView and adapter, and loads organizer data.
+     *
+     * @param view Root view of the fragment
+     * @param savedInstanceState Previously saved state
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         eventService = new EventService();
-        eventsArrayList = new ArrayList<>();
         userService = new UserService();
+        eventsArrayList = new ArrayList<>();
 
-
+        // Initialize UI components
         notificationsButton = view.findViewById(R.id.organizerNotifications);
         cameraButton = view.findViewById(R.id.buttonCamera);
         guideButton = view.findViewById(R.id.buttonGuide);
@@ -63,6 +87,7 @@ public class OrganizerHomeFragment extends Fragment {
         myProfileButton = view.findViewById(R.id.buttonMyProfile);
         hostEventList = view.findViewById(R.id.HostEventView);
 
+        // Set up RecyclerView
         hostEventList.setLayoutManager(new LinearLayoutManager(getContext()));
         eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
         eventArrayAdapter.setOnEventClickListener(event -> {
@@ -77,12 +102,16 @@ public class OrganizerHomeFragment extends Fragment {
         setUpClickListeners();
     }
 
+    /**
+     * Loads current organizer data using device token, then triggers loading of their events.
+     */
     private void loadOrganizerData() {
         String deviceToken = userService.getDeviceToken();
         userService.getByDeviceToken(deviceToken)
                 .addOnSuccessListener(user -> {
                     if (user == null) {
                         Toast.makeText(getContext(), "User not found", Toast.LENGTH_SHORT).show();
+                        return;
                     }
                     currentOrganizerID = user.getUserID();
                     loadEvents();
@@ -91,8 +120,11 @@ public class OrganizerHomeFragment extends Fragment {
                     Toast.makeText(getContext(), "Failed to load organizer data", Toast.LENGTH_SHORT).show();
                 });
     }
-    private void loadEvents() {
 
+    /**
+     * Loads events hosted by the current organizer and updates the RecyclerView.
+     */
+    private void loadEvents() {
         eventService.listEventsByOrganizer(currentOrganizerID, 100, null)
                 .addOnSuccessListener(events -> {
                     if (eventsArrayList != null) {
@@ -104,40 +136,25 @@ public class OrganizerHomeFragment extends Fragment {
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Failed to load events", Toast.LENGTH_SHORT).show();
                 });
-//        String fromDate = DateValidation.getCurrentDate();
-//
-//        LocalDate futureDate = LocalDate.now().plusYears(1);
-//        String toDate = futureDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//
-//        if (DateValidation.dateRangeValid(fromDate, toDate)) {
-//            eventService.listUpcoming(fromDate, toDate, null)
-//                    .addOnSuccessListener(events -> {
-//                        if (eventsArrayList != null) {
-//                            eventsArrayList.clear();
-//                            eventsArrayList.addAll(events);
-//                            eventArrayAdapter.notifyDataSetChanged();
-//                        }
-//                    });
-//        }
     }
 
+    /**
+     * Sets up click listeners for all buttons in the fragment.
+     * Includes navigation and placeholder toasts for unimplemented features.
+     */
     private void setUpClickListeners() {
-        notificationsButton.setOnClickListener(v -> {
-            NavHostFragment.findNavController(OrganizerHomeFragment.this)
-                    .navigate(R.id.action_OrganizerHomeFragment_to_NotificationsFragment);
-        });
+        notificationsButton.setOnClickListener(v ->
+                NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                        .navigate(R.id.action_OrganizerHomeFragment_to_NotificationsFragment));
 
-        myProfileButton.setOnClickListener(v -> {
-            NavHostFragment.findNavController(OrganizerHomeFragment.this)
-                    .navigate(R.id.action_OrganizerHomeFragment_to_OrganizerProfileFragment);
-        });
+        myProfileButton.setOnClickListener(v ->
+                NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                        .navigate(R.id.action_OrganizerHomeFragment_to_OrganizerProfileFragment));
 
-        createButton.setOnClickListener(v -> {
-            NavHostFragment.findNavController(OrganizerHomeFragment.this)
-                    .navigate(R.id.action_OrganizerHomeFragment_to_CreateEventFragment);
-                });
+        createButton.setOnClickListener(v ->
+                NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                        .navigate(R.id.action_OrganizerHomeFragment_to_CreateEventFragment));
 
-        // Temporary toast messages for unimplemented features
         cameraButton.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Camera feature not implemented yet", Toast.LENGTH_SHORT).show());
 
@@ -146,8 +163,7 @@ public class OrganizerHomeFragment extends Fragment {
 
         notifyButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(OrganizerHomeFragment.this)
-                        .navigate(R.id.action_OrganizerHomeFragment_to_HostNotifyFragment)
-        );
+                        .navigate(R.id.action_OrganizerHomeFragment_to_HostNotifyFragment));
 
         eventHistoryButton.setOnClickListener(v ->
                 Toast.makeText(getActivity(), "Event History not implemented yet", Toast.LENGTH_SHORT).show());

@@ -22,11 +22,23 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment for filtering events based on a keyword or time availability.
+ * Allows the user to enter search criteria and apply the filter.
+ */
 public class FilterFragment extends Fragment {
 
     private EditText inputKeyword, inputTimeAvailable;
     private Button buttonApply, buttonBack;
 
+    /**
+     * Inflates the filter fragment layout.
+     *
+     * @param inflater           LayoutInflater to inflate views
+     * @param container          Parent view container
+     * @param savedInstanceState Saved state bundle
+     * @return Inflated fragment view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -35,6 +47,13 @@ public class FilterFragment extends Fragment {
         return inflater.inflate(R.layout.filter_page, container, false);
     }
 
+    /**
+     * Called after the fragment's view is created.
+     * Initializes UI elements and sets up back and apply filter button listeners.
+     *
+     * @param view               The fragment's view
+     * @param savedInstanceState Saved state bundle
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -44,10 +63,12 @@ public class FilterFragment extends Fragment {
         buttonApply = view.findViewById(R.id.buttonApplyFilter);
         buttonBack = view.findViewById(R.id.buttonBack);
 
+        // Back button returns to previous screen
         buttonBack.setOnClickListener(v ->
                 NavHostFragment.findNavController(FilterFragment.this).popBackStack()
         );
 
+        // Apply button triggers search with entered criteria
         buttonApply.setOnClickListener(v -> {
             String keyword = inputKeyword.getText().toString().trim();
             String time = inputTimeAvailable.getText().toString().trim();
@@ -61,6 +82,13 @@ public class FilterFragment extends Fragment {
         });
     }
 
+    /**
+     * Searches the Firestore "events" collection using the provided keyword and time filters.
+     * Displays a Toast with the number of matching events found.
+     *
+     * @param keyword Keyword to search in event titles
+     * @param time    Time string to filter events by start date
+     */
     private void searchEvents(String keyword, String time) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("events");
@@ -73,7 +101,6 @@ public class FilterFragment extends Fragment {
         }
 
         // Filter by time substring match
-        // assuming eventStartDate or eventEndDate contains human-readable text (like "2025-11-26 17:00")
         if (!time.isEmpty()) {
             query = query.whereGreaterThanOrEqualTo("eventStartDate", time);
         }
@@ -88,8 +115,6 @@ public class FilterFragment extends Fragment {
             Toast.makeText(getContext(),
                     "Found " + matchingEvents.size() + " matching events",
                     Toast.LENGTH_SHORT).show();
-
-            // TODO: Pass matchingEvents to the event list UI (EntrantHomeFragment, etc.)
         }).addOnFailureListener(e ->
                 Toast.makeText(getContext(),
                         "Search failed: " + e.getMessage(),
@@ -97,4 +122,3 @@ public class FilterFragment extends Fragment {
         );
     }
 }
-

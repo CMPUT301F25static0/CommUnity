@@ -23,25 +23,55 @@ import com.example.community.R;
 import com.example.community.UserService;
 
 import java.time.LocalDate;
-import java.util.Locale;
 
+/**
+ * DialogFragment that allows organizers to confirm and run a lottery
+ * for an event, selecting a number of available slots.
+ */
 public class LotteryConfirmationDialogFragment extends DialogFragment {
+
+    /** Tag for logging */
     private static final String TAG = "LotteryConfirmationDialogFragment";
+
+    /** Argument key for event ID */
     private static final String ARG_EVENT_ID = "event_id";
 
+    /** The ID of the event associated with this lottery */
     private String eventID;
+
+    /** Number of available slots for the lottery */
     private int availableSlots;
 
+    /** Service for retrieving event data */
     private EventService eventService;
+
+    /** Service for running the lottery */
     private LotteryService lotteryService;
+
+    /** Service for retrieving user/organizer info */
     private UserService userService;
 
+    /** TextView displaying lottery messages to the user */
     private TextView lotteryMessageTextView;
+
+    /** NumberPicker for selecting number of slots to include in the lottery */
     private NumberPicker lotteryNumberPicker;
+
+    /** ProgressBar shown while the lottery is running */
     private ProgressBar lotteryLoadingProgressBar;
+
+    /** Button to confirm and run the lottery */
     private Button lotteryConfirmButton;
+
+    /** Button to cancel the lottery */
     private Button lotteryCancelButton;
 
+    /**
+     * Creates a new instance of the fragment with the given event ID.
+     *
+     * @param eventId The ID of the event for which the lottery will be run.
+     * @return A new instance of LotteryConfirmationDialogFragment.
+     */
     public static LotteryConfirmationDialogFragment newInstance(String eventId) {
         LotteryConfirmationDialogFragment fragment = new LotteryConfirmationDialogFragment();
         Bundle args = new Bundle();
@@ -50,6 +80,11 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * Initializes services and retrieves arguments.
+     *
+     * @param savedInstanceState Previously saved state of the fragment.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,13 +97,29 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Inflates the fragment layout.
+     *
+     * @param inflater LayoutInflater to inflate the view.
+     * @param container Parent view that fragment's UI should attach to.
+     * @param savedInstanceState Previously saved state of the fragment.
+     * @return Root View of the fragment layout.
+     */
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View lotteryConfirmationDialog = inflater.inflate(R.layout.organizer_lottery_confirmation_dialog, container, false);
-        return lotteryConfirmationDialog;
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.organizer_lottery_confirmation_dialog, container, false);
     }
 
+    /**
+     * Called after the view is created. Sets up UI references,
+     * fetches event data, and sets button listeners.
+     *
+     * @param view Root view of the fragment.
+     * @param savedInstanceState Previously saved state of the fragment.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -79,13 +130,12 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
         lotteryConfirmButton = view.findViewById(R.id.lotteryConfirmButton);
         lotteryCancelButton = view.findViewById(R.id.lotteryCancelButton);
 
+        // Fetch event to determine available slots
         eventService.getEvent(eventID)
                 .addOnSuccessListener(event -> {
-                    if (event != null) {
-                        availableSlots = event.getMaxCapacity() - event.getCurrentCapacity();
-                    } else {
-                        availableSlots = 100;
-                    }
+                    availableSlots = (event != null)
+                            ? event.getMaxCapacity() - event.getCurrentCapacity()
+                            : 100;
                     setupNumberPicker(availableSlots);
                 })
                 .addOnFailureListener(e -> {
@@ -94,12 +144,15 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
                     setupNumberPicker(availableSlots);
                 });
 
-//        setupNumberPicker(availableSlots);
-
         lotteryConfirmButton.setOnClickListener(v -> runLottery());
         lotteryCancelButton.setOnClickListener(v -> dismiss());
     }
 
+    /**
+     * Configures the NumberPicker with minimum, maximum, and default values.
+     *
+     * @param availableSlots Maximum selectable value for the NumberPicker.
+     */
     private void setupNumberPicker(int availableSlots) {
         lotteryNumberPicker.setMinValue(1);
         lotteryNumberPicker.setMaxValue(availableSlots);
@@ -107,14 +160,16 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
         lotteryNumberPicker.setWrapSelectorWheel(false);
     }
 
+    /**
+     * Executes the lottery process for the event.
+     * Checks registration status, shows loading UI, and calls LotteryService.
+     */
     private void runLottery() {
         int sampleSize = lotteryNumberPicker.getValue();
 
-        // Get current organizer ID
         String deviceToken = userService.getDeviceToken();
         userService.getUserIDByDeviceToken(deviceToken)
                 .addOnSuccessListener(organizerID -> {
-                    // Get event to check registration end date
                     eventService.getEvent(eventID)
                             .addOnSuccessListener(event -> {
                                 if (event == null) {
@@ -122,13 +177,11 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
                                     return;
                                 }
 
-                                // Check if registration has closed
                                 if (!isRegistrationClosed(event.getRegistrationEnd())) {
                                     Toast.makeText(getContext(), "Cannot run lottery: registration has not closed yet", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
-                                // Show loading bar and start lottery
                                 showLoading();
                                 Toast.makeText(getContext(), "Running lottery...", Toast.LENGTH_SHORT).show();
 
@@ -155,6 +208,12 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Checks if the registration for the event has closed.
+     *
+     * @param registrationEndDate Registration end date as a string.
+     * @return True if registration has ended, false otherwise.
+     */
     private boolean isRegistrationClosed(String registrationEndDate) {
         if (!DateValidation.isValidDateFormat(registrationEndDate)) {
             Log.e(TAG, "Invalid date format: " + registrationEndDate);
@@ -170,6 +229,9 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Updates the UI to indicate the lottery is running.
+     */
     private void showLoading() {
         lotteryMessageTextView.setText("Running lottery...");
         lotteryConfirmButton.setEnabled(false);
@@ -177,12 +239,18 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
         lotteryLoadingProgressBar.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Updates the UI to indicate the lottery has finished or failed.
+     */
     private void hideLoading() {
         lotteryLoadingProgressBar.setVisibility(View.GONE);
         lotteryConfirmButton.setEnabled(true);
         lotteryCancelButton.setEnabled(true);
     }
 
+    /**
+     * Ensures the dialog cannot be canceled by touching outside of it.
+     */
     @Override
     public void onStart() {
         super.onStart();
