@@ -200,5 +200,17 @@ public class NotificationService {
                                                                    String startAfterID) {
         return notificationRepository.listNotificationsByRecipient(userID, limit, startAfterID);
     }
+
+    /**
+     * Gets notification logs for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of notifications for the event
+     */
+    public Task<List<Notification>> getNotificationLogs(String eventID) {
+        return notificationRepository.listNotificationsByEvent(eventID, 1000, null);
+        // I capped it at 1000
+    }
+
 }
 

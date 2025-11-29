@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -250,5 +251,106 @@ public class WaitingListEntryService {
     public Task<List<WaitingListEntry>> getHistory(String userID) {
         return waitlistRepository.listByUser(userID);
     }
+
+    /**
+     * Cancels entrants who did not sign up within the specified time.
+     *
+     * @param eventID ID of the event
+     * @param deadline Timestamp deadline for signup
+     * @return task that completes when non-registered entrants are cancelled
+     */
+    public Task<Void> cancelNonRegistered(String eventID, long deadline) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.INVITED)
+                .continueWithTask(entriesTask -> {
+                    if (!entriesTask.isSuccessful()) {
+                        throw entriesTask.getException();
+                    }
+
+                    List<WaitingListEntry> invitedEntries = entriesTask.getResult();
+                    List<Task<Void>> cancelTasks = new ArrayList<>();
+
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime < deadline) {
+                        return Tasks.forException(new IllegalArgumentException("Deadline has not passed yet"));
+                    }
+
+                    for (WaitingListEntry entry : invitedEntries) {
+                        // If they were invited but haven't accepted by deadline, cancel them
+                        if (entry.getAcceptedAt() == null) {
+                            entry.markAsCancelled();
+                            cancelTasks.add(waitlistRepository.update(entry));
+                        }
+                    }
+
+                    return Tasks.whenAll(cancelTasks);
+                });
+    }
+
+    /**
+     * Adds a user to an event's waitlist with location tracking.
+     *
+     * @param userID ID of the user
+     * @param eventID ID of the event
+     * @param location GeoPoint of user's location (can be null)
+     * @return task that completes when user is added
+     */
+    public Task<Void> joinWithLocation(String userID, String eventID, com.google.firebase.firestore.GeoPoint location) {
+        return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
+            WaitingListEntry existing = task.getResult();
+            if (existing != null) {
+                return Tasks.forException(new IllegalArgumentException("Already on waitlist"));
+            }
+
+            String entryID = UUID.randomUUID().toString();
+            WaitingListEntry entry = new WaitingListEntry(entryID, eventID, userID);
+            entry.markAsJoined(location);
+
+            return waitlistRepository.create(entry);
+        });
+    }
+
+    /**
+     * Gets all waitlist entries with location data for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of waitlist entries with location data
+     */
+    public Task<List<WaitingListEntry>> getWaitlistEntriesWithLocation(String eventID) {
+        return waitlistRepository.listByEvent(eventID);
+    }
+
+    /**
+     * Sets geolocation requirement for an event.
+     *
+     * @param eventID ID of the event
+     * @param required Whether geolocation is required
+     * @return task that completes when requirement is set
+     */
+    public Task<Void> setGeolocationRequirement(String eventID, boolean required) {
+        return eventRepository.getByID(eventID).continueWithTask(task -> {
+            Event event = task.getResult();
+            if (event == null) {
+                return Tasks.forException(new IllegalArgumentException("Event not found"));
+            }
+            event.setRequiresGeolocation(required);
+            return eventRepository.update(event);
+        });
+    }
+
+    public Task<Void> cancelInvite(String userID, String eventID) {
+        return waitlistRepository.getByID(eventID, userID). continueWithTask(task -> {
+            WaitingListEntry entry = task. getResult();
+            if (entry == null) {
+                return Tasks.forException(new IllegalArgumentException("Not on waitlist"));
+            }
+            if (!entry.hasStatus(EntryStatus.INVITED)) {
+                return Tasks.forException(new IllegalStateException("User is not invited"));
+            }
+
+            entry.markAsCancelled();
+            return waitlistRepository.update(entry);
+        });
+    }
+
 }
 

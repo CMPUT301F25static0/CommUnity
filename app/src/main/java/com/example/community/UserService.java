@@ -336,4 +336,22 @@ public class UserService {
                     return u.getEventsCreatedIDs();
                 });
     }
+    
+    // Add to existing UserService class
+    /**
+     * Gets registration history for a user.
+     *
+     * @param userID ID of the user
+     * @return task containing list of event IDs in registration history
+     */
+    public Task<List<String>> getRegistrationHistory(String userID) {
+        return userRepository.getByUserID(userID).continueWith(task -> {
+            User user = task.getResult();
+            if (user == null) {
+                throw new IllegalArgumentException("User not found");
+            }
+            return new ArrayList<>(user.getRegistrationHistoryIDs());
+        });
+    }
+
 }
