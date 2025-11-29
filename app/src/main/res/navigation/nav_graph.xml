@@ -255,10 +255,6 @@
         tools:layout="@layout/admin_event">
 
         <action
-            android:id="@+id/action_AdminEventFragment_to_hostPosterUpdatePageFragment"
-            app:destination="@id/HostPosterUpdatePageFragment" />
-
-        <action
             android:id="@+id/action_AdminEventFragment_to_AdminHomeFragment"
             app:destination="@id/AdminHomeFragment">
         </action>
