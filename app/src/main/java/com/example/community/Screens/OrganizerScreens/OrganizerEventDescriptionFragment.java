@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.example.community.EventService;
 import com.example.community.R;
 import com.example.community.UserService;
 import com.example.community.WaitingListEntryService;
+import com.squareup.picasso.Picasso;
 
 public class OrganizerEventDescriptionFragment extends Fragment {
 
@@ -32,11 +34,13 @@ public class OrganizerEventDescriptionFragment extends Fragment {
     private UserService userService;
     private EventService eventService;
 
-
+    private ImageView posterImageView;
     private TextView eventTitle, eventDescription, eventLocation, eventDates
             , registrationDates, capacity, organizerUsername, organizerEmail, organizerPhone
             , waitlistCount, attendeeCount, invitedCount;
-    private Button editButton, viewAttendeesButton, viewWaitlistButton, viewInvitedButton, viewDeclinedButton, viewCancelledButton, backButton;
+    private Button editButton, uploadPosterButton, viewAttendeesButton,
+            viewWaitlistButton, viewInvitedButton, viewDeclinedButton,
+            viewCancelledButton, runLotteryButton, backButton;
 
     @Nullable
     @Override
@@ -56,6 +60,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
 //        userService.getUserIDByDeviceToken(deviceToken)
 //                .addOnSuccessListener(userId -> currentOrganizerId = userId);
 
+        posterImageView = view.findViewById(R.id.posterImageView);
         eventTitle = view.findViewById(R.id.eventTitle);
         eventDescription = view.findViewById(R.id.eventDescription);
         eventLocation = view.findViewById(R.id.eventLocation);
@@ -70,15 +75,27 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         invitedCount = view.findViewById(R.id.organizerInvitedCount);
 
         editButton = view.findViewById(R.id.organizerEditEventButton);
+        uploadPosterButton = view.findViewById(R.id.uploadPosterButton);
         viewAttendeesButton = view.findViewById(R.id.viewAttendeesButton);
         viewWaitlistButton = view.findViewById(R.id.viewWaitlistButton);
         viewInvitedButton = view.findViewById(R.id.viewInvitedButton);
         viewCancelledButton = view.findViewById(R.id.viewCancelledButton);
         viewDeclinedButton = view.findViewById(R.id.viewDeclinedButton);
+        runLotteryButton = view.findViewById(R.id.runLotteryButton);
         backButton = view.findViewById(R.id.organizerEventDescriptionBackButton);
+
 
         loadEventDetails();
         setUpClickListeners();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Reload event details when returning from upload fragment
+        if (currentEvent != null) {
+            loadEventDetails();
+        }
     }
 
     private void setUpClickListeners() {
@@ -86,11 +103,13 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                 NavHostFragment.findNavController(this).navigateUp());
 
         editButton.setOnClickListener(v -> editEvent());
+        uploadPosterButton.setOnClickListener(v -> uploadPoster());
         viewAttendeesButton.setOnClickListener(v -> viewAttendeesList());
         viewWaitlistButton.setOnClickListener(v -> viewWaitlist());
         viewInvitedButton.setOnClickListener(v -> viewInvitedList());
         viewCancelledButton.setOnClickListener(v -> viewCancelledList());
         viewDeclinedButton.setOnClickListener(v -> viewDeclinedList());
+        runLotteryButton.setOnClickListener(v -> showLotteryConfirmationDialog());
     }
 
     private void loadEventDetails() {
@@ -110,9 +129,11 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                     eventDates.setText(String.format("Event Dates: %s - %s",
                             event.getEventStartDate(), event.getEventEndDate()));
                     registrationDates.setText(String.format("Registration Period: %s - %s",
-                            event.getRegistrationStart(), event.getEventEndDate()));
+                            event.getRegistrationStart(), event.getRegistrationEnd()));
                     capacity.setText(String.format("Amount Attendees: %d/%d",
                             event.getCurrentCapacity(), event.getMaxCapacity()));
+
+                    loadPosterImage();
                     loadWaitlistCount();
                     loadOrganizerDetails(event.getOrganizerID());
                 })
@@ -121,6 +142,27 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                     Toast.makeText(getContext(), "Failed to load event details", Toast.LENGTH_SHORT)
                             .show();
                 });
+    }
+
+    private void loadPosterImage() {
+        if (currentEvent == null) {
+            posterImageView.setVisibility(View.GONE);
+            return;
+        }
+
+        String posterURL = currentEvent.getPosterImageURL();
+        if(posterURL != null && !posterURL.isEmpty()) {
+            Picasso.get()
+                    .load(posterURL)
+                    .fit()
+                    .centerCrop()
+                    .error(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .into(posterImageView);
+            posterImageView.setVisibility(View.VISIBLE);
+        } else {
+            posterImageView.setVisibility(View.GONE);
+        }
     }
 
     private void loadOrganizerDetails(String organizerID) {
@@ -187,6 +229,18 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                 .navigate(R.id.action_OrganizerEventDescriptionFragment_to_CreateEventFragment, args);
     }
 
+    private void uploadPoster() {
+        if (currentEvent == null) {
+            Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Bundle args = new Bundle();
+        args.putString("event_id", currentEvent.getEventID());
+
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_OrganizerEventDescriptionFragment_to_OrganizerPosterUploadFragment, args);
+    }
+
     private void viewWaitlist() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
@@ -229,6 +283,15 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         }
         OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "declined");
         fragment.show(getChildFragmentManager(), "declined_list");
+    }
+
+    private void showLotteryConfirmationDialog() {
+        if (currentEvent == null) {
+            Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        LotteryConfirmationDialogFragment fragment = LotteryConfirmationDialogFragment.newInstance(currentEvent.getEventID());
+        fragment.show(getChildFragmentManager(), "lottery_confirmation");
     }
 
 }
