@@ -17,11 +17,17 @@ public class UserTest {
     private static final String TEST_EMAIL = "test@example.com";
     private static final String TEST_PHONE = "123-456-7890";
 
-//    @Before
-//    public void setUp() {
-//        // Create a fresh user before each test
-//        user = new User(TEST_DEVICE_TOKEN, TEST_USER_ID, TEST_USERNAME, TEST_EMAIL);
-//    }
+    @Before
+    public void setUp() {
+        user = new User();                 // create a fresh User for each test
+
+        // optional: if you actually need these values in other tests
+        user.setDeviceToken(TEST_DEVICE_TOKEN);
+        user.setUserID(TEST_USER_ID);
+        user.setUsername(TEST_USERNAME);
+        user.setEmail(TEST_EMAIL);
+        user.setPhoneNumber(TEST_PHONE);
+    }
 
     @Before
     public void SetUP() {
@@ -212,6 +218,7 @@ public class UserTest {
 
     @Test
     public void testHasPhoneNumberFalse() {
+        user.setPhoneNumber(null);
         assertFalse("Should not have phone number", user.hasPhoneNumber());
     }
 
