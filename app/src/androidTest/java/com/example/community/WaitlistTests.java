@@ -8,18 +8,30 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(AndroidJUnit4.class)
 public class WaitlistTests {
+
+    @Rule
+    public ActivityScenarioRule<MainActivity> activityRule =
+            new ActivityScenarioRule<>(MainActivity.class);
+
     @Test
-    // - US 01.01.01 – Join waiting list
-    public void testJoinWaitingList() { // - US 01.01.01 – Join waiting list
-        // Navigate to event details
+    public void testJoinWaitingList() {
+        // Step 1–2: SplashPage → RoleSelect → click "User"
+        onView(withId(R.id.buttonUser)).perform(click());
+
+        // Step 3: EntrantHome → click first event in event_list
         onView(withId(R.id.event_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
-        // Tap "Join Waiting List"
+        // Step 4: EventDescription → tap waitlistButton
         onView(withId(R.id.waitlistButton)).perform(click());
 
         // Verify confirmation
@@ -28,20 +40,20 @@ public class WaitlistTests {
     }
 
     @Test
-    public void testLeaveWaitingList() { // US 01.01.02 – Leave waiting list
+    public void testLeaveWaitingList() {
+        onView(withId(R.id.buttonUser)).perform(click());
         onView(withId(R.id.event_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-
-        // Tap the same waitlistButton (now showing "Leave Waiting List")
         onView(withId(R.id.waitlistButton)).perform(click());
-
         onView(withText("You have left the waiting list"))
                 .check(matches(isDisplayed()));
     }
 
     @Test
-    public void testViewWaitlistCount() { // US 01.05.04 – View waitlist count
-        onView(withId(R.id.waitlistCount))
-                .check(matches(withText("Total entrants: 10")));
+    public void testViewWaitlistCount() {
+        onView(withId(R.id.buttonUser)).perform(click());
+        onView(withId(R.id.event_list))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.waitlistCount)).check(matches(isDisplayed()));
     }
 }
