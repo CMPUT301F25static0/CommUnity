@@ -146,11 +146,11 @@
         android:id = "@+id/OrganizerHomeFragment"
         android:name = "com.example.community.Screens.OrganizerScreens.OrganizerHomeFragment"
         android:label = "Organizer Home"
-        tools:layout = "@layout/host_main_page"
+        tools:layout = "@layout/organizer_main_page"
         >
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_HostNotifyFragment"
-            app:destination="@id/HostNotifyFragment" >
+            app:destination="@id/OrganizerNotifyFragment" >
         </action>
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_NotificationsFragment"
@@ -168,6 +168,9 @@
             android:id="@+id/action_OrganizerHomeFragment_to_OrganizerEventDescriptionFragment"
             app:destination="@id/OrganizerEventDescriptionFragment">
         </action>
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_GeolocationFragment"
+            app:destination="@id/GeolocationFragment" />
     </fragment>
 
     <fragment
@@ -179,6 +182,27 @@
         <action
             android:id="@+id/action_HostCreateEventFragment_to_HostPosterUploadFragment"
             app:destination="@id/HostPosterUploadFragment" />
+    </fragment>
+
+<!--    Event Description Related Fragments-->
+    <fragment
+        android:id="@+id/GeolocationFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerGeolocationFragment"
+        android:label="Geolocation Management"
+        tools:layout="@layout/organizer_geolocation_page">
+        <action
+            android:id="@+id/action_GeolocationFragment_to_GeolocationMapFragment"
+            app:destination="@id/GeolocationMapFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/GeolocationMapFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerGeolocationMapFragment"
+        android:label="Event Locations"
+        tools:layout="@layout/organizer_geolocation_map_page">
+        <argument
+            android:name="event_id"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -209,6 +233,32 @@
         <argument
             android:name="event_id"
             app:argType="string" />
+    </fragment>
+
+<!--    Organizer Send Notification related-->
+    <!--    Host Notify Fragments -->
+    <fragment
+        android:id="@+id/OrganizerNotifyFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerNotifyFragment"
+        android:label="OrganizerNotifyFragment"
+        tools:layout="@layout/organizer_create_notification_page">
+
+        <action
+            android:id="@+id/action_OrganizerNotifyFragment_to_OrganizerCreateNotificationFragment"
+            app:destination="@id/OrganizerCreateNotificationFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/OrganizerCreateNotificationFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerCreateNotificationFragment"
+        android:label="OrganizerCreateNotificationFragment"
+        tools:layout="@layout/organizer_create_notification_page">
+
+        <action
+            android:id="@+id/action_NotificationTargetDialogFragment_to_OrganizerCreateNotificationFragment"
+            app:destination="@id/OrganizerCreateNotificationFragment" />
+
     </fragment>
 
 
@@ -330,7 +380,6 @@
         android:label="HostNotifyFragment"
         tools:layout="@layout/host_notify_page">
 
-    </fragment>
 
     <!--    Host Poster Upload Fragments -->
     <fragment
