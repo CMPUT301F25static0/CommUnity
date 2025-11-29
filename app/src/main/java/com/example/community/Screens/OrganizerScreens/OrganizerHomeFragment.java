@@ -37,7 +37,7 @@ public class OrganizerHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View organizerHomeFragment = inflater.inflate(R.layout.host_main_page, container, false);
+        View organizerHomeFragment = inflater.inflate(R.layout.organizer_main_page, container, false);
         return organizerHomeFragment;
     }
 

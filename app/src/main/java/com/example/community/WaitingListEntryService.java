@@ -373,15 +373,6 @@ public class WaitingListEntryService {
      * @param required Whether geolocation is required
      * @return task that completes when requirement is set
      */
-    /**
-     * Sets geolocation requirement for an event.
-     *
-     * CHANGE 4: New method to toggle geolocation requirement
-     *
-     * @param eventID ID of the event
-     * @param required Whether geolocation is required
-     * @return task that completes when requirement is set
-     */
     public Task<Void> setGeolocationRequirement(String eventID, boolean required) {
         return eventRepository. getByID(eventID).continueWithTask(task -> {
             Event event = task.getResult();
@@ -393,6 +384,20 @@ public class WaitingListEntryService {
         });
     }
 
+    public Task<Void> cancelInvite(String userID, String eventID) {
+        return waitlistRepository.getByID(eventID, userID). continueWithTask(task -> {
+            WaitingListEntry entry = task. getResult();
+            if (entry == null) {
+                return Tasks.forException(new IllegalArgumentException("Not on waitlist"));
+            }
+            if (!entry.hasStatus(EntryStatus.INVITED)) {
+                return Tasks.forException(new IllegalStateException("User is not invited"));
+            }
+
+            entry.markAsCancelled();
+            return waitlistRepository.update(entry);
+        });
+    }
 
 }
 
