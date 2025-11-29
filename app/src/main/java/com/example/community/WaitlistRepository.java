@@ -182,4 +182,26 @@ public class WaitlistRepository {
                     return task.getResult().toObjects(WaitingListEntry.class);
                 });
     }
+
+    /**
+     * Counts waitlist entries for an event filtered by status.
+     *
+     * @param eventID ID of the event
+     * @param status status to filter by
+     * @return task containing the count
+     */
+    public Task<Long> countByEventAndStatus(String eventID, EntryStatus status) {
+        return eventsRef. document(eventID)
+                .collection(SUBCOLLECTION_WAITLIST)
+                .whereEqualTo("status", status)
+                .get()
+                .continueWith(task -> {
+                    if (! task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return (long) task.getResult(). size();
+                });
+    }
+
+
 }

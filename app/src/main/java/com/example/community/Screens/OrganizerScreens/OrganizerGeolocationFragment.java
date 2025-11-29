@@ -1,4 +1,110 @@
-package com.example.community.Screens.OrganizerScreens;
+package com.example. community. Screens. OrganizerScreens;
 
-public class OrganizerGeolocationFragment {
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx. fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.community.ArrayAdapters.EventArrayAdapter;
+import com.example.community.Event;
+import com.example.community.EventService;
+import com.example. community.R;
+import com. example.community.UserService;
+
+import java.util.ArrayList;
+
+/**
+ * Fragment for displaying organizer's events with geolocation support.
+ * Allows organizer to select an event to view entrant locations on a map.
+ */
+public class OrganizerGeolocationFragment extends Fragment {
+
+    private RecyclerView eventListRecyclerView;
+    private Button backButton;
+    private ArrayList<Event> eventsArrayList;
+    private EventArrayAdapter eventArrayAdapter;
+    private EventService eventService;
+    private UserService userService;
+    private String currentOrganizerID;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.organizer_geolocation_page, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        eventService = new EventService();
+        userService = new UserService();
+        eventsArrayList = new ArrayList<>();
+
+        eventListRecyclerView = view. findViewById(R.id.geolocationEventList);
+        backButton = view.findViewById(R.id.geolocationBackButton);
+
+        eventListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
+        eventArrayAdapter. setOnEventClickListener(event -> navigateToMap(event. getEventID()));
+        eventListRecyclerView.setAdapter(eventArrayAdapter);
+
+        backButton.setOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
+
+        loadOrganizerEventsWithGeolocation();
+    }
+
+    private void loadOrganizerEventsWithGeolocation() {
+        String deviceToken = userService.getDeviceToken();
+        userService.getByDeviceToken(deviceToken)
+                .addOnSuccessListener(user -> {
+                    if (user == null) {
+                        Toast.makeText(getContext(), "User not found", Toast.LENGTH_SHORT). show();
+                        return;
+                    }
+                    currentOrganizerID = user.getUserID();
+                    loadEvents();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to load organizer data", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void loadEvents() {
+        eventService.listEventsByOrganizer(currentOrganizerID, 100, null)
+                .addOnSuccessListener(events -> {
+                    if (eventsArrayList != null) {
+                        eventsArrayList.clear();
+                        // Only add events that have geolocation enabled
+                        for (Event event : events) {
+                            if (event.getRequiresGeolocation()) {
+                                eventsArrayList.add(event);
+                            }
+                        }
+                        eventArrayAdapter.notifyDataSetChanged();
+
+                        if (eventsArrayList.isEmpty()) {
+                            Toast.makeText(getContext(), "No events with geolocation enabled", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to load events", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void navigateToMap(String eventID) {
+        Bundle args = new Bundle();
+        args. putString("event_id", eventID);
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_GeolocationFragment_to_GeolocationMapFragment, args);
+    }
 }

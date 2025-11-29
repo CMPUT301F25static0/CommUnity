@@ -36,17 +36,39 @@ public class WaitingListEntryService {
      * @return task that completes when user is added
      */
     public Task<Void> join(String userID, String eventID) {
-        return waitlistRepository.getByID(eventID, userID).continueWithTask(task -> {
+        return waitlistRepository.getByID(eventID, userID). continueWithTask(task -> {
             WaitingListEntry existing = task.getResult();
             if (existing != null) {
                 return Tasks.forException(new IllegalArgumentException("Already on waitlist"));
             }
 
-            String entryID = UUID.randomUUID().toString();
-            WaitingListEntry entry = new WaitingListEntry(entryID, eventID, userID);
-            entry.markAsJoined();
+            // Check waitlist capacity
+            return eventRepository.getByID(eventID). continueWithTask(eventTask -> {
+                Event event = eventTask.getResult();
+                if (event == null) {
+                    return Tasks.forException(new IllegalArgumentException("Event not found"));
+                }
 
-            return waitlistRepository.create(entry);
+                Integer waitlistCapacity = event.getWaitlistCapacity();
+                if (waitlistCapacity != null && waitlistCapacity > 0) {
+                    return waitlistRepository.countByEvent(eventID).continueWithTask(countTask -> {
+                        Long currentCount = countTask.getResult();
+                        if (currentCount >= waitlistCapacity) {
+                            return Tasks. forException(new IllegalStateException("Waitlist is full"));
+                        }
+
+                        String entryID = UUID.randomUUID().toString();
+                        WaitingListEntry entry = new WaitingListEntry(entryID, eventID, userID);
+                        entry.markAsJoined();
+                        return waitlistRepository.create(entry);
+                    });
+                }
+
+                String entryID = UUID.randomUUID().toString();
+                WaitingListEntry entry = new WaitingListEntry(entryID, eventID, userID);
+                entry.markAsJoined();
+                return waitlistRepository.create(entry);
+            });
         });
     }
 
@@ -301,13 +323,38 @@ public class WaitingListEntryService {
                 return Tasks.forException(new IllegalArgumentException("Already on waitlist"));
             }
 
+                    // Check if event's waitlist has reached capacity
+                    return eventRepository.getByID(eventID). continueWithTask(eventTask -> {
+                        Event event = eventTask.getResult();
+                        if (event == null) {
+                            return Tasks.forException(new IllegalArgumentException("Event not found"));
+                        }
+
+                        Integer waitlistCapacity = event.getWaitlistCapacity();
+                        if (waitlistCapacity != null && waitlistCapacity > 0) {
+                            return waitlistRepository.countByEventAndStatus(eventID, EntryStatus.WAITING)
+                                    .continueWithTask(countTask -> {
+                                        Long currentCount = countTask.getResult();
+                                        if (currentCount >= waitlistCapacity) {
+                                            return Tasks. forException(new IllegalStateException("Waitlist is full"));
+                                        }
+
+                                        // Create and add the new entry with location
+                                        String entryID = UUID.randomUUID().toString();
+                                        WaitingListEntry entry = new WaitingListEntry(entryID, eventID, userID);
+                                        entry.markAsJoined(location);
+                                        return waitlistRepository.create(entry);
+                                    });
+                        }
+
             String entryID = UUID.randomUUID().toString();
             WaitingListEntry entry = new WaitingListEntry(entryID, eventID, userID);
             entry.markAsJoined(location);
 
             return waitlistRepository.create(entry);
         });
-    }
+    });
+        }
 
     /**
      * Gets all waitlist entries with location data for an event.
@@ -326,8 +373,17 @@ public class WaitingListEntryService {
      * @param required Whether geolocation is required
      * @return task that completes when requirement is set
      */
+    /**
+     * Sets geolocation requirement for an event.
+     *
+     * CHANGE 4: New method to toggle geolocation requirement
+     *
+     * @param eventID ID of the event
+     * @param required Whether geolocation is required
+     * @return task that completes when requirement is set
+     */
     public Task<Void> setGeolocationRequirement(String eventID, boolean required) {
-        return eventRepository.getByID(eventID).continueWithTask(task -> {
+        return eventRepository. getByID(eventID).continueWithTask(task -> {
             Event event = task.getResult();
             if (event == null) {
                 return Tasks.forException(new IllegalArgumentException("Event not found"));
@@ -336,6 +392,7 @@ public class WaitingListEntryService {
             return eventRepository.update(event);
         });
     }
+
 
 }
 
