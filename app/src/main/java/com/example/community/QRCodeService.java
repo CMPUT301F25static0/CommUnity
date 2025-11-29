@@ -95,7 +95,7 @@ public class QRCodeService {
      * @throws WriterException if QR code generation fails
      */
     private byte[] generateQRCodeBytes(String eventID) throws WriterException {
-        String qrContent = "event:" + eventID; // temporary...
+        String qrContent = eventID;
         int size = 512; // pixels
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -113,4 +113,16 @@ public class QRCodeService {
         return outputStream.toByteArray();
     }
 
+    /**
+     * Parses QR code content to extract event ID
+     *
+     * @param qrContent The QR code content string (should be raw event ID)
+     * @return The extracted event ID or null if invalid
+     */
+    public String parseQRCodeContent(String qrContent) {
+        if (qrContent == null || qrContent.trim().isEmpty()) {
+            return null;
+        }
+        return qrContent.trim();
+    }
 }

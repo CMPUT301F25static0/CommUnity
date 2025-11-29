@@ -179,6 +179,44 @@ public class EventRepository {
         });
     }
 
+    /**
+     * Lists events matching tags with pagination.
+     *
+     * @param tags         list of tags to filter by
+     * @param limit        maximum number of events to return
+     * @param startAfterID ID to start pagination after
+     * @return task containing list of matching events
+     */
+    public Task<List<Event>> listByTags(List<String> tags, int limit, String startAfterID) {
+        if (tags == null || tags.isEmpty()) {
+            return getAll();
+        }
 
+        com.google.firebase.firestore.Query query = eventsRef
+                .whereEqualTo("status", EventStatus.OPEN.name());
+
+        // For simplicity, we'll match any of the tags (OR logic)
+        // For more complex matching, consider using array-contains-any if under 10 tags
+        query = query.whereArrayContains("tags", tags.get(0));
+
+        query = query.limit(limit);
+        if (startAfterID != null) {
+            query = query.startAfter(startAfterID);
+        }
+
+        return query.get().continueWith(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+            java.util.List<Event> events = new java.util.ArrayList<>();
+            for (com.google.firebase.firestore.DocumentSnapshot doc : task.getResult()) {
+                Event e = doc.toObject(Event.class);
+                if (e != null) {
+                    events.add(e);
+                }
+            }
+            return events;
+        });
+    }
 
 }

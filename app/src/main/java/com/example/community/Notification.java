@@ -15,6 +15,7 @@ public class Notification {
     private String recipientID;
     private String eventID;
     private long issueDate;
+    private String title;
     private String message;
     private NotificationType type;
 
@@ -56,6 +57,14 @@ public class Notification {
 
     public void setIssueDate(long issueDate) {
         this.issueDate = issueDate;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getMessage() {
