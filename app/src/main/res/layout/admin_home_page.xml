@@ -65,7 +65,7 @@
             android:id="@+id/buttonHost"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:text="Host"
+            android:text="Organizer"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:layout_marginBottom="16dp" />
@@ -75,7 +75,7 @@
             android:id="@+id/buttonProfile"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:text="Profile"
+            android:text="Entrant"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:layout_marginBottom="16dp" />
@@ -86,6 +86,15 @@
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:text="Image"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/buttonNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Notification Log"
             android:textAllCaps="false"
             android:textSize="18sp" />
 
