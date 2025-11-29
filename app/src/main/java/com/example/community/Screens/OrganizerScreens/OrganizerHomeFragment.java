@@ -15,14 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.community.ArrayAdapters.EventArrayAdapter;
-import com.example.community.DateValidation;
 import com.example.community.Event;
 import com.example.community.EventService;
 import com.example.community.R;
 import com.example.community.UserService;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class OrganizerHomeFragment extends Fragment {
@@ -40,7 +37,7 @@ public class OrganizerHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View organizerHomeFragment = inflater.inflate(R.layout.host_main_page, container, false);
+        View organizerHomeFragment = inflater.inflate(R.layout.organizer_main_page, container, false);
         return organizerHomeFragment;
     }
 
