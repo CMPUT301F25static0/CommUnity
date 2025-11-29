@@ -262,6 +262,15 @@
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:layout_marginBottom="16dp"/>
+            <Button
+                android:id="@+id/exportAttendeesButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Export Attendees CSV"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp"/>
 
             <Button
                 android:id="@+id/organizerEventDescriptionBackButton"

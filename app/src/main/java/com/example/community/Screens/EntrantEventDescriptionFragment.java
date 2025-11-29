@@ -1,5 +1,8 @@
 package com.example.community.Screens;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -20,20 +25,28 @@ import com.example.community.R;
 import com.example.community.UserService;
 import com.example.community.WaitingListEntry;
 import com.example.community.WaitingListEntryService;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.firebase.firestore.GeoPoint;
 
 public class EntrantEventDescriptionFragment extends Fragment {
 
     public static final String TAG = "EventDescriptionFragment";
 
     private static final String ARG_EVENT_ID = "event_id";
+    private static final int PERMISSION_REQUEST_CODE = 100;
+
     private Event currentEvent;
     private WaitingListEntryService waitingListEntryService;
     private UserService userService;
     private EventService eventService;
     private String currentEntrantId;
+    private FusedLocationProviderClient fusedLocationClient;
 
     private TextView eventTitle, eventDescription, eventLocation, eventDates
-            , registrationDates, capacity, organizerUsername, organizerEmail, organizerPhone,
+            ,registrationDates, capacity, organizerUsername, organizerEmail, organizerPhone,
             waitlistCapacity;
     private Button waitlistButton, backButton;
 
@@ -62,6 +75,8 @@ public class EntrantEventDescriptionFragment extends Fragment {
         String deviceToken = userService.getDeviceToken();
         userService.getUserIDByDeviceToken(deviceToken)
                 .addOnSuccessListener(userId -> currentEntrantId = userId);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
 
         eventTitle = view.findViewById(R.id.eventTitle);
         eventDescription = view.findViewById(R.id.eventDescription);
@@ -176,14 +191,120 @@ public class EntrantEventDescriptionFragment extends Fragment {
     }
 
     private void joinWaitlist() {
-        waitingListEntryService.join(currentEntrantId, currentEvent.getEventID())
+        if (currentEvent.getRequiresGeolocation()) {
+            // Request location permission if needed
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager. PERMISSION_GRANTED) {
+                    // Permission is not granted, request it
+                    ActivityCompat.requestPermissions(requireActivity(),
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSION_REQUEST_CODE);
+                    return;
+                }
+            }
+            // Permission is granted, get location and join
+            getLocationAndJoin();
+        } else {
+            // Geolocation not required, join without location
+            joinWaitlistWithoutLocation();
+        }
+    }
+
+    private void getLocationAndJoin() {
+        try {
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT). show();
+                return;
+            }
+
+            LocationRequest locationRequest = new LocationRequest.Builder(Priority. PRIORITY_HIGH_ACCURACY, 5000)
+                    .setMaxUpdateDelayMillis(10000)
+                    .build();
+
+            fusedLocationClient.getCurrentLocation(Priority. PRIORITY_HIGH_ACCURACY, null)
+                    .addOnSuccessListener(location -> {
+                        if (location != null) {
+                            Log.d(TAG, "Location obtained: " + location.getLatitude() + ", " + location.getLongitude());
+                            GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                            joinWaitlistWithLocation(geoPoint);
+                        } else {
+                            Log.w(TAG, "getCurrentLocation returned null, trying getLastLocation");
+                            // Fallback to getLastLocation
+                            fusedLocationClient.getLastLocation()
+                                    .addOnSuccessListener(lastLocation -> {
+                                        if (lastLocation != null) {
+                                            Log.d(TAG, "Last location obtained: " + lastLocation.getLatitude() + ", " + lastLocation.getLongitude());
+                                            GeoPoint geoPoint = new GeoPoint(lastLocation.getLatitude(), lastLocation.getLongitude());
+                                            joinWaitlistWithLocation(geoPoint);
+                                        } else {
+                                            Log.w(TAG, "Last location also null, joining without location");
+                                            Toast.makeText(requireContext(), "Unable to get current location.  Joining without location.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            joinWaitlistWithoutLocation();
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e(TAG, "Failed to get last location", e);
+                                        Toast.makeText(requireContext(), "Failed to get location.  Joining without location.",
+                                                Toast.LENGTH_SHORT).show();
+                                        joinWaitlistWithoutLocation();
+                                    });
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Failed to get current location", e);
+                        Toast.makeText(requireContext(), "Failed to get location. Joining without location.",
+                                Toast.LENGTH_SHORT).show();
+                        joinWaitlistWithoutLocation();
+                    });
+        } catch (SecurityException e) {
+            Log. e(TAG, "Security exception getting location", e);
+            Toast. makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void joinWaitlistWithLocation(GeoPoint location) {
+        if (currentEntrantId == null) {
+            Toast.makeText(getActivity(), "User ID not loaded yet. Please try again.", Toast.LENGTH_SHORT). show();
+            return;
+        }
+
+        waitingListEntryService.joinWithLocation(currentEntrantId, currentEvent.getEventID(), location)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "Successfully joined waitlist", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Successfully joined waitlist with location", Toast.LENGTH_SHORT). show();
                     updateWaitlistButton(true);
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to join waitlist", e);
-                    Toast.makeText(getActivity(), "Failed to join waitlist", Toast.LENGTH_SHORT).show();
+                    String errorMessage = "Failed to join waitlist";
+                    if (e.getMessage() != null && e.getMessage(). contains("Waitlist is full")) {
+                        errorMessage = "Waitlist is full";
+                    }
+                    Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT). show();
+                });
+    }
+
+    private void joinWaitlistWithoutLocation() {
+        if (currentEntrantId == null) {
+            Toast.makeText(getActivity(), "User ID not loaded yet. Please try again.", Toast. LENGTH_SHORT).show();
+            return;
+        }
+
+        waitingListEntryService. join(currentEntrantId, currentEvent.getEventID())
+                . addOnSuccessListener(aVoid -> {
+                    Toast. makeText(getActivity(), "Successfully joined waitlist", Toast.LENGTH_SHORT).show();
+                    updateWaitlistButton(true);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to join waitlist", e);
+                    String errorMessage = "Failed to join waitlist";
+                    if (e.getMessage() != null && e. getMessage().contains("Waitlist is full")) {
+                        errorMessage = "Waitlist is full";
+                    }
+                    Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT). show();
                 });
     }
 
