@@ -248,18 +248,6 @@
 
     <!--    Admin Event Fragments -->
 
-    <!--    Host Poster Update Fragments -->
-    <fragment
-        android:id="@+id/HostPosterUpdatePageFragment"
-        android:name="com.example.community.Screens.HostPosterUpdatePageFragment"
-        android:label="HostPosterUpdatePageFragment"
-        tools:layout="@layout/host_poster_update_page">
-
-        <action
-            android:id="@+id/action_HostPosterUpdatePageFragment_to_AdminEventFragment"
-            app:destination="@id/AdminEventFragment" />
-    </fragment>
-
     <fragment
         android:id="@+id/AdminEventFragment"
         android:name="com.example.community.Screens.AdminEventFragment"
