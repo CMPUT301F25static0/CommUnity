@@ -373,14 +373,6 @@
     </fragment>
 
 
-    <!--    Host Notify Fragments -->
-    <fragment
-        android:id="@+id/HostNotifyFragment"
-        android:name="com.example.community.Screens.OrganizerScreens.HostNotifyFragment"
-        android:label="HostNotifyFragment"
-        tools:layout="@layout/host_notify_page">
-
-
     <!--    Host Poster Upload Fragments -->
     <fragment
         android:id="@+id/HostPosterUploadFragment"
