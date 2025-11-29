@@ -161,7 +161,7 @@ public class EventService {
      * @return task containing the image URL
      */
     public Task<String> setPoster(String organizerID, String eventID, byte[] imageData, String uploadedBy) {
-        return imageService.uploadEventPoster(eventID, imageData, uploadedBy).continueWith(t -> t.getResult().getImageURL());
+        return imageService.uploadEventPoster(eventID, imageData, uploadedBy, true).continueWith(t -> t.getResult().getImageURL());
     }
 
     /**
