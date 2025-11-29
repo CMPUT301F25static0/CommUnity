@@ -24,72 +24,86 @@
                 android:id="@+id/headerTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Poster Upload"
+                android:text="CommUnity"
                 android:textSize="32sp"
                 android:textStyle="bold"
                 android:textColor="#000000" />
         </LinearLayout>
 
-        <!-- Divider line -->
+        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#BDBDBD"
             android:layout_marginBottom="24dp" />
 
-        <!-- Poster preview -->
-        <ImageView
-            android:id="@+id/imagePosterPreview"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:contentDescription="Poster preview"
-            android:background="#EEEEEE"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Upload button -->
-        <Button
-            android:id="@+id/buttonUploadPoster"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Upload Poster"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Poster Description -->
+        <!-- Keyword Search -->
         <TextView
-            android:id="@+id/labelPosterDescription"
+            android:id="@+id/labelKeyword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Poster Description"
-            android:textSize="16sp"
+            android:text="Search by Keyword"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginBottom="6dp" />
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp" />
 
         <EditText
-            android:id="@+id/inputPosterDescription"
+            android:id="@+id/inputKeyword"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:hint="Write a short description about your poster..."
-            android:gravity="top"
+            android:layout_height="wrap_content"
+            android:hint="Enter event name, location, or description"
             android:background="@android:drawable/edit_text"
             android:padding="10dp"
             android:layout_marginBottom="24dp" />
 
-        <!-- Submit button -->
+        <!-- Time Available label -->
+        <TextView
+            android:id="@+id/labelTimeAvailable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time Available"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Time Available input -->
+        <EditText
+            android:id="@+id/inputTimeAvailable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g. Weekdays after 5 PM"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Buttons row: Back (left), Apply (right) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <Button
-                android:id="@+id/buttonSubmitPoster"
+                android:id="@+id/buttonBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Submit"
+                android:text="Back"
+                android:textAllCaps="false" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/buttonApplyFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apply"
                 android:textAllCaps="false" />
         </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
