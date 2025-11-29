@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.navigation.fragment)
 
     // Firebase
+    implementation("com.google.protobuf:protobuf-javalite:3.25.1")
     implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")

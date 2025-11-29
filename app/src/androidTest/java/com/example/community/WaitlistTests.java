@@ -24,10 +24,14 @@ public class WaitlistTests {
 
     @Test
     public void testJoinWaitingList() {
-        // Step 1–2: SplashPage → RoleSelect → click "User"
+        // Step 1: Wait for loginButton to appear and click it
+        onView(withId(R.id.loginButton))
+                .perform(click());
+
+        // Step 2: RoleSelect → click "User"
         onView(withId(R.id.buttonUser)).perform(click());
 
-        // Step 3: EntrantHome → click first event in event_list
+        // Step 3: EntrantHome → click first event
         onView(withId(R.id.event_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
