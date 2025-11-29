@@ -89,26 +89,33 @@ public class AdminImageFragment extends Fragment {
     public void onDeleteClicked(Image image, int position) {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Delete Image")
-                .setMessage("Are you sure you want to delete this image?")
-                .setPositiveButton("Delete", (dialog, which) -> {
-                    // Assuming imageService has a delete method. If not, ensure this matches your service.
-                    new ImageService().deleteEventPoster(image.getImageID())
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) { // Check if task was successful
-                                    if (position >= 0 && position < imagesArrayList.size()) {
-                                        imagesArrayList.remove(position);
-                                        imageArrayAdapter.notifyItemRemoved(position);
-                                        imageArrayAdapter.notifyItemRangeChanged(position, imagesArrayList.size() - position);
-                                    }
-                                    Toast.makeText(getContext(), "Image deleted", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getContext(), "Failed to delete image", Toast.LENGTH_SHORT).show();
-                                }
+                .setMessage("Are you sure you want to delete this image?")                .setPositiveButton("Delete", (dialog, which) -> {
+
+                    // FIX: Use the new direct delete method
+                    // We pass image.getImageID() which matches what the repository expects
+                    imageService.deleteImageDirectly(image.getImageID())
+                            .addOnSuccessListener(aVoid -> {
+                                // Success!
+                                removeImageFromList(image);
                             })
                             .addOnFailureListener(e -> {
-                                Toast.makeText(getContext(), "Failed to delete image", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Delete failed", e);
+                                Toast.makeText(getContext(), "Failed to delete image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
                 })
-                .setNegativeButton("Cancel", null).show();
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+
+    // Helper method to update the UI list
+    private void removeImageFromList(Image image) {
+        int currentPosition = imagesArrayList.indexOf(image);
+        if (currentPosition != -1) {
+            imagesArrayList.remove(currentPosition);
+            imageArrayAdapter.notifyItemRemoved(currentPosition);
+            imageArrayAdapter.notifyItemRangeChanged(currentPosition, imagesArrayList.size());
+        }
+        Toast.makeText(getContext(), "Image deleted successfully", Toast.LENGTH_SHORT).show();
     }
 }

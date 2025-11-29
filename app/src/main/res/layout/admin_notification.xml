@@ -2,15 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingVertical="10dp"
     android:paddingHorizontal="12dp"
     android:background="#FFFFFF">
 
     <!-- Host name or Profile name -->
     <TextView
+        android:id="@+id/eventTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="EventTitle"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <TextView
         android:id="@+id/notificationLog"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="NotificationLog"
