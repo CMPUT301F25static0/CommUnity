@@ -42,17 +42,21 @@ public class RoleSelectFragment extends Fragment {
         String deviceToken = userService.getDeviceToken();
 //        userService.getUserIDByDeviceToken(deviceToken).getResult();
 
-        buttonUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userService
-                        .getUserIDByDeviceToken(deviceToken)
-                        .addOnSuccessListener(userId ->{userService.setRole(userId, Role.ENTRANT)
-                        .addOnSuccessListener(task ->{
-                            NavHostFragment.findNavController(RoleSelectFragment.this)
-                            .navigate(R.id.action_RoleSelectFragment_to_EntrantHomeFragment);});
-                        });
+        buttonUser.setOnClickListener(v -> {
+            if (deviceToken != null) {
+                userService.getUserIDByDeviceToken(deviceToken)
+                        .addOnSuccessListener(userId ->
+                                userService.setRole(userId, Role.ENTRANT)
+                        )
+                        .addOnFailureListener(e ->
+                                Toast.makeText(getContext(),
+                                        "Failed to set role: " + e.getMessage(),
+                                        Toast.LENGTH_SHORT).show()
+                        );
             }
+
+            NavHostFragment.findNavController(RoleSelectFragment.this)
+                    .navigate(R.id.action_RoleSelectFragment_to_EntrantHomeFragment);
         });
 
         buttonHost.setOnClickListener(new View.OnClickListener() {
