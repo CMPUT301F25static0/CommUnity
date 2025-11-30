@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Tasks;
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final WaitlistRepository waitlistRepository;
+    private final EventRepository eventRepository;
 
     /**
      * Creates a new NotificationService instance.
@@ -21,6 +22,7 @@ public class NotificationService {
     public NotificationService() {
         this.notificationRepository = new NotificationRepository();
         this.waitlistRepository = new WaitlistRepository();
+        this.eventRepository = new EventRepository();
     }
 
     /**
@@ -31,17 +33,31 @@ public class NotificationService {
      * @return task that completes when notifications are sent
      */
     public Task<Void> notifyWinners(String eventID, List<WaitingListEntry> lotteryWinners) {
-        List<String> recipientIDs = new ArrayList<>();
+        return eventRepository.getByID(eventID)
+                .continueWithTask(eventTask -> {
+                    if (! eventTask.isSuccessful()) {
+                        return Tasks.forException(eventTask.getException());
+                    }
 
-        for (WaitingListEntry e : lotteryWinners) {
-            recipientIDs.add(e.getUserID());
-        }
-        return notificationRepository.createMany(
-                eventID,
-                recipientIDs,
-                NotificationType.WIN,
-                "You were selected for this event! Please accept or decline the invitation."
-        );
+                    Event event = eventTask.getResult();
+                    String eventName = (event != null) ? event.getTitle() : "Event";
+                    String title = eventName + ": You have been selected!";
+                    String message = "You were selected for this event!  Please accept or decline the invitation.";
+                    List<String> recipientIDs = new ArrayList<>();
+
+                    for (WaitingListEntry e : lotteryWinners) {
+                        recipientIDs.add(e.getUserID());
+                    }
+                    return notificationRepository.createMany(
+                            eventID,
+                            recipientIDs,
+                            NotificationType.WIN,
+                            title,
+                            message
+                    );
+
+                });
+
     }
 
     /**
@@ -52,16 +68,30 @@ public class NotificationService {
      * @return task that completes when notifications are sent
      */
     public Task<Void> notifyLosers(String eventID, List<WaitingListEntry> lotteryLosers) {
-        List<String> recipientIDS = new ArrayList<>();
-        for (WaitingListEntry e : lotteryLosers) {
-            recipientIDS.add(e.getUserID());
-        }
-        return notificationRepository.createMany(
-                eventID,
-                recipientIDS,
-                NotificationType.LOSE,
-                "The lottery was ran but you were not selected at this time."
-        );
+        return eventRepository.getByID(eventID)
+                . continueWithTask(eventTask -> {
+                    if (!eventTask.isSuccessful()) {
+                        return Tasks.forException(eventTask.getException());
+                    }
+
+                    Event event = eventTask.getResult();
+                    String eventName = (event != null) ? event. getTitle() : "Event";
+                    String title = eventName + ": Lottery Results";
+                    String message = "The lottery was ran but you were not selected at this time. ";
+
+                    List<String> recipientIDS = new ArrayList<>();
+                    for (WaitingListEntry e : lotteryLosers) {
+                        recipientIDS. add(e.getUserID());
+                    }
+
+                    return notificationRepository.createMany(
+                            eventID,
+                            recipientIDS,
+                            NotificationType.LOSE,
+                            title,
+                            message
+                    );
+                });
     }
 
     /**
@@ -73,7 +103,7 @@ public class NotificationService {
      * @param message message to broadcast
      * @return task that completes when notifications are sent
      */
-    public Task<Void> broadcastToInvited(String organizerID, String eventID, String message) {
+    public Task<Void> broadcastToInvited(String organizerID, String eventID, String title, String message) {
         return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.INVITED).
                 onSuccessTask(entries -> {
             java.util.List<String> recipientIDs = new java.util.ArrayList<>();
@@ -83,7 +113,9 @@ public class NotificationService {
             return notificationRepository.createMany(
                     eventID,
                     recipientIDs,
-                    NotificationType.BROADCAST, message);
+                    NotificationType.BROADCAST,
+                    title,
+                    message);
         });
     }
 
@@ -95,8 +127,8 @@ public class NotificationService {
      * @param message message to broadcast
      * @return task that completes when notifications are sent
      */
-    public Task<Void> broadcastToWaitlist(String organizerID, String eventID, String message) {
-        return waitlistRepository.listByEvent(eventID).onSuccessTask(entries -> {
+    public Task<Void> broadcastToWaitlist(String organizerID, String eventID, String title, String message) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.WAITING).onSuccessTask(entries -> {
             java.util.List<String> recipientIDs = new java.util.ArrayList<>();
             for (WaitingListEntry e : entries) {
                 recipientIDs.add(e.getUserID());
@@ -104,8 +136,35 @@ public class NotificationService {
             return notificationRepository.createMany(
                     eventID,
                     recipientIDs,
-                    NotificationType.BROADCAST, message);
+                    NotificationType.BROADCAST,
+                    title,
+                    message);
         });
+    }
+
+    /**
+     * Sends a broadcast message to all cancelled users for an event.
+     * US 02.07.02
+     *
+     * @param organizerID ID of the organizer
+     * @param eventID ID of the event
+     * @param message message to broadcast
+     * @return task that completes when notifications are sent
+     */
+    public Task<Void> broadcastToCancelled(String organizerID, String eventID, String title, String message) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.CANCELLED).
+                onSuccessTask(entries -> {
+                    java.util.List<String> recipientIDs = new java.util.ArrayList<>();
+                    for (WaitingListEntry e : entries) {
+                        recipientIDs.add(e.getUserID());
+                    }
+                    return notificationRepository.createMany(
+                            eventID,
+                            recipientIDs,
+                            NotificationType.BROADCAST,
+                            title,
+                            message);
+                });
     }
 
     /**
@@ -141,5 +200,17 @@ public class NotificationService {
                                                                    String startAfterID) {
         return notificationRepository.listNotificationsByRecipient(userID, limit, startAfterID);
     }
+
+    /**
+     * Gets notification logs for an event.
+     *
+     * @param eventID ID of the event
+     * @return task containing list of notifications for the event
+     */
+    public Task<List<Notification>> getNotificationLogs(String eventID) {
+        return notificationRepository.listNotificationsByEvent(eventID, 1000, null);
+        // I capped it at 1000
+    }
+
 }
 

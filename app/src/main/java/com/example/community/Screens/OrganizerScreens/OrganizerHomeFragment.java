@@ -15,20 +15,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.community.ArrayAdapters.EventArrayAdapter;
-import com.example.community.DateValidation;
 import com.example.community.Event;
 import com.example.community.EventService;
 import com.example.community.R;
 import com.example.community.UserService;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class OrganizerHomeFragment extends Fragment {
     ImageButton notificationsButton, cameraButton;
     Button guideButton, filterButton, createButton, notifyButton;
-    Button eventHistoryButton, myProfileButton;
+    Button geolocationButton, myProfileButton;
     RecyclerView hostEventList;
 
     private ArrayList<Event> eventsArrayList;
@@ -40,7 +37,7 @@ public class OrganizerHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View organizerHomeFragment = inflater.inflate(R.layout.host_main_page, container, false);
+        View organizerHomeFragment = inflater.inflate(R.layout.organizer_main_page, container, false);
         return organizerHomeFragment;
     }
 
@@ -59,7 +56,7 @@ public class OrganizerHomeFragment extends Fragment {
         filterButton = view.findViewById(R.id.buttonFilter);
         createButton = view.findViewById(R.id.buttonCreate);
         notifyButton = view.findViewById(R.id.buttonNotify);
-        eventHistoryButton = view.findViewById(R.id.buttonEventHistory);
+        geolocationButton = view.findViewById(R.id.buttonGeolocation);
         myProfileButton = view.findViewById(R.id.buttonMyProfile);
         hostEventList = view.findViewById(R.id.HostEventView);
 
@@ -135,7 +132,7 @@ public class OrganizerHomeFragment extends Fragment {
         createButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(OrganizerHomeFragment.this)
                     .navigate(R.id.action_OrganizerHomeFragment_to_CreateEventFragment);
-                });
+        });
 
         // Temporary toast messages for unimplemented features
         cameraButton.setOnClickListener(v ->
@@ -149,7 +146,9 @@ public class OrganizerHomeFragment extends Fragment {
                         .navigate(R.id.action_OrganizerHomeFragment_to_HostNotifyFragment)
         );
 
-        eventHistoryButton.setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Event History not implemented yet", Toast.LENGTH_SHORT).show());
+        geolocationButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                    .navigate(R.id.action_OrganizerHomeFragment_to_GeolocationFragment);
+        });
     }
 }

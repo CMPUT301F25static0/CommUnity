@@ -1,6 +1,7 @@
 package com.example.community;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 
 /**
  * Represents a single entry on an event's waiting list.
@@ -20,6 +21,8 @@ public class WaitingListEntry {
     private Timestamp acceptedAt;
     private Timestamp declinedAt;
     private Timestamp cancelledAt;
+
+    private GeoPoint joinLocation;
 
     /**
      * Default no-arg constructor required for some Firebase.
@@ -192,6 +195,13 @@ public class WaitingListEntry {
         this.declinedAt = declinedAt;
     }
 
+    public GeoPoint getJoinLocation() {
+        return joinLocation;
+    }
+
+    public void setJoinLocation(GeoPoint joinLocation) {
+        this.joinLocation = joinLocation;
+    }
 
     /**
      * Returns whether the entry currently has the provided status.
@@ -209,6 +219,15 @@ public class WaitingListEntry {
     public void markAsJoined() {
         this.status = EntryStatus.WAITING;
         this.joinedAt = Timestamp.now();
+    }
+
+    /**
+     * Mark the entry as joined and record the join timestamp and location.
+     */
+    public void markAsJoined(GeoPoint location) {
+        this.status = EntryStatus.WAITING;
+        this.joinedAt = Timestamp.now();
+        this.joinLocation = location;
     }
 
     /**

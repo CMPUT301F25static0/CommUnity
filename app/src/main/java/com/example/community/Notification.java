@@ -15,8 +15,11 @@ public class Notification {
     private String recipientID;
     private String eventID;
     private long issueDate;
+    private String title;
     private String message;
     private NotificationType type;
+
+    public String eventTitle;
 
     /**
      * Default constructor required for Firebase.
@@ -56,6 +59,14 @@ public class Notification {
         this.issueDate = issueDate;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -70,5 +81,13 @@ public class Notification {
 
     public void setType(NotificationType type) {
         this.type = type;
+    }
+
+    public String getEventTitle() {
+        return eventTitle;
+    }
+
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
     }
 }

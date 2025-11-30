@@ -47,7 +47,7 @@
     </fragment>
 
 
-<!-- Entrant Fragments -->
+    <!-- Entrant Fragments -->
     <fragment
         android:id = "@+id/EntrantHomeFragment"
         android:name = "com.example.community.Screens.EntrantHomeFragment"
@@ -61,11 +61,11 @@
 
         </action>
 
-<!--        <action-->
-<!--            android:id="@+id/action_EntrantHomeFragment_to_EntrantHistoryFragment"-->
-<!--            app:destination="@id/EntrantHistoryFragment"-->
-<!--            >-->
-<!--        </action>-->
+        <!--        <action-->
+        <!--            android:id="@+id/action_EntrantHomeFragment_to_EntrantHistoryFragment"-->
+        <!--            app:destination="@id/EntrantHistoryFragment"-->
+        <!--            >-->
+        <!--        </action>-->
 
         <action
             android:id="@+id/action_EntrantHomeFragment_to_EntrantUserProfileFragment"
@@ -86,8 +86,8 @@
             android:id="@+id/action_EntrantHomeFragment_to_UserGuideFragment"
             app:destination="@id/UserGuideFragment" />
 
-<!--        Implement QR action-->
-<!--        Implement Filters action-->
+        <!--        Implement QR action-->
+        <!--        Implement Filters action-->
     </fragment>
 
     <fragment
@@ -138,7 +138,7 @@
         <argument
             android:name="userId"
             app:argType="string"
-        />
+            />
     </dialog>
 
     <fragment
@@ -148,16 +148,16 @@
         tools:layout="@layout/user_guide_page">
     </fragment>
 
-<!--    Organizer Fragments-->
+    <!--    Organizer Fragments-->
     <fragment
         android:id = "@+id/OrganizerHomeFragment"
         android:name = "com.example.community.Screens.OrganizerScreens.OrganizerHomeFragment"
         android:label = "Organizer Home"
-        tools:layout = "@layout/host_main_page"
+        tools:layout = "@layout/organizer_main_page"
         >
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_HostNotifyFragment"
-            app:destination="@id/HostNotifyFragment" >
+            app:destination="@id/OrganizerNotifyFragment" >
         </action>
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_NotificationsFragment"
@@ -175,6 +175,9 @@
             android:id="@+id/action_OrganizerHomeFragment_to_OrganizerEventDescriptionFragment"
             app:destination="@id/OrganizerEventDescriptionFragment">
         </action>
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_GeolocationFragment"
+            app:destination="@id/GeolocationFragment" />
     </fragment>
 
     <fragment
@@ -188,6 +191,27 @@
             app:destination="@id/HostPosterUploadFragment" />
     </fragment>
 
+<!--    Event Description Related Fragments-->
+    <fragment
+        android:id="@+id/GeolocationFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerGeolocationFragment"
+        android:label="Geolocation Management"
+        tools:layout="@layout/organizer_geolocation_page">
+        <action
+            android:id="@+id/action_GeolocationFragment_to_GeolocationMapFragment"
+            app:destination="@id/GeolocationMapFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/GeolocationMapFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerGeolocationMapFragment"
+        android:label="Event Locations"
+        tools:layout="@layout/organizer_geolocation_map_page">
+        <argument
+            android:name="event_id"
+            app:argType="string" />
+    </fragment>
+
     <fragment
         android:id="@+id/OrganizerEventDescriptionFragment"
         android:name="com.example.community.Screens.OrganizerScreens.OrganizerEventDescriptionFragment"
@@ -197,7 +221,7 @@
         <argument
             android:name="event_id"
             app:argType="string"
-        />
+            />
 
         <action
             android:id="@+id/action_OrganizerEventDescriptionFragment_to_CreateEventFragment"
@@ -218,8 +242,34 @@
             app:argType="string" />
     </fragment>
 
+<!--    Organizer Send Notification related-->
+    <!--    Host Notify Fragments -->
+    <fragment
+        android:id="@+id/OrganizerNotifyFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerNotifyFragment"
+        android:label="OrganizerNotifyFragment"
+        tools:layout="@layout/organizer_create_notification_page">
 
-<!--    Admin Fragments -->
+        <action
+            android:id="@+id/action_OrganizerNotifyFragment_to_OrganizerCreateNotificationFragment"
+            app:destination="@id/OrganizerCreateNotificationFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/OrganizerCreateNotificationFragment"
+        android:name="com.example.community.Screens.OrganizerScreens.OrganizerCreateNotificationFragment"
+        android:label="OrganizerCreateNotificationFragment"
+        tools:layout="@layout/organizer_create_notification_page">
+
+        <action
+            android:id="@+id/action_NotificationTargetDialogFragment_to_OrganizerCreateNotificationFragment"
+            app:destination="@id/OrganizerCreateNotificationFragment" />
+
+    </fragment>
+
+
+    <!--    Admin Fragments -->
     <fragment
         android:id = "@+id/AdminHomeFragment"
         android:name = "com.example.community.Screens.AdminHomeFragment"
@@ -245,13 +295,21 @@
             android:id="@+id/action_AdminHomeFragment_to_AdminImageFragment"
             app:destination="@+id/AdminImageFragment">
         </action>
+
+        <action
+            android:id="@+id/action_AdminHomeFragment_to_AdminNotificationFragment"
+            app:destination="@+id/AdminNotificationFragment">
+        </action>
+
     </fragment>
+
+    <!--    Admin Event Fragments -->
 
     <fragment
         android:id="@+id/AdminEventFragment"
         android:name="com.example.community.Screens.AdminEventFragment"
         android:label="Admin Events"
-        tools:layout="@layout/admin_event_page">
+        tools:layout="@layout/admin_event">
 
         <action
             android:id="@+id/action_AdminEventFragment_to_AdminHomeFragment"
@@ -259,24 +317,47 @@
         </action>
 
 
-    </fragment>
 
+
+    </fragment>
+    <!--    Admin Host Fragments -->
     <fragment
         android:id="@+id/AdminHostFragment"
         android:name="com.example.community.Screens.AdminHostFragment"
         android:label="Admin Hosts"
-        tools:layout="@layout/admin_host_page">
+        tools:layout="@layout/admin_host_profile">
+
+        <action
+            android:id="@+id/action_AdminHostFragment_to_EntrantUserProfileFragment"
+            app:destination="@id/EntrantUserProfileFragment" />
+
+
+        <action
+            android:id="@+id/action_AdminHostFragment_to_AdminHomeFragment"
+            app:destination="@id/AdminHomeFragment">
+        </action>
 
     </fragment>
-
+    <!--    Admin Profile Fragments -->
     <fragment
         android:id="@+id/AdminProfileFragment"
         android:name="com.example.community.Screens.AdminProfileFragment"
         android:label="Admin Users"
         tools:layout="@layout/admin_profile_page">
 
-    </fragment>
+        <action
+            android:id="@+id/action_AdminProfileFragment_to_EntrantUserProfileFragment"
+            app:destination="@id/EntrantUserProfileFragment" />
 
+
+        <action
+            android:id="@+id/action_AdminProfileFragment_to_AdminHomeFragment"
+            app:destination="@id/AdminHomeFragment">
+        </action>
+
+
+    </fragment>
+    <!--    Admin image Fragments -->
     <fragment
         android:id="@+id/AdminImageFragment"
         android:name="com.example.community.Screens.AdminImageFragment"
@@ -285,14 +366,19 @@
 
     </fragment>
 
-    <!--    Host Notify Fragments -->
+    <!--    Admin Notification Fragments -->
     <fragment
-        android:id="@+id/HostNotifyFragment"
-        android:name="com.example.community.Screens.OrganizerScreens.HostNotifyFragment"
-        android:label="HostNotifyFragment"
-        tools:layout="@layout/host_notify_page">
+        android:id="@+id/AdminNotificationFragment"
+        android:name="com.example.community.Screens.AdminNotificationFragment"
+        android:label="Admin Users"
+        tools:layout="@layout/admin_notification_page">
 
+        <action
+            android:id="@+id/action_AdminNotificationFragment_to_AdminHomeFragment"
+            app:destination="@id/AdminHomeFragment">
+        </action>
     </fragment>
+
 
     <!--    Host Poster Upload Fragments -->
     <fragment
@@ -305,6 +391,7 @@
             android:id="@+id/action_HostPosterUploadFragment_to_OrganizerHomeFragment"
             app:destination="@id/OrganizerHomeFragment" />
     </fragment>
+<<<<<<< HEAD
     <!--    User Event history Fragments -->
     <fragment
         android:id="@+id/UserEventHistoryFragment"
@@ -327,3 +414,6 @@
 
 
 </navigation>
+=======
+</navigation>
+>>>>>>> origin/Screens-Shaz

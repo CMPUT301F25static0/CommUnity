@@ -18,7 +18,7 @@
             android:id="@+id/headerTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Organizer"
+            android:text="Notification"
             android:textSize="32sp"
             android:textStyle="bold"
             android:textColor="#000000" />
@@ -32,7 +32,7 @@
 
     <!-- Main content -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/adminHostView"
+        android:id="@+id/adminNotificationView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

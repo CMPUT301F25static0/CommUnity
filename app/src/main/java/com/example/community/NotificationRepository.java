@@ -51,7 +51,7 @@ public class NotificationRepository {
      * @param message notification message
      * @return task that completes when all notifications are created
      */
-    public Task<Void> createMany(String eventID, List<String> recipientIDs, NotificationType type, String message) {
+    public Task<Void> createMany(String eventID, List<String> recipientIDs, NotificationType type, String title, String message) {
         List<Task<Void>> writes = new ArrayList<>();
 
         for (String recipientID : recipientIDs) {
@@ -60,6 +60,7 @@ public class NotificationRepository {
             n.setRecipientID(recipientID);
             n.setEventID(eventID);
             n.setType(type);
+            n.setTitle(title);
             n.setMessage(message);
             n.setIssueDate(System.currentTimeMillis());
 

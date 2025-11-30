@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.community.Event;
 import com.example.community.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +30,12 @@ public class EventArrayAdapter extends RecyclerView.Adapter<EventArrayAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView eventName;
         public TextView eventDescription;
+        public ImageView eventThumbnail;
         public ViewHolder(View view) {
             super(view);
             eventName = view.findViewById(R.id.event_name);
             eventDescription = view.findViewById(R.id.event_description);
+            eventThumbnail = view.findViewById(R.id.event_thumbnail);
 
             view.setOnClickListener(v -> {
                 int position = getBindingAdapterPosition();
@@ -58,6 +61,20 @@ public class EventArrayAdapter extends RecyclerView.Adapter<EventArrayAdapter.Vi
         Event event = events.get(position);
         viewHolder.eventName.setText(event.getTitle());
         viewHolder.eventDescription.setText(event.getDescription());
+
+        String posterURL = event.getPosterImageURL();
+        if (posterURL != null && !posterURL.isEmpty()) {
+            Picasso. get()
+                    .load(posterURL)
+                    .fit()
+                    .centerCrop()
+                    .error(R.drawable.ic_launcher_foreground)
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    . into(viewHolder.eventThumbnail);
+        } else {
+            // Use default placeholder if no poster URL
+            viewHolder.eventThumbnail.setImageResource(R.drawable.ic_launcher_foreground);
+        }
     }
     @Override
     public int getItemCount() {
@@ -68,5 +85,4 @@ public class EventArrayAdapter extends RecyclerView.Adapter<EventArrayAdapter.Vi
         this.listener = listener;
     }
 }
-
 

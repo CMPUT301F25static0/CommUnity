@@ -61,12 +61,12 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="6dp" />
 
-    <!-- Remove button -->
+    <!-- Join button -->
     <Button
-        android:id="@+id/buttonRemove"
+        android:id="@+id/buttonJoin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remove"
+        android:text="Join"
         android:textAllCaps="false"
         android:textSize="14sp"
         android:paddingHorizontal="16dp"
