@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:paddingVertical="10dp"
     android:paddingHorizontal="12dp"
-    android:background="#FFFFFF">
+    android:background="@color/backgroundBox">
 
     <!-- Host name or Profile name -->
     <TextView
@@ -15,12 +15,12 @@
         android:layout_weight="1"
         android:text="Name"
         android:textSize="16sp"
-        android:textColor="#000000"
+        android:textColor="@color/headerPrimary"
         android:maxLines="1"
         android:ellipsize="end" />
 
     <!-- Delete button -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

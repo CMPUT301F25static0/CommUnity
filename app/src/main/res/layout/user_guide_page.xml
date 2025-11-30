@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/backgroundColor"
     android:fillViewport="true">
 
     <LinearLayout
@@ -27,7 +27,7 @@
                 android:text="CommUnity"
                 android:textSize="32sp"
                 android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textColor="@color/headerPrimary" />
         </LinearLayout>
 
         <!-- Divider line -->
@@ -45,7 +45,7 @@
             android:text="Guideline"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="@color/headerPrimary"
             android:layout_marginBottom="12dp" />
 
         <!-- Guideline content -->
@@ -55,17 +55,20 @@
             android:layout_height="wrap_content"
             android:text="Welcome to CommUnity! Here’s how to get the most out of your experience:\n\n• Explore available events from the Home screen.\n• Tap on an event to view details or register.\n• Manage your joined events under 'Event History'.\n• You’ll receive notifications for updates or schedule changes.\n• Keep your profile information accurate so hosts can reach you.\n• Respect event rules and other community members.\n\nThank you for being part of CommUnity!"
             android:textSize="16sp"
-            android:textColor="#333333"
+            android:background="@color/backgroundBox"
+            android:textColor="@color/textPrimary"
             android:lineSpacingExtra="4dp"
             android:layout_marginBottom="32dp" />
 
         <!-- Back button -->
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/buttonBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Back"
             android:textAllCaps="false"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_color"
+            android:textColor="@color/button_text_color"/>
     </LinearLayout>
 </ScrollView>

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingHorizontal="12dp"
-    android:background="#FFFFFF">
+    android:background="@color/backgroundBox">
 
         <TextView
             android:id="@+id/eventTitle"
@@ -13,7 +13,7 @@
             android:layout_weight="1"
             android:text="EventTitle"
             android:textSize="20sp"
-            android:textColor="#000000"
+            android:textColor="@color/headerPrimary"
             android:maxLines="1"
             android:ellipsize="end" />
 
@@ -37,7 +37,7 @@
             android:layout_marginTop="4dp"
             android:text="NotificationLog"
             android:textSize="16sp"
-            android:textColor="#000000" />
+            android:textColor="@color/textPrimary" />
     </LinearLayout>
 
 </LinearLayout>

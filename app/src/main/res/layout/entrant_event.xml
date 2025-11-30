@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="12dp"
-    android:background="#FFFFFF">
+    android:background="@color/backgroundBox">
 
     <!-- Event image -->
     <ImageView
@@ -26,7 +26,7 @@
         android:text="Event Name"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#000000"
+        android:textColor="@color/headerPrimary"
         app:layout_constraintStart_toEndOf="@id/eventImage"
         app:layout_constraintTop_toTopOf="@id/eventImage"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:text="Short details go here. Location, time, brief description..."
         android:textSize="14sp"
-        android:textColor="#444444"
+        android:textColor="@color/textPrimary"
         android:maxLines="3"
         android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@id/eventImage"
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Deadline: 2025-11-01"
-        android:textColor="#777777"
+        android:textColor="@color/textPrimary"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/eventImage"
         app:layout_constraintTop_toBottomOf="@id/event_description"
@@ -62,7 +62,7 @@
         android:layout_marginTop="6dp" />
 
     <!-- Join button -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonJoin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,6 +72,8 @@
         android:paddingHorizontal="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/button_color"
+        android:textColor="@color/button_text_color"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

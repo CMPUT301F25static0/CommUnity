@@ -24,7 +24,7 @@
             android:layout_marginBottom="119dp"
             android:text="Are you sure you want to DELETE UNITY ACCOUNT?"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
+            android:textColor="@color/headerPrimary"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/cancel_popup"
@@ -32,24 +32,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/cancel_popup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/button_color"
             android:orientation="horizontal"
             android:text="@string/cancel"
-            android:textColor="@color/black"
+            android:textColor="@color/textPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/delete_unity"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/popup_text" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/delete_unity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/button_color"
             android:orientation="horizontal"
             android:text="Delete Unity"
             android:textColor="@android:color/holo_red_dark"

@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="button_color">#EDEBEBED</color>
-    <color name="button_text_color">#000000</color>
-    <color name="darktheme_background">#121212</color>
-    <color name="darktheme_button_outline">#2e98c9</color>
-    <color name="darktheme_header">#2e98c9</color>
-    <color name="darktheme_text">#FFFFFF</color>
+
+
+    <!-- Background colors -->
+    <color name="backgroundColor">#FFFFFFFF</color>
+    <color name="backgroundBox">#E6E4E4</color>
+
+
+    <!-- Text colors -->
+    <color name="headerPrimary">#2e98c9</color>
+    <color name="textPrimary">#47494a</color>
+
+    <!-- Button colors -->
+    <color name="fill">#2e98c9</color>
+    <color name="button_text_color">#FFFFFFFF</color>
+
+
 
 </resources>
