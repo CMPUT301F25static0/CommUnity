@@ -19,15 +19,6 @@
         android:maxLines="1"
         android:ellipsize="end" />
 
-    <!-- View button -->
-    <Button
-        android:id="@+id/buttonView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View"
-        android:textAllCaps="false"
-        android:layout_marginEnd="8dp" />
-
     <!-- Delete button -->
     <Button
         android:id="@+id/buttonDelete"

@@ -23,6 +23,7 @@ import com.example.community.ImageService;
 import com.example.community.R;
 import com.example.community.Image;
 import java.util.ArrayList;
+import com.example.community.Event;
 
 public class AdminImageFragment extends Fragment {
 
@@ -66,19 +67,52 @@ public class AdminImageFragment extends Fragment {
     }
 
     private void loadImages() {
-        imageService.listAllImages()
-                .addOnSuccessListener(images -> {
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("events")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
                     imagesArrayList.clear();
-                    imagesArrayList.addAll(images);
+
+                    for (com.google.firebase.firestore.QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        try {
+                            Event event = document.toObject(Event.class);
+
+                            if (event.getPosterImageURL() != null && !event.getPosterImageURL().isEmpty()) {
+
+                                Image img = new Image();
+                                img.setImageID(event.getPosterImageID());
+                                img.setImageURL(event.getPosterImageURL());
+
+                                if (event.getOrganizerID() != null) {
+                                    img.setUploadedBy(event.getOrganizerID());
+                                } else {
+                                    img.setUploadedBy("Unknown Organizer");
+                                }
+
+                                imagesArrayList.add(img);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error parsing event for poster", e);
+                        }
+                    }
+
                     imageArrayAdapter.notifyDataSetChanged();
+
+                    if (imagesArrayList.isEmpty()) {
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "No event posters found.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error loading images", e);
+                    Log.e(TAG, "Error loading event posters", e);
                     if (getContext() != null) {
                         Toast.makeText(getContext(), "Failed to load images", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
+
 
     private void setUpClickListener() {
         backButton.setOnClickListener(v -> {
@@ -89,33 +123,31 @@ public class AdminImageFragment extends Fragment {
     public void onDeleteClicked(Image image, int position) {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Delete Image")
-                .setMessage("Are you sure you want to delete this image?")                .setPositiveButton("Delete", (dialog, which) -> {
-
-                    // FIX: Use the new direct delete method
-                    // We pass image.getImageID() which matches what the repository expects
-                    imageService.deleteImageDirectly(image.getImageID())
-                            .addOnSuccessListener(aVoid -> {
-                                // Success!
-                                removeImageFromList(image);
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e(TAG, "Delete failed", e);
-                                Toast.makeText(getContext(), "Failed to delete image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
+                .setMessage("Are you sure you want to delete this image?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                            .collection("events")
+                            .whereEqualTo("posterImageID", image.getImageID())
+                            .limit(1)
+                            .get()
+                            .addOnSuccessListener(querySnapshot -> {
+                                Event event = querySnapshot.getDocuments().get(0).toObject(Event.class);
+                                    imageService.deleteEventPoster(event.getEventID())
+                                            .addOnSuccessListener(aVoid -> {
+                                                if (position >= 0 && position < imagesArrayList.size()) {
+                                                    imagesArrayList.remove(position);
+                                                    imageArrayAdapter.notifyItemRemoved(position);
+                                                    imageArrayAdapter.notifyItemRangeChanged(position, imagesArrayList.size() - position);
+                                                }
+                                                Toast.makeText(getContext(), "Image deleted", Toast.LENGTH_SHORT).show();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e(TAG, "Delete failed", e);
+                                                Toast.makeText(getContext(), "Failed to delete image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            });
+                    });
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
-    }
-
-
-    // Helper method to update the UI list
-    private void removeImageFromList(Image image) {
-        int currentPosition = imagesArrayList.indexOf(image);
-        if (currentPosition != -1) {
-            imagesArrayList.remove(currentPosition);
-            imageArrayAdapter.notifyItemRemoved(currentPosition);
-            imageArrayAdapter.notifyItemRangeChanged(currentPosition, imagesArrayList.size());
-        }
-        Toast.makeText(getContext(), "Image deleted successfully", Toast.LENGTH_SHORT).show();
     }
 }

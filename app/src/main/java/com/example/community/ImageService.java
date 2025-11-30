@@ -163,15 +163,5 @@ public class ImageService {
         return imageRepository.getAll();
     }
 
-    /**
-     * Deletes an image directly by its Image ID.
-     * Useful for Admin views where the associated Event ID might not be known.
-     *
-     * @param imageID The ID of the image document to delete
-     * @return Task resolving when deletion is complete
-     */
-    public Task<Void> deleteImageDirectly(String imageID) {
-        return imageRepository.delete(imageID);
-    }
 
 }

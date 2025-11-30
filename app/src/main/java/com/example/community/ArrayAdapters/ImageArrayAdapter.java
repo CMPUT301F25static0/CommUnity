@@ -53,16 +53,16 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
                                     ? user.getUsername()
                                     : "Unknown Name";
 
-                            holder.imageInfo.setText("Uploaded by: " + displayName);
+                            holder.imageInfo.setText("Uploaded by: \n" + displayName);
                         } else {
-                            holder.imageInfo.setText("Uploaded by: Unknown User");
+                            holder.imageInfo.setText("Uploaded by: \nUnknown User");
                         }
                     })
                     .addOnFailureListener(e -> {
                         holder.imageInfo.setText("Uploaded by: Error loading name");
                     });
         } else {
-            holder.imageInfo.setText("Uploaded by: Unknown");
+            holder.imageInfo.setText("Uploaded by: \nUnknown");
         }
 
         if (image.getImageURL() != null && !image.getImageURL().isEmpty()) {

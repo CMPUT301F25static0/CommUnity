@@ -40,7 +40,7 @@ public class NotificationArrayAdapter extends RecyclerView.Adapter<NotificationA
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Notification notif = notifications.get(position);
 
-        holder.message.setText(notif.getMessage() != null ? notif.getMessage() : "");
+        holder.message.setText(notif.getMessage() != null ? "-> " + notif.getMessage() : "");
 
         boolean showHeader = false;
         String currentEventID = notif.getEventID();

@@ -147,6 +147,11 @@ public class AdminNotificationFragment extends Fragment {
 
     private void sortNotifications() {
         Collections.sort(notificationList, (n1, n2) -> {
+            long d1 = n1.getIssueDate();
+            long d2 = n2.getIssueDate();
+            int dateComp = Long.compare(d2, d1);
+            if (dateComp != 0) return dateComp;
+
             String id1 = n1.getEventID() != null ? n1.getEventID() : "";
             String id2 = n2.getEventID() != null ? n2.getEventID() : "";
 
@@ -156,12 +161,7 @@ public class AdminNotificationFragment extends Fragment {
             int titleComp = title1.compareToIgnoreCase(title2);
             if (titleComp != 0) return titleComp;
 
-            int idComp = id1.compareTo(id2);
-            if (idComp != 0) return idComp;
-
-            long d1 = n1.getIssueDate();
-            long d2 = n2.getIssueDate();
-            return Long.compare(d2, d1);
+            return id1.compareTo(id2);
         });
     }
 }

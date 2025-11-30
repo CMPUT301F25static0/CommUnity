@@ -98,6 +98,15 @@
             android:textAllCaps="false"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/buttonBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Back"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
+
     </LinearLayout>
 
 </LinearLayout>

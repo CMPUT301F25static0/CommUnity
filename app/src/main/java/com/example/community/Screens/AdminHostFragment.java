@@ -122,7 +122,6 @@ import java.util.List;
         public void onDeleteClicked(User user, int position) {
             DeleteAccountConfirmDialogFragment dialog = new DeleteAccountConfirmDialogFragment();
 
-            // Pass the User ID and Position to the dialog so we know WHO to delete later
             Bundle args = new Bundle();
             args.putString("userID", user.getUserID());
             args.putInt("position", position);

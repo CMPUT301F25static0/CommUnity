@@ -88,7 +88,6 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
         }
     }
 
-    // 4. Handle "View" Click (Single Tap)
     @Override
     public void onEventClick(Event event) {
         showActionDialog(event);
