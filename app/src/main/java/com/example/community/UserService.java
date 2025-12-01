@@ -18,6 +18,9 @@ import java.util.UUID;
 public class UserService {
     private static final String TAG = "UserService";
     private UserRepository userRepository;
+    private EventRepository eventRepository;
+    private WaitlistRepository waitlistRepository;
+    private NotificationRepository notificationRepository;
     private FirebaseAuth firebaseAuth;
 
     /**
@@ -26,6 +29,9 @@ public class UserService {
      */
     public UserService() {
         userRepository = new UserRepository();
+        eventRepository = new EventRepository();
+        waitlistRepository = new WaitlistRepository();
+        notificationRepository = new NotificationRepository();
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
@@ -167,9 +173,7 @@ public class UserService {
      * @param userID ID of the user to delete
      * @return task that completes when deletion finishes
      */
-    public Task<Void> deleteUser(String userID) {
-        return userRepository.delete(userID);
-    }
+    public Task<Void> deleteUser(String userID) { return deleteUserCascade(userID);}
 
     /**
      * Changes a user's role in the system.
@@ -351,6 +355,122 @@ public class UserService {
                 throw new IllegalArgumentException("User not found");
             }
             return new ArrayList<>(user.getRegistrationHistoryIDs());
+        });
+    }
+
+    /**
+     * Completely deletes a user and all related data (cascade deletion).
+     *
+     * Deletes:
+     * - User from all event waitlists
+     * - All events created by the user (which cascades to their related data)
+     * - All notifications sent to the user
+     * - The user document itself
+     *
+     * @param userID ID of the user to delete
+     * @return task that completes when all cascading deletions are done
+     */
+    public Task<Void> deleteUserCascade(String userID) {
+        Log.d(TAG, "Starting cascade deletion for user: " + userID);
+
+        return userRepository.getByUserID(userID).continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                Log.e(TAG, "Failed to get user", task.getException());
+                return Tasks.forException(task.getException());
+            }
+
+            User user = task.getResult();
+            if (user == null) {
+                Log.e(TAG, "User not found: " + userID);
+                return Tasks.forException(new IllegalArgumentException("User not found"));
+            }
+
+            Log.d(TAG, "Starting cleanup");
+            List<Task<Void>> allTasks = new ArrayList<>();
+
+            // remove user from all waitlists they're in
+            Log.d(TAG, "Cleaning up waitlists");
+            Task<Void> waitlistCleanup = waitlistRepository.listByUser(userID)
+                    .continueWithTask(wTask -> {
+                        if (!wTask.isSuccessful()) {
+                            Log.e(TAG, "Failed to list waitlists", wTask.getException());
+                            return Tasks.forResult(null);
+                        }
+
+                        List<WaitingListEntry> entries = wTask.getResult();
+                        if (entries == null || entries.isEmpty()) {
+                            Log.d(TAG, "No waitlist entries to clean up");
+                            return Tasks.forResult(null);
+                        }
+
+                        Log.d(TAG, "Found " + entries.size() + " waitlist entries to clean");
+                        List<Task<Void>> tasks = new ArrayList<>();
+
+                        for (WaitingListEntry entry : entries) {
+                            // delete waitlist entry
+                            Task<Void> deleteEntry = waitlistRepository.delete(entry.getEventID(), userID)
+                                    .addOnFailureListener(e -> Log.e(TAG, "Failed to delete waitlist entry", e));
+                            tasks.add(deleteEntry);
+
+                            // update event counts if they were accepted
+                            if (entry.getStatus() == EntryStatus.ACCEPTED) {
+                                Task<Void> updateEvent = eventRepository.getByID(entry.getEventID())
+                                        .continueWithTask(eTask -> {
+                                            if (!eTask.isSuccessful()) {
+                                                Log.e(TAG, "Failed to get event", eTask.getException());
+                                                return Tasks.forResult(null);
+                                            }
+
+                                            Event event = eTask.getResult();
+                                            if (event != null && event.getCurrentCapacity() != null && event.getCurrentCapacity() > 0) {
+                                                event.setCurrentCapacity(event.getCurrentCapacity() - 1);
+                                                return eventRepository.update(event);
+                                            }
+                                            return Tasks.forResult(null);
+                                        })
+                                        .addOnFailureListener(e -> Log.e(TAG, "Failed to update event capacity", e));
+                                tasks.add(updateEvent);
+                            }
+                        }
+
+                        return Tasks.whenAll(tasks);
+                    })
+                    .addOnSuccessListener(v -> Log.d(TAG, "Waitlist cleanup completed"))
+                    .addOnFailureListener(e -> Log.e(TAG, "Waitlist cleanup failed", e));
+
+            allTasks.add(waitlistCleanup);
+
+            // delete all events created by this user (uses cascade delete)
+            Log.d(TAG, "Deleting created events");
+            List<String> eventsToDelete = new ArrayList<>(user.getEventsCreatedIDs());
+            Log.d(TAG, "Found " + eventsToDelete.size() + " events to delete");
+
+            EventService eventService = new EventService();
+            for (String eventID : eventsToDelete) {
+                Task<Void> deleteEventTask = eventService.deleteEvent(eventID)
+                        .addOnSuccessListener(v -> Log.d(TAG, "Deleted event: " + eventID))
+                        .addOnFailureListener(e -> Log.e(TAG, "Failed to delete event: " + eventID, e));
+                allTasks.add(deleteEventTask);
+            }
+
+            // delete all notifications sent to this user
+            Log.d(TAG, "Deleting notifications");
+            Task<Void> notificationCleanup = notificationRepository.deleteAllForUser(userID)
+                    .addOnSuccessListener(v -> Log.d(TAG, "Notifications deleted"))
+                    .addOnFailureListener(e -> Log.e(TAG, "Failed to delete notifications", e));
+            allTasks.add(notificationCleanup);
+
+            // delete the user document itself
+            Log.d(TAG, "Deleting user document");
+            Task<Void> userDeletion = userRepository.delete(userID)
+                    .addOnSuccessListener(v -> Log.d(TAG, "User document deleted"))
+                    .addOnFailureListener(e -> Log.e(TAG, "Failed to delete user document", e));
+            allTasks.add(userDeletion);
+
+            // return combined task
+            return Tasks.whenAll(allTasks)
+                    .addOnSuccessListener(v -> Log.d(TAG, "User cascade deletion completed successfully"))
+                    .addOnFailureListener(e -> Log.e(TAG, "User cascade deletion failed", e));
         });
     }
 

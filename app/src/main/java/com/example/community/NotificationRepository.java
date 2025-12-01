@@ -131,4 +131,46 @@ public class NotificationRepository {
             return notifications;
         });
     }
+
+    /**
+     * Deletes a notification by ID.
+     *
+     * @param notificationID ID of the notification to delete
+     * @return task that completes when deletion finishes
+     */
+    public Task<Void> delete(String notificationID) {
+        return notificationsRef.document(notificationID).delete();
+    }
+
+    /**
+     * Deletes all notifications for a specific event.
+     *
+     * @param eventID ID of the event
+     * @return task that completes when all notifications are deleted
+     */
+    public Task<Void> deleteAllForEvent(String eventID) {
+        return notificationsRef.whereEqualTo("eventID", eventID).get().continueWithTask(task -> {
+            List<Task<Void>> deleteTasks = new ArrayList<>();
+            for (DocumentSnapshot doc : task.getResult()) {
+                deleteTasks.add(doc.getReference().delete());
+            }
+            return Tasks.whenAll(deleteTasks);
+        });
+    }
+
+    /**
+     * Deletes all notifications for a specific user.
+     *
+     * @param userID ID of the user
+     * @return task that completes when all notifications are deleted
+     */
+    public Task<Void> deleteAllForUser(String userID) {
+        return notificationsRef.whereEqualTo("recipientID", userID).get().continueWithTask(task -> {
+            List<Task<Void>> deleteTasks = new ArrayList<>();
+            for (DocumentSnapshot doc : task.getResult()) {
+                deleteTasks.add(doc.getReference().delete());
+            }
+            return Tasks.whenAll(deleteTasks);
+        });
+    }
 }

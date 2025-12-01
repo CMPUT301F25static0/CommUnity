@@ -51,7 +51,7 @@ public class WaitingListEntryService {
 
                 Integer waitlistCapacity = event.getWaitlistCapacity();
                 if (waitlistCapacity != null && waitlistCapacity > 0) {
-                    return waitlistRepository.countByEvent(eventID).continueWithTask(countTask -> {
+                    return waitlistRepository.countByEventAndStatus(eventID, EntryStatus.WAITING).continueWithTask(countTask -> {
                         Long currentCount = countTask.getResult();
                         if (currentCount >= waitlistCapacity) {
                             return Tasks. forException(new IllegalStateException("Waitlist is full"));
@@ -225,13 +225,13 @@ public class WaitingListEntryService {
     }
 
     /**
-     * Counts the total number of users on an event's waitlist.
+     * Counts the total number of users WAITING on an event's waitlist. (only WAITING status).
      *
      * @param eventID ID of the event
      * @return task containing the count
      */
     public Task<Long> getWaitlistSize(String eventID) {
-        return waitlistRepository.countByEvent(eventID);
+        return waitlistRepository.countByEventAndStatus(eventID, EntryStatus.WAITING);
     }
 
     /**
