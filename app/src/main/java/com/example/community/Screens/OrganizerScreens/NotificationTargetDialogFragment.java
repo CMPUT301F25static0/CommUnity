@@ -24,8 +24,7 @@ import com.example.community.Screens.NotificationsFragment;
  * </p>
  *
  * @see NotificationsFragment
- * @author Fredrik Larida
- */
+ * */
 public class NotificationTargetDialogFragment extends DialogFragment {
 
     /**

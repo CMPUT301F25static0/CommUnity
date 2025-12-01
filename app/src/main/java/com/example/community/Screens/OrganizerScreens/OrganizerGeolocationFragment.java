@@ -37,7 +37,6 @@ import java.util.ArrayList;
  * @see EventService
  * @see UserService
  *
- * @author Fredrik Larida
  */
 public class OrganizerGeolocationFragment extends Fragment {
 
@@ -75,7 +74,7 @@ public class OrganizerGeolocationFragment extends Fragment {
 
     /**
      * Initializes the fragment's UI elements and services. Sets up the RecyclerView
-     * adapeter with event click listeners, and loads the organizer's geolocation-enabled
+     * adapter with event click listeners, and loads the organizer's geolocation-enabled
      * events
      *
      * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.

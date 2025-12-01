@@ -48,7 +48,6 @@ import java.util.Set;
  * @see UserArrayAdapter
  * @see WaitingListEntryService
  *
- * @author Fredrik Larida
  */
 public class OrganizerEventUserListFragment extends DialogFragment {
 
@@ -121,8 +120,9 @@ public class OrganizerEventUserListFragment extends DialogFragment {
 
     /**
      * creates a new instance of the fragment with the given event ID and list type
+     *
      * @param eventId the identifier of the event
-     * @param listTypethe type of list to be displayed
+     * @param listType type of list to be displayed
      *
      * @return configured OrganizerEventUserListFragment
      */
@@ -156,7 +156,9 @@ public class OrganizerEventUserListFragment extends DialogFragment {
     }
 
     /**
-     * Initializes the fragment's UI elements and services
+     * Initializes the fragment's UI elements and services. Sets up the RecyclerView
+     * adapter with user click listeners, and loads the appropriate list of users
+     * based on the list type.
      *
      * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed

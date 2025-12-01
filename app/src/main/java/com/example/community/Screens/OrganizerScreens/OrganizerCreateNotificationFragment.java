@@ -32,7 +32,6 @@ import com.example.community.UserService;
  *     fragment.
  * </p>
  *
- * @author Fredrik Larida
  *
  * @see NotificationService
  * @see UserService
@@ -95,7 +94,8 @@ public class OrganizerCreateNotificationFragment extends Fragment {
     }
 
     /**
-     * Called when the fragment's view has been created.
+     * Initializes the fragment's UI elements and services. Sets up the UI elements
+     * and services, and loads the organizer's data.
      *
      * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed

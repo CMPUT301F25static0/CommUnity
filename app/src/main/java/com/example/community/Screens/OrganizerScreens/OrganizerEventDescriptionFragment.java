@@ -49,7 +49,6 @@ import com.squareup.picasso.Picasso;
  * @see EventService
  * @see WaitingListEntryService
  *
- * @author Fredrik Larida
  */
 public class OrganizerEventDescriptionFragment extends Fragment {
 

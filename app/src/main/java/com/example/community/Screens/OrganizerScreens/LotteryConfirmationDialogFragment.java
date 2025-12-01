@@ -42,8 +42,7 @@ import java.util.Locale;
  * @see EventService
  * @see LotteryService
  * @see UserService
- * @author Fredrik Larida
- */
+ * */
 public class LotteryConfirmationDialogFragment extends DialogFragment {
     /**
      * Tag for logging

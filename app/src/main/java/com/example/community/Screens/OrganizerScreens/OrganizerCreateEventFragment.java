@@ -41,7 +41,6 @@ import java.time.LocalDate;
  * @see EventService
  * @see UserService
  *
- * @author Fredrik Larida
  */
 public class OrganizerCreateEventFragment extends Fragment {
 
