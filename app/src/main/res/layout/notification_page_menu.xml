@@ -22,7 +22,7 @@
             android:id="@+id/popup_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="18dp"
             android:text="You are selected for: "
             android:textAlignment="center"
             android:textColor="@color/headerPrimary"

@@ -18,11 +18,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingBottom="1dp"
+
             android:text="@string/community"
             android:textAlignment="center"
             android:textColor="@color/headerPrimary"
-            android:textSize="24sp"
+            android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/notificationSettings"
             app:layout_constraintEnd_toEndOf="parent"

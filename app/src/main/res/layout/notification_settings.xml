@@ -22,7 +22,7 @@
             android:text="@string/community"
             android:textAlignment="center"
             android:textColor="@color/headerPrimary"
-            android:textSize="24sp"
+            android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,14 +71,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Yes"
-                app:buttonTint="@drawable/button_color"/>
+                app:buttonTint="@color/StrokeColor"/>
 
             <RadioButton
                 android:id="@+id/no_results"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:buttonTint="@color/headerPrimary"
+                app:buttonTint="@color/StrokeColor"
                 android:checked="true"
                 android:text="No" />
 
@@ -116,7 +116,7 @@
             android:layout_marginStart="147dp"
             android:text="@string/cancel"
             android:background="@drawable/button_color"
-            android:textColor="@color/button_text_color"
+            android:textColor="@color/warning"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/confirm_button"

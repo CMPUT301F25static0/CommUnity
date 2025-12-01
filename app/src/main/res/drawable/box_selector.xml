@@ -3,11 +3,10 @@
     <!-- Color when pressed (clicked) -->
     <item android:state_pressed="true"><shape android:shape="rectangle">
         <!-- A darker or different color for the pressed state -->
-        <solid android:color="#C71A1A"/>
+        <solid android:color="@color/on_click_color"/>
         <corners android:radius="18dp"/>
     </shape>
     </item>
 
-    <!-- Default state (Your original box_color) -->
     <item android:drawable="@drawable/box_color"/>
 </selector>
