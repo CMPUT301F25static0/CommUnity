@@ -19,10 +19,11 @@ import com.example.community.Screens.NotificationsFragment;
 /**
  * Dialog fragment for selecting the target entrant type for a notification
  * <p>
- * The dialog allows organizers to select the target entrant type for a notification
- * and navigate to the notification creation fragment
+ *      The dialog allows organizers to select the target entrant type for a notification
+ *      and navigate to the notification creation fragment
  * </p>
  *
+ * @see NotificationsFragment
  * @author Fredrik Larida
  */
 public class NotificationTargetDialogFragment extends DialogFragment {
@@ -43,20 +44,11 @@ public class NotificationTargetDialogFragment extends DialogFragment {
     private String eventID;
 
     /**
-     * Message displayed at the top of the dialog
+     * UI elements
      */
     private TextView messageTextView;
-    /**
-     * Button to choose the waitlist entrants as the notification recipient
-     */
     private Button toWaitlistButton;
-    /**
-     * Button to choose the invited entrants as the notification recipient
-     */
     private Button toInvitedButton;
-    /**
-     * Button to choose the cancelled entrants as the notification recipient
-     */
     private Button toCancelledButton;
 
     /**
