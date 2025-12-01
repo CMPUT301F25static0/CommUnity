@@ -23,18 +23,66 @@ import com.example.community.UserService;
 import com.example.community.WaitingListEntryService;
 import com.squareup.picasso.Picasso;
 
+/**
+ * Fragment for displaying event details and managing event
+ *
+ * <p>
+ *     Fragments shows event details including:
+ *     <ul>
+ *         <li>Event title</li>
+ *         <li>Event description</li>
+ *         <li>Event location</li>
+ *         <li>Event dates</li>
+ *         <li>Registration dates</li>
+ *         <li>Capacity</li>
+ *         <li>Organizer details</li>
+ *         <li>Waitlist count</li>
+ *         <li>Attendee count</li>
+ *         <li>Invited count</li>
+ *     </ul>
+ * </p>
+ * <p>
+ *     Receives event ID through navigation arguments and loads all related data
+ * </p>
+ *
+ * @see UserService
+ * @see EventService
+ * @see WaitingListEntryService
+ *
+ * @author Fredrik Larida
+ */
 public class OrganizerEventDescriptionFragment extends Fragment {
 
+    /**
+     * Tag for logging
+     */
     public static final String TAG = "OrganizerEventDescriptionFragment";
+    /**
+     * Navigation argument for event ID
+     */
     private static final String ARG_EVENT_ID = "event_id";
 
+    /**
+     * Currently displayed event
+     */
     private Event currentEvent;
-//    private String currentOrganizerId;
 
+    /**
+     * Service for managing waiting list entries
+     */
     private WaitingListEntryService waitingListEntryService;
+    /**
+     * Service for managing user operations
+     */
     private UserService userService;
+    /**
+     * Service for managing event operations
+     */
     private EventService eventService;
 
+    /**
+     * UI elements
+     */
     private ImageView posterImageView;
     private TextView eventTitle, eventDescription, eventLocation, eventDates
             , registrationDates, capacity, organizerUsername, organizerEmail, organizerPhone
@@ -43,6 +91,19 @@ public class OrganizerEventDescriptionFragment extends Fragment {
             viewWaitlistButton, viewInvitedButton, viewDeclinedButton,
             viewCancelledButton, runLotteryButton, exportAttendeesButton, backButton;
 
+    /**
+     * Inflate the fragment's layout view
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,6 +111,13 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         return organizerEventDescriptionFragment;
     }
 
+    /**
+     * Initialize the fragment's UI elements and set up event listeners
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -91,6 +159,10 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         setUpClickListeners();
     }
 
+    /**
+     * Called when the fragment is resumed. Reloads event if event was loaded
+     * previously.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -100,6 +172,9 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets up click listeners for all buttons in the fragment.
+     */
     private void setUpClickListeners() {
         backButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(this).navigateUp());
@@ -115,6 +190,10 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         exportAttendeesButton.setOnClickListener(v -> exportAttendeesCSV());
     }
 
+    /**
+     * Loads event details from the database and displays them in the UI.
+     * Fills in all UI elements with the event's details.
+     */
     private void loadEventDetails() {
         String eventId = getArguments().getString(ARG_EVENT_ID);
         if (eventId == null) {
@@ -147,6 +226,10 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                 });
     }
 
+    /**
+     * Loads and displays the event's poster image using Picasso.
+     * If the event has no poster image, the image view is hidden.
+     */
     private void loadPosterImage() {
         if (currentEvent == null) {
             posterImageView.setVisibility(View.GONE);
@@ -168,6 +251,13 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         }
     }
 
+    /**
+     * Loads and displays the event's organizer details.
+     * If the organizer is not found, a toast message is displayed.
+     * Displays a default message if the organizer's phone number is not available.
+     *
+     * @param organizerID The ID of the organizer to load details for.
+     */
     private void loadOrganizerDetails(String organizerID) {
         userService.getByUserID(organizerID)
                 .addOnSuccessListener(organizer -> {
@@ -189,6 +279,13 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                 });
     }
 
+    /**
+     * Loads and displays the event's waitlist count.
+     * If the waitlist size is not found, a toast message is displayed.
+     * If no maximum waitlist size is set, the waitlist count is displayed as "no limit".
+     *
+     * @param event The event to load the waitlist count for.
+     */
     private void loadWaitlistCount() {
         waitingListEntryService.getWaitlistSize(currentEvent.getEventID())
                 .addOnSuccessListener(size -> {
@@ -208,6 +305,11 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                 });
     }
 
+    /**
+     * Navigates to event editing screen, passing all current event details as arguments.
+     * Sets edit mode flag to true.
+     * Diplays error if event is not loaded
+     */
     private void editEvent() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
@@ -234,6 +336,10 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                 .navigate(R.id.action_OrganizerEventDescriptionFragment_to_CreateEventFragment, args);
     }
 
+    /**
+     * Navigates to poster upload screen, passing event ID as argument.
+     * Diplays error if event is not loaded
+     */
     private void uploadPoster() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
@@ -246,6 +352,10 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                 .navigate(R.id.action_OrganizerEventDescriptionFragment_to_OrganizerPosterUploadFragment, args);
     }
 
+    /**
+     * Displays dialog framgent showing the list of waitlisted entrants for this event.
+     * Diplays error if event is not loaded.
+     */
     private void viewWaitlist() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
@@ -254,6 +364,11 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         OrganizerEventUserListFragment fragment = OrganizerEventUserListFragment.newInstance(currentEvent.getEventID(), "waitlist");
         fragment.show(getChildFragmentManager(), "waitlist_list");
     }
+
+    /**
+     * Displays dialog framgent showing the list of attendees for this event.
+     * Diplays error if event is not loaded.
+     */
     private void viewAttendeesList() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
@@ -263,6 +378,10 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         fragment.show(getChildFragmentManager(), "attendees_list");
     }
 
+    /**
+     * Displays dialog framgent showing the list of invited entrants for this event.
+     * Diplays error if event is not loaded.
+     */
     private void viewInvitedList() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
@@ -272,6 +391,10 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         fragment.show(getChildFragmentManager(), "invited_list");
     }
 
+    /**
+     * Displays dialog framgent showing the list of cancelled entrants for this event.
+     * Diplays error if event is not loaded.
+     */
     private void viewCancelledList() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
@@ -281,6 +404,10 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         fragment.show(getChildFragmentManager(), "cancelled_list");
     }
 
+    /**
+     * Displays dialog framgent showing the list of entrants who declined the invitation for this event.
+     * Diplays error if event is not loaded.
+     */
     private void viewDeclinedList() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
@@ -290,6 +417,10 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         fragment.show(getChildFragmentManager(), "declined_list");
     }
 
+    /**
+     * Displays dialog framgent showing the list of entrants who declined the invitation for this event.
+     * Diplays error if event is not loaded.
+     */
     private void showLotteryConfirmationDialog() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
@@ -299,6 +430,21 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         fragment.show(getChildFragmentManager(), "lottery_confirmation");
     }
 
+    /**
+     * Exports the list of attendees for this event to a CSV file.
+     * Diplays error if event is not loaded.
+     * <p>
+     *     How it works:
+     *     <ul>
+     *         <li>Get organizer ID</li>
+     *         <li>Calls event service to generate CSV content</li>
+     *         <li>Creates CSV file</li>
+     *         <li>Writes content to the file in the Downlaods folder</li>
+     *         <li>Displays success message or error</li>
+     *     </ul>
+     * </p>
+     * Displays error if event is not loaded.
+     */
     private void exportAttendeesCSV() {
         if (currentEvent == null) {
             Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
