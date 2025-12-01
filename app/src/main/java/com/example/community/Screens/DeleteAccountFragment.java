@@ -39,6 +39,7 @@ public class DeleteAccountFragment extends DialogFragment {
         Bundle args = new Bundle();
         args.putString("userId", userId);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -86,25 +87,53 @@ public class DeleteAccountFragment extends DialogFragment {
         cancelDelete = view.findViewById(R.id.cancel_popup);
         confirmDelete = view.findViewById(R.id.delete_unity);
 
-        // Cancel deletion and dismiss the dialog
         cancelDelete.setOnClickListener(v -> dismiss());
 
         // Confirm deletion and call UserService to delete the account
         confirmDelete.setOnClickListener(v -> {
+            Log.d(TAG, "Delete button clicked for user: " + userId);
+
+            // disable buttons during deletion so it doesn't act weird
+            confirmDelete.setEnabled(false);
+            cancelDelete.setEnabled(false);
+
+
             userService.deleteUser(userId)
                     .addOnSuccessListener(task -> {
-                        dismiss();
                         Log.d(TAG, "Account deleted successfully");
-                        Toast.makeText(getActivity(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
 
-                        // Navigate back to SplashPageFragment after successful deletion
-                        NavHostFragment.findNavController(this)
-                                .navigate(R.id.action_EntrantUserProfileFragment_to_SplashPageFragment);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                Toast.makeText(getActivity(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
+                                dismiss();
+
+                                // go back to splash page
+                                try {
+                                    NavHostFragment.findNavController(DeleteAccountFragment.this)
+                                            .navigate(R.id.action_EntrantUserProfileFragment_to_SplashPageFragment);
+                                } catch (Exception e) {
+                                    Log.e(TAG, "Navigation failed", e);
+                                }
+                            });
+                        }
                     })
                     .addOnFailureListener(e -> {
-                        dismiss();
-                        Log.d(TAG, "Failed to delete account", e);
-                        Toast.makeText(getActivity(), "Failed to delete account", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Failed to delete account", e);
+
+                        if (getActivity() != null) { // failed to delete account
+                            getActivity().runOnUiThread(() -> {
+                                // re-enable buttons
+                                confirmDelete.setEnabled(true);
+                                cancelDelete.setEnabled(true);
+
+                                String errorMessage = "Failed to delete account";
+                                if (e.getMessage() != null) {
+                                    errorMessage += ": " + e.getMessage();
+                                }
+                                Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
+
+                            });
+                        }
                     });
         });
     }
