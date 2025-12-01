@@ -30,7 +30,7 @@ import java.time.LocalDate;
  *     This fragment gives organizer a form to create new events or edit existing events.
  *     It contains fields for event name, description, location, start and end dates,
  *     registration start and end dates, maximum participants, waiting list size,
- *     and geolocation requirements. The fragemnt also manages date picker dialogs for selecting
+ *     and geolocation requirements. The fragment also manages date picker dialogs for selecting
  *     event and registration dates
  * </p>
  * <p>
@@ -358,10 +358,10 @@ public class OrganizerCreateEventFragment extends Fragment {
     }
 
     /**
-     * Updates an exisiting event with new details. Validates all inputs similar to createEvent()
+     * Updates an existing event with new details. Validates all inputs similar to createEvent()
      * and fetches the event before applying edits.
      *
-     * @see createEvent()
+     * @see #createEvent()
      */
     private void updateEvent() {
         if (currentOrganizer == null || editingEventId == null) {

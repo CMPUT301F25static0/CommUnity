@@ -284,7 +284,6 @@ public class OrganizerEventDescriptionFragment extends Fragment {
      * If the waitlist size is not found, a toast message is displayed.
      * If no maximum waitlist size is set, the waitlist count is displayed as "no limit".
      *
-     * @param event The event to load the waitlist count for.
      */
     private void loadWaitlistCount() {
         waitingListEntryService.getWaitlistSize(currentEvent.getEventID())
@@ -308,7 +307,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
     /**
      * Navigates to event editing screen, passing all current event details as arguments.
      * Sets edit mode flag to true.
-     * Diplays error if event is not loaded
+     * Displays error if event is not loaded
      */
     private void editEvent() {
         if (currentEvent == null) {
@@ -338,7 +337,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
 
     /**
      * Navigates to poster upload screen, passing event ID as argument.
-     * Diplays error if event is not loaded
+     * Displays error if event is not loaded
      */
     private void uploadPoster() {
         if (currentEvent == null) {
@@ -353,8 +352,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
     }
 
     /**
-     * Displays dialog framgent showing the list of waitlisted entrants for this event.
-     * Diplays error if event is not loaded.
+     * Displays dialog fragment showing the list of waitlisted entrants for this event.
+     * Displays error if event is not loaded.
      */
     private void viewWaitlist() {
         if (currentEvent == null) {
@@ -366,8 +365,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
     }
 
     /**
-     * Displays dialog framgent showing the list of attendees for this event.
-     * Diplays error if event is not loaded.
+     * Displays dialog fragment showing the list of attendees for this event.
+     * Displays error if event is not loaded.
      */
     private void viewAttendeesList() {
         if (currentEvent == null) {
@@ -379,8 +378,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
     }
 
     /**
-     * Displays dialog framgent showing the list of invited entrants for this event.
-     * Diplays error if event is not loaded.
+     * Displays dialog fragment showing the list of invited entrants for this event.
+     * Displays error if event is not loaded.
      */
     private void viewInvitedList() {
         if (currentEvent == null) {
@@ -392,8 +391,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
     }
 
     /**
-     * Displays dialog framgent showing the list of cancelled entrants for this event.
-     * Diplays error if event is not loaded.
+     * Displays dialog fragment showing the list of cancelled entrants for this event.
+     * Displays error if event is not loaded.
      */
     private void viewCancelledList() {
         if (currentEvent == null) {
@@ -405,8 +404,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
     }
 
     /**
-     * Displays dialog framgent showing the list of entrants who declined the invitation for this event.
-     * Diplays error if event is not loaded.
+     * Displays dialog fragment showing the list of entrants who declined the invitation for this event.
+     * Displays error if event is not loaded.
      */
     private void viewDeclinedList() {
         if (currentEvent == null) {
@@ -418,8 +417,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
     }
 
     /**
-     * Displays dialog framgent showing the list of entrants who declined the invitation for this event.
-     * Diplays error if event is not loaded.
+     * Displays dialog fragment showing the list of entrants who declined the invitation for this event.
+     * Displays error if event is not loaded.
      */
     private void showLotteryConfirmationDialog() {
         if (currentEvent == null) {
@@ -432,14 +431,14 @@ public class OrganizerEventDescriptionFragment extends Fragment {
 
     /**
      * Exports the list of attendees for this event to a CSV file.
-     * Diplays error if event is not loaded.
+     * Displays error if event is not loaded.
      * <p>
      *     How it works:
      *     <ul>
      *         <li>Get organizer ID</li>
      *         <li>Calls event service to generate CSV content</li>
      *         <li>Creates CSV file</li>
-     *         <li>Writes content to the file in the Downlaods folder</li>
+     *         <li>Writes content to the file in the Downloads folder</li>
      *         <li>Displays success message or error</li>
      *     </ul>
      * </p>

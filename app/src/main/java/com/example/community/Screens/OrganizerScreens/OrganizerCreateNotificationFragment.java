@@ -45,11 +45,11 @@ public class OrganizerCreateNotificationFragment extends Fragment {
     private static final String TAG = "CreateNotificationsFragment";
 
     /**
-     * ID of the event for whcih the notification will be sent
+     * ID of the event for which the notification will be sent
      */
     private String eventID;
     /**
-     * The type of etnrants to receive the notification.
+     * The type of entrants to receive the notification.
      */
     private String entrantType;
     /**
@@ -61,7 +61,7 @@ public class OrganizerCreateNotificationFragment extends Fragment {
      * UI elements
      */
     private TextView labelNotifyUsers;
-    private EditText inputNotificationTitle, inputNotificationMessage;;
+    private EditText inputNotificationTitle, inputNotificationMessage;
     private Button buttonCancel, buttonSend;
 
     /**
@@ -162,7 +162,6 @@ public class OrganizerCreateNotificationFragment extends Fragment {
     /**
      * Updates the label based on the entrant type
      *
-     * @param entrantType the type of entrant to notify
      */
     private void updateLabelBasedOnEntrantType() {
         if (entrantType != null) {
