@@ -44,41 +44,59 @@ import java.time.LocalDate;
  */
 public class OrganizerCreateEventFragment extends Fragment {
 
-    /**
-     * Tag for logging
-     */
+    /** Tag used for logging */
     private final String TAG = "CreateEventFragment";
 
-    /**
-     * UI elements
-     */
-    private EditText eventNameInput, eventDescriptionInput, eventLocationInput;
-    private EditText eventMaxParticipantsInput, waitingListSizeInput;
-    private EditText eventStartDateInput, eventEndDateInput, inputRegStart, inputRegEnd;
+
+    /** Input field for the event name */
+    private EditText eventNameInput;
+
+    /** Input field for the event description */
+    private EditText eventDescriptionInput;
+
+    /** Input field for the event location */
+    private EditText eventLocationInput;
+
+    /** Input field for the maximum number of participants */
+    private EditText eventMaxParticipantsInput;
+
+    /** Input field for the waiting list size (optional) */
+    private EditText waitingListSizeInput;
+
+    /** Input field for the event start date */
+    private EditText eventStartDateInput;
+
+    /** Input field for the event end date */
+    private EditText eventEndDateInput;
+
+    /** Input field for registration start date */
+    private EditText inputRegStart;
+
+    /** Input field for registration end date */
+    private EditText inputRegEnd;
+
+    /** Checkbox for the geolocation tracking */
     private CheckBox geolocationRequiredCheckbox;
-    private Button cancelButton, submitButton;
 
+    /** Button to cancel event creation/editing */
+    private Button cancelButton;
 
-    /**
-     * Service for getting event data from Firebase Firestore
-     */
+    /** Button to submit the new or edited event */
+    private Button submitButton;
+
+    /** Service for event-related database operations */
     private EventService eventService;
-    /**
-     * Service for getting user data from Firebase Firestore
-     */
+
+    /** Service for getting user data from Firebase Firestore */
     private UserService userService;
-    /**
-     * Current organizer user
-     */
+
+    /** Currently logged-in organizer */
     private User currentOrganizer;
 
-    /**
-     * ID of event being edited if the fragment is in edit mode
-     */
+    /** ID of the event being edited (null if creating a new event) */
     private String editingEventId;
-    /**
-     * Flag indicating whether the fragment is in edit mode
-     */
+
+    /** Flag indicating if the fragment is in editing mode */
     private boolean isEditing;
 
     /**
@@ -479,7 +497,7 @@ public class OrganizerCreateEventFragment extends Fragment {
 
                 },
                 initialDate.getYear(),
-                initialDate.getMonthValue() - 1 ,
+                initialDate.getMonthValue() - 1,
                 initialDate.getDayOfMonth()
         );
         datePickerDialog.getDatePicker().setMinDate(minDate.toEpochDay());

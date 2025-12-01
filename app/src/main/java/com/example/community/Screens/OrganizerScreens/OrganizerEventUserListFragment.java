@@ -51,32 +51,22 @@ import java.util.Set;
  */
 public class OrganizerEventUserListFragment extends DialogFragment {
 
-    /**
-     * Tag for logging
-     */
+    /** Tag for logging */
     public static final String TAG = "OrganizerEventUserListFragment";
 
-    /**
-     * Argument for event id to pass into fragment's arguments bundle
-     */
+    /** Argument for event id to pass into fragment's arguments bundle */
     private static final String ARG_EVENT_ID = "event_id";
 
-    /**
-     * Argument for list type to pass into fragment's arguments bundle
-     */
+    /** Argument for list type to pass into fragment's arguments bundle */
     private static final String ARG_LIST_TYPE = "list_type";
 
-    /**
-     * ID of the event for the lists
-     */
+    /** ID of the event whose user list is displayed */
     private String eventId;
-    /**
-     * Type of list to display
-     */
+
+    /** Type of list to display: "waitlist", "invited", "attendees", "cancelled", "declined" */
     private String listType;
-    /**
-     * List of users to display in RecyclerView
-     */
+
+    /** List of users currently displayed */
     public List<User> usersList;
     /**
      * List of waiting list entries corresponding to the users in the list.
@@ -88,34 +78,24 @@ public class OrganizerEventUserListFragment extends DialogFragment {
      */
     private Set<String> selectedUserIds;
 
-    /**
-     * UI elements
-     */
+    /** RecyclerView and adapter for displaying the user list */
     private RecyclerView userListRecyclerView;
+    private UserArrayAdapter userArrayAdapter;
+
+    /** UI elements */
     private TextView listTitle;
     private Button closeListButton;
     private Button cancelUsersButton;
 
-    /**
-     * Adapter for the RecyclerView and user selection state
-     */
-    private UserArrayAdapter userArrayAdapter;
-
-    /**
-     * Service for managing waitlist entries
-     */
+    /** Services for accessing waiting list entries and user data */
     private WaitingListEntryService waitingListEntryService;
-    /**
-     * Service for managing user data
-     */
+
+    /**Service for managing user data */
     private UserService userService;
-    /**
-     * Service for managing event data
-     */
+
+    /** Service for managing event data */
     private EventService eventService;
-    /**
-     * Service for managing lottery operations
-     */
+    /** Service for managing lottery operations */
     private LotteryService lotteryService;
 
     /**
@@ -272,7 +252,7 @@ public class OrganizerEventUserListFragment extends DialogFragment {
                     loadUsers(entries);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to load waitlist entries", e);
+                    Log.e(TAG, "Failed to load invited entries", e);
                     dismiss();
                 });
     }
@@ -286,7 +266,7 @@ public class OrganizerEventUserListFragment extends DialogFragment {
                     loadUsers(entries);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to load waitlist entries", e);
+                    Log.e(TAG, "Failed to load attendees entries", e);
                     dismiss();
                 });
 
@@ -301,7 +281,7 @@ public class OrganizerEventUserListFragment extends DialogFragment {
                     loadUsers(entries);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to load waitlist entries", e);
+                    Log.e(TAG, "Failed to load cancelled entries", e);
                     dismiss();
                 });
     }
@@ -317,7 +297,7 @@ public class OrganizerEventUserListFragment extends DialogFragment {
                     loadUsers(entries);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to load waitlist entries", e);
+                    Log.e(TAG, "Failed to load declined entries", e);
                     dismiss();
                 });
     }

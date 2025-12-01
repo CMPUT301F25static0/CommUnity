@@ -6,28 +6,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import java.util.ArrayList;
 
-import com.example.community.ArrayAdapters.EventArrayAdapter;
-import com.example.community.Event;
-import com.example.community.EventService;
 import com.example.community.R;
-import com.example.community.Role;
+
 import com.example.community.UserService;
 
-// delete user and remove event
-
+/**
+ * Home Fragment for Admin users.
+ * Provides navigation to event management, host management,
+ * profile settings, and image management screens.
+ */
 public class AdminHomeFragment extends Fragment {
 
-    Button buttonEvent, buttonHost, buttonProfile, buttonImage, buttonNotification, buttonBack;
+    private Button buttonEvent, buttonHost, buttonProfile, buttonImage, buttonNotification, buttonBack;
 
-    UserService userService;
+    private UserService userService;
 
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         return inflater.inflate(R.layout.admin_home_page, container, false);
@@ -37,6 +36,7 @@ public class AdminHomeFragment extends Fragment {
     public void onViewCreated(@Nullable View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Initialize UI components
         buttonEvent = view.findViewById(R.id.buttonEvent);
         buttonHost = view.findViewById(R.id.buttonHost);
         buttonProfile = view.findViewById(R.id.buttonProfile);
@@ -52,6 +52,9 @@ public class AdminHomeFragment extends Fragment {
 
     }
 
+    /**
+     * Sets up click listeners for admin navigation buttons.
+     */
     private void setUpClickListener() {
         buttonEvent.setOnClickListener(v -> {
             NavHostFragment.findNavController(AdminHomeFragment.this)

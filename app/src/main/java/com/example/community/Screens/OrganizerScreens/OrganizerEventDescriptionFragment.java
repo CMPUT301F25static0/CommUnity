@@ -52,31 +52,22 @@ import com.squareup.picasso.Picasso;
  */
 public class OrganizerEventDescriptionFragment extends Fragment {
 
-    /**
-     * Tag for logging
-     */
+    /** Tag for logging */
     public static final String TAG = "OrganizerEventDescriptionFragment";
-    /**
-     * Navigation argument for event ID
-     */
+
+    /** Navigation argument for event ID */
     private static final String ARG_EVENT_ID = "event_id";
 
-    /**
-     * Currently displayed event
-     */
+    /** Currently displayed event */
     private Event currentEvent;
 
-    /**
-     * Service for managing waiting list entries
-     */
+    /** Service for managing waiting list entries */
     private WaitingListEntryService waitingListEntryService;
-    /**
-     * Service for managing user operations
-     */
+
+    /** Service for managing user operations */
     private UserService userService;
-    /**
-     * Service for managing event operations
-     */
+
+    /** Service for managing event operations */
     private EventService eventService;
 
     /**
@@ -124,9 +115,6 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         waitingListEntryService = new WaitingListEntryService();
         userService = new UserService();
         eventService = new EventService();
-//        String deviceToken = userService.getDeviceToken();
-//        userService.getUserIDByDeviceToken(deviceToken)
-//                .addOnSuccessListener(userId -> currentOrganizerId = userId);
 
         posterImageView = view.findViewById(R.id.posterImageView);
         eventTitle = view.findViewById(R.id.eventTitle);
@@ -206,7 +194,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                     currentEvent = event;
                     eventTitle.setText(event.getTitle());
                     eventDescription.setText(event.getDescription());
-                    eventLocation.setText("Event Location: " +event.getLocation());
+                    eventLocation.setText("Event Location: " + event.getLocation());
                     eventDates.setText(String.format("Event Dates: %s - %s",
                             event.getEventStartDate(), event.getEventEndDate()));
                     registrationDates.setText(String.format("Registration Period: %s - %s",
@@ -236,7 +224,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         }
 
         String posterURL = currentEvent.getPosterImageURL();
-        if(posterURL != null && !posterURL.isEmpty()) {
+        if (posterURL != null && !posterURL.isEmpty()) {
             Picasso.get()
                     .load(posterURL)
                     .fit()
@@ -293,8 +281,6 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                             ? String.format("Waitlist: %d/no limit", size)
                             : String.format("Waitlist: %d/%d", size, maxWaitListSize);
                     waitlistCount.setText(waitlistSizeText);
-
-                    return;
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to load waitlist count", e);

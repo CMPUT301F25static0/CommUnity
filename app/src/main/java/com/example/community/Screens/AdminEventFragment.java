@@ -27,16 +27,20 @@ import com.example.community.R;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
+/**
+ * Fragment for admins to view a list of upcoming events within a year.
+ * Includes a back button to return to the previous screen.
+ */
 public class AdminEventFragment extends Fragment implements EventArrayAdapter.OnEventClickListener {
 
-    Button backButton;
-    RecyclerView adminEventView;
+    private Button backButton;
+    private RecyclerView adminEventView;
 
     private ArrayList<Event> eventsArrayList;
     private EventArrayAdapter eventArrayAdapter;
     private EventService eventService;
 
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.admin_event_page, container, false);
@@ -66,6 +70,10 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
         setUpClickListener();
     }
 
+    /**
+     * Loads upcoming events from today to one year in the future.
+     * Uses DateValidation to ensure the date range is valid.
+     */
     private void loadEvents() {
         String fromDate = DateValidation.getCurrentDate();
 
@@ -130,6 +138,10 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
                 });
     }
 
+    /**
+     * Sets up click listeners for UI components.
+     * Currently only the back button.
+     */
     private void setUpClickListener() {
         backButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(AdminEventFragment.this)

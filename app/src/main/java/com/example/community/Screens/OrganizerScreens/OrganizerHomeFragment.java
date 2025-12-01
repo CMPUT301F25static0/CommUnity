@@ -40,9 +40,7 @@ import java.util.ArrayList;
  * @see UserService
  */
 public class OrganizerHomeFragment extends Fragment {
-    /**
-     * Tag for logging
-     */
+    /** Tag for logging */
     private static final String TAG = "OrganizerHomeFragment";
     /**
      * UI elements
@@ -52,25 +50,21 @@ public class OrganizerHomeFragment extends Fragment {
     private Button geolocationButton, myProfileButton;
     private RecyclerView hostEventList;
 
-    /**
-     * List of events created by the current organizer.
-     */
+    /** List of events created by the current organizer. */
     private ArrayList<Event> eventsArrayList;
-    /**
-     * Identifier of the current organizer
-     */
+
+    /** Identifier of the current organizer */
     private String currentOrganizerID;
+
     /**
      * Adapter for managing the RecyclerView and event click handling
      */
     private EventArrayAdapter eventArrayAdapter;
-    /**
-     * Service for event data
-     */
+
+    /** Service for event data */
     private EventService eventService;
-    /**
-     * Service for user data
-     */
+
+    /** Service for user data */
     private UserService userService;
 
     /**
@@ -106,10 +100,10 @@ public class OrganizerHomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         eventService = new EventService();
-        eventsArrayList = new ArrayList<>();
         userService = new UserService();
+        eventsArrayList = new ArrayList<>();
 
-
+        // Initialize UI components
         notificationsButton = view.findViewById(R.id.organizerNotifications);
         cameraButton = view.findViewById(R.id.buttonCamera);
         guideButton = view.findViewById(R.id.buttonGuide);
@@ -120,6 +114,7 @@ public class OrganizerHomeFragment extends Fragment {
         myProfileButton = view.findViewById(R.id.buttonMyProfile);
         hostEventList = view.findViewById(R.id.HostEventView);
 
+        // Set up RecyclerView
         hostEventList.setLayoutManager(new LinearLayoutManager(getContext()));
         eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
         eventArrayAdapter.setOnEventClickListener(event -> {
@@ -144,6 +139,7 @@ public class OrganizerHomeFragment extends Fragment {
                     if (user == null) {
                         Log.e(TAG, "user does not exist");
                         Toast.makeText(getContext(), "User not found", Toast.LENGTH_SHORT).show();
+                        return;
                     }
                     Log.d(TAG, "user found: " + user.getUserID());
                     currentOrganizerID = user.getUserID();
@@ -161,7 +157,6 @@ public class OrganizerHomeFragment extends Fragment {
      * Displays error message if the event loading stuff fails
      */
     private void loadEvents() {
-
         eventService.listEventsByOrganizer(currentOrganizerID, 100, null)
                 .addOnSuccessListener(events -> {
                     Log.d(TAG, "events loaded: " + events.size());

@@ -44,44 +44,44 @@ import java.util.Locale;
  * @see UserService
  * */
 public class LotteryConfirmationDialogFragment extends DialogFragment {
-    /**
-     * Tag for logging
-     */
+    /** Tag for logging */
     private static final String TAG = "LotteryConfirmationDialogFragment";
-    /**
-     * Argument key for event ID
-     */
+    /** Argument key for event ID */
     private static final String ARG_EVENT_ID = "event_id";
 
-    /**
-     * The ID of the event to run the lottery for
-     */
+    /** The ID of the event to run the lottery for */
     private String eventID;
-    /**
-     * The number of available slots for the event
-     */
+
+    /** The number of available slots for the event */
+
+    /** Number of available slots for the lottery */
     private int availableSlots;
 
-    /**
-     * Service for getting event data from Firebase Firestore
-     */
+    /** Service for retrieving event data */
     private EventService eventService;
-    /**
-     * Service for running lottery operations
-     */
+
+    /** Service for running the lottery */
     private LotteryService lotteryService;
-    /**
-     * Service for getting user data from Firebase Firestore
-     */
+
+    /** Service for retrieving user/organizer info */
     private UserService userService;
 
     /**
      * UI elements
      */
     private TextView lotteryMessageTextView;
+
+    /** NumberPicker for selecting number of slots to include in the lottery */
     private NumberPicker lotteryNumberPicker;
+
+    /** ProgressBar shown while the lottery is running */
     private ProgressBar lotteryLoadingProgressBar;
-    private Button lotteryConfirmButton, lotteryCancelButton;
+
+    /** Button to confirm and run the lottery */
+    private Button lotteryConfirmButton;
+
+    /** Button to cancel the lottery */
+    private Button lotteryCancelButton;
 
     /**
      * Creates a new instance of the fragment with the given event ID
@@ -152,6 +152,7 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
         lotteryConfirmButton = view.findViewById(R.id.lotteryConfirmButton);
         lotteryCancelButton = view.findViewById(R.id.lotteryCancelButton);
 
+        // Fetch event to determine available slots
         eventService.getEvent(eventID)
                 .addOnSuccessListener(event -> {
                     if (event != null) {

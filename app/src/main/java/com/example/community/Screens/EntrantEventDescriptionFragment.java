@@ -31,6 +31,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.firebase.firestore.GeoPoint;
 
+/**
+ * Fragment for displaying detailed information about an event to an entrant.
+ * Provides options to join or leave the event waitlist.
+ */
 public class EntrantEventDescriptionFragment extends Fragment {
 
     public static final String TAG = "EventDescriptionFragment";
@@ -50,6 +54,12 @@ public class EntrantEventDescriptionFragment extends Fragment {
             waitlistCapacity;
     private Button waitlistButton, backButton;
 
+    /**
+     * Creates a new instance of this fragment with the specified event ID.
+     *
+     * @param eventId The ID of the event to display
+     * @return A new instance of EntrantEventDescriptionFragment
+     */
     public static EntrantEventDescriptionFragment newInstance(String eventId) {
         EntrantEventDescriptionFragment fragment = new EntrantEventDescriptionFragment();
         Bundle args = new Bundle();
@@ -58,6 +68,14 @@ public class EntrantEventDescriptionFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Inflates the layout for this fragment.
+     *
+     * @param inflater           LayoutInflater object to inflate views
+     * @param container          Parent container for the fragment
+     * @param savedInstanceState Saved instance state bundle
+     * @return The inflated view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -72,6 +90,8 @@ public class EntrantEventDescriptionFragment extends Fragment {
         waitingListEntryService = new WaitingListEntryService();
         eventService = new EventService();
         userService = new UserService();
+
+        // Get current entrant ID from device token
         String deviceToken = userService.getDeviceToken();
         userService.getUserIDByDeviceToken(deviceToken)
                 .addOnSuccessListener(userId -> currentEntrantId = userId);
@@ -129,13 +149,12 @@ public class EntrantEventDescriptionFragment extends Fragment {
                 .addOnSuccessListener(organizer -> {
                     if (organizer != null) {
                         organizerUsername.setText("Organizer Username: " + organizer.getUsername());
-                        organizerEmail.setText("Organizer Email: " +organizer.getEmail());
-                        if (organizer.getPhoneNumber() != null  && !organizer.getPhoneNumber().isEmpty()) {
+                        organizerEmail.setText("Organizer Email: " + organizer.getEmail());
+                        if (organizer.getPhoneNumber() != null && !organizer.getPhoneNumber().isEmpty()) {
                             organizerPhone.setText("Organizer Phone: " + organizer.getPhoneNumber());
                         } else {
                             organizerPhone.setText("Organizer Phone: No phone number provided");
                         }
-
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -145,6 +164,10 @@ public class EntrantEventDescriptionFragment extends Fragment {
                 });
     }
 
+    /**
+     * Checks the waitlist status for the current user and event,
+     * updates the waitlist capacity UI and waitlist button state.
+     */
     private void checkWaitlistStatus() {
         waitingListEntryService.getWaitlistSize(currentEvent.getEventID())
                 .continueWithTask(task -> {
@@ -175,11 +198,16 @@ public class EntrantEventDescriptionFragment extends Fragment {
                     Log.e(TAG, "Failed to check waitlist status", e);
                     Toast.makeText(getContext(), "Failed to check waitlist status", Toast.LENGTH_SHORT)
                             .show();
-
         });
 
     }
 
+    /**
+     * Updates the waitlist button text and click listener based on whether the user
+     * has already joined the waitlist.
+     *
+     * @param alreadyJoined True if the user is already on the waitlist
+     */
     private void updateWaitlistButton(boolean alreadyJoined) {
         if (alreadyJoined) {
             waitlistButton.setText("Leave waitlist");
@@ -190,6 +218,9 @@ public class EntrantEventDescriptionFragment extends Fragment {
         }
     }
 
+    /**
+     * Adds the current user to the event waitlist.
+     */
     private void joinWaitlist() {
         if (currentEvent.getRequiresGeolocation()) {
             // Request location permission if needed
@@ -308,6 +339,9 @@ public class EntrantEventDescriptionFragment extends Fragment {
                 });
     }
 
+    /**
+     * Removes the current user from the event waitlist.
+     */
     private void leaveWaitlist() {
         waitingListEntryService.leave(currentEntrantId, currentEvent.getEventID())
         .addOnSuccessListener(aVoid -> {
