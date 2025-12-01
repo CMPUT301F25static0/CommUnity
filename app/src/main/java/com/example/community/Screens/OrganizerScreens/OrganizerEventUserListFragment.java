@@ -29,29 +29,103 @@ import java.util.HashSet;
 import java.util. List;
 import java.util. Set;
 
+/**
+ * DialogFragment that displays list of event entrants filtered by their status.
+ * <p>
+ *     Fragment shows entrants of an event in various categories:
+ *     <ul>
+ *         <li>Waitlist</li>
+ *         <li>Invited</li>
+ *         <li>Attendees</li>
+ *         <li>Cancelled</li>
+ *         <li>Declined</li>
+ *     </ul>
+ *     Provides organizers with user information and allows the cancellation of entrants
+ *     that have been invited. Cancellation triggers a re-run of the lottery.
+ *     Fragment receives event ID and list type through navigation argument
+ * </p>
+ *
+ * @see UserArrayAdapter
+ * @see WaitingListEntryService
+ *
+ * @author Fredrik Larida
+ */
 public class OrganizerEventUserListFragment extends DialogFragment {
 
+    /**
+     * Tag for logging
+     */
     public static final String TAG = "OrganizerEventUserListFragment";
+
+    /**
+     * Argument for event id to pass into fragment's arguments bundle
+     */
     private static final String ARG_EVENT_ID = "event_id";
+
+    /**
+     * Argument for list type to pass into fragment's arguments bundle
+     */
     private static final String ARG_LIST_TYPE = "list_type";
 
+    /**
+     * ID of the event for the lists
+     */
     private String eventId;
+    /**
+     * Type of list to display
+     */
     private String listType;
+    /**
+     * List of users to display in RecyclerView
+     */
     public List<User> usersList;
+    /**
+     * List of waiting list entries corresponding to the users in the list.
+     * Used for operations like cancelling invites.
+     */
     private List<WaitingListEntry> waitingListEntries;
+    /**
+     * Set of user IDS that have been selected by organizer when on invited list type
+     */
     private Set<String> selectedUserIds;
 
+    /**
+     * UI elements
+     */
     private RecyclerView userListRecyclerView;
-    private UserArrayAdapter userArrayAdapter;
     private TextView listTitle;
     private Button closeListButton;
     private Button cancelUsersButton;
 
-    private WaitingListEntryService waitingListEntryService;
-    private UserService userService;
-    EventService eventService = new EventService();
-    LotteryService lotteryService = new LotteryService();
+    /**
+     * Adapter for the RecyclerView and user selection state
+     */
+    private UserArrayAdapter userArrayAdapter;
 
+    /**
+     * Service for managing waitlist entries
+     */
+    private WaitingListEntryService waitingListEntryService;
+    /**
+     * Service for managing user data
+     */
+    private UserService userService;
+    /**
+     * Service for managing event data
+     */
+    private EventService eventService;
+    /**
+     * Service for managing lottery operations
+     */
+    private LotteryService lotteryService;
+
+    /**
+     * creates a new instance of the fragment with the given event ID and list type
+     * @param eventId the identifier of the event
+     * @param listTypethe type of list to be displayed
+     *
+     * @return configured OrganizerEventUserListFragment
+     */
     public static OrganizerEventUserListFragment newInstance(String eventId, String listType) {
         OrganizerEventUserListFragment fragment = new OrganizerEventUserListFragment();
         Bundle args = new Bundle();
@@ -61,6 +135,19 @@ public class OrganizerEventUserListFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * Inflates the dialog's layout view
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return the view of the fragment's layout
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,6 +155,13 @@ public class OrganizerEventUserListFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * Initializes the fragment's UI elements and services
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -107,6 +201,11 @@ public class OrganizerEventUserListFragment extends DialogFragment {
 
     }
 
+    /**
+     * Loads the appropriate list of users based on the list type.
+     * Sets the title of the list and the visibility of the cancel users button if
+     * the list type is "invited". For every other list type the cancel button is hidden.
+     */
     private void loadUsersList() {
         if (eventId == null || listType == null) {
             Toast.makeText(getContext(), "Parameters received are invalid", Toast.LENGTH_SHORT).show();
@@ -146,6 +245,9 @@ public class OrganizerEventUserListFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Loads the waitlisted entrants of the event
+     */
     private void loadWaitlistUsers() {
         waitingListEntryService.getWaitlistEntries(eventId)
                 .addOnSuccessListener(entries -> {
@@ -157,6 +259,9 @@ public class OrganizerEventUserListFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Loads the invited entrants of the event
+     */
     private void loadInvitedUsers() {
         waitingListEntryService.getInvitedList(eventId)
                 .addOnSuccessListener(entries -> {
@@ -170,6 +275,9 @@ public class OrganizerEventUserListFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Loads the confirmed attendees of the event
+     */
     private void loadAttendeesUsers() {
         waitingListEntryService.getAcceptedList(eventId)
                 .addOnSuccessListener(entries -> {
@@ -182,6 +290,9 @@ public class OrganizerEventUserListFragment extends DialogFragment {
 
     }
 
+    /**
+     * Loads the cancelled entrants of the event
+     */
     private void loadCancelledUsers() {
         waitingListEntryService.getCancelledList(eventId)
                 .addOnSuccessListener(entries -> {
@@ -193,6 +304,9 @@ public class OrganizerEventUserListFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Loads the declined entrants of the event
+     */
     private void loadDeclinedUsers() {
         waitingListEntryService.getDeclinedList(eventId)
                 . addOnSuccessListener(entries -> {
@@ -206,6 +320,11 @@ public class OrganizerEventUserListFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Converts the entries to user objects and loads them into RecyclerView
+     *
+     * @param entries the waiting list entries to convert to users
+     */
     private void loadUsers(List<WaitingListEntry> entries) {
         usersList.clear();
         selectedUserIds.clear();
@@ -217,12 +336,16 @@ public class OrganizerEventUserListFragment extends DialogFragment {
 
         int[] loadedUsersCount = {0};
 
+        /**
+         * For each entry, get the user object and add it to the list
+         */
         for (WaitingListEntry entry : entries) {
             userService.getByUserID(entry.getUserID())
                     .addOnSuccessListener(user -> {
                         usersList.add(user);
                         loadedUsersCount[0]++;
 
+                        // If all users are loaded, notify adapter
                         if (loadedUsersCount[0] == entries.size()) {
                             userArrayAdapter.notifyDataSetChanged();
                         }
@@ -239,7 +362,11 @@ public class OrganizerEventUserListFragment extends DialogFragment {
     }
 
     /**
-     * Callback from adapter when user checkbox is toggled
+     * Callback from adapter when user checkbox is toggled.
+     * Adds user ID to selectedUserIds if selected, removes it if deselected.
+     *
+     * @param userId ID of the user whose selection changed
+     * @param selected true if the user is selected, false otherwise
      */
     public void onUserSelectionChanged(String userId, boolean selected) {
         if (selected) {
@@ -251,6 +378,16 @@ public class OrganizerEventUserListFragment extends DialogFragment {
 
     /**
      * Cancels all selected users from the invited list
+     * <p>
+     *     How it works:
+     *     <ul>
+     *         <li>Validates that at least one user is selected</li>
+     *         <li>Finds the waiting list entries for the selected users</li>
+     *         <li>Calls the service to cancel each selected invitation</li>
+     *         <li>Re-runs the lottery selection with the number of cancelled users</li>
+     *         <li>NReloads invited users list and clears selection</li>
+     *     </ul>
+     * </p>
      */
     private void cancelSelectedUsers() {
         if (selectedUserIds.isEmpty()) {
@@ -293,6 +430,11 @@ public class OrganizerEventUserListFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Re-runs the lottery selection with the number of cancelled users
+     *
+     * @param sampleSize the number of spots to fill from the waitlist
+     */
     private void runLotteryAgain(int sampleSize) {
         eventService.getOrganizerID(eventId)
                 .addOnSuccessListener(organizerID -> {
@@ -309,6 +451,9 @@ public class OrganizerEventUserListFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Called when the dialog is opened. Configures the dialog window size
+     */
     @Override
     public void onStart() {
         super.onStart();
