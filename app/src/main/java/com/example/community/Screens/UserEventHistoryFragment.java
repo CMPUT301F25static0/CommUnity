@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,27 +16,36 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.community.ArrayAdapters.EventArrayAdapter;
+import com.example.community.EntryStatus;
 import com.example.community.Event;
+import com.example.community.EventService;
 import com.example.community.R;
 import com.example.community.UserService;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.community.WaitingListEntry;
+import com.example.community.WaitlistRepository;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserEventHistoryFragment extends Fragment {
 
-    private RecyclerView waitlistedRecyclerView, joinedRecyclerView;
+    private static final String TAG = "UserEventHistory";
+
+    private RecyclerView joinedEventsRecyclerView;
+    private RecyclerView notSelectedEventsRecyclerView;
     private Button backButton;
 
-    private ArrayList<Event> waitlistedEvents = new ArrayList<>();
     private ArrayList<Event> joinedEvents = new ArrayList<>();
+    private ArrayList<Event> notSelectedEvents = new ArrayList<>();
 
-    private EventArrayAdapter waitlistedAdapter;
     private EventArrayAdapter joinedAdapter;
+    private EventArrayAdapter notSelectedAdapter;
 
-    private FirebaseFirestore db;
     private UserService userService;
+    private WaitlistRepository waitlistRepository;
+    private EventService eventService;
 
     @Nullable
     @Override
@@ -45,97 +55,127 @@ public class UserEventHistoryFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.user_event_page, container, false);
 
-        waitlistedRecyclerView = view.findViewById(R.id.recyclerWaitlistedEvents);
-        joinedRecyclerView = view.findViewById(R.id.recyclerJoinedEvents);
+        // Init views
+        joinedEventsRecyclerView = view.findViewById(R.id.joinedEventsRecyclerView);
+        notSelectedEventsRecyclerView = view.findViewById(R.id.notSelectedEventsRecyclerView);
         backButton = view.findViewById(R.id.back);
 
-        // Setup RecyclerViews
-        waitlistedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        joinedRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Init services
+        userService = new UserService();
+        waitlistRepository = new WaitlistRepository();
+        eventService = new EventService();
 
-        waitlistedAdapter = new EventArrayAdapter(waitlistedEvents);
+        // Set up RecyclerViews
         joinedAdapter = new EventArrayAdapter(joinedEvents);
+        notSelectedAdapter = new EventArrayAdapter(notSelectedEvents);
 
-        // Optional: click → go to event description
-        joinedAdapter.setOnEventClickListener(event -> {
-            Bundle args = new Bundle();
-            args.putString("event_id", event.getEventID());
-            NavHostFragment.findNavController(UserEventHistoryFragment.this)
-                    .navigate(R.id.action_EntrantHomeFragment_to_EventDescriptionFragment, args);
-        });
+        joinedEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        notSelectedEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        waitlistedAdapter.setOnEventClickListener(event -> {
-            Bundle args = new Bundle();
-            args.putString("event_id", event.getEventID());
-            NavHostFragment.findNavController(UserEventHistoryFragment.this)
-                    .navigate(R.id.action_EntrantHomeFragment_to_EventDescriptionFragment, args);
-        });
+        joinedEventsRecyclerView.setAdapter(joinedAdapter);
+        notSelectedEventsRecyclerView.setAdapter(notSelectedAdapter);
 
-        waitlistedRecyclerView.setAdapter(waitlistedAdapter);
-        joinedRecyclerView.setAdapter(joinedAdapter);
-
+        // Back button → previous screen
         backButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(UserEventHistoryFragment.this).popBackStack()
         );
 
-        db = FirebaseFirestore.getInstance();
-        userService = new UserService();
-
-        // Get the "CommUnity user ID" using the same pattern as RoleSelectFragment
-        String deviceToken = userService.getDeviceToken();
-        userService.getUserIDByDeviceToken(deviceToken)
-                .addOnSuccessListener(userId -> {
-                    Log.d("UserEventHistory", "Loaded userId = " + userId);
-                    loadJoinedEvents(userId);
-                    loadWaitlistedEvents(userId);
-                })
-                .addOnFailureListener(e ->
-                        Log.e("UserEventHistory", "Failed to get userId from device token", e)
-                );
+        // Load the user's history
+        loadHistory();
 
         return view;
     }
 
-    private void loadJoinedEvents(String userId) {
-        db.collection("events")
-                .whereArrayContains("attendeeListUserIDs", userId)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    joinedEvents.clear();
-                    for (DocumentSnapshot doc : querySnapshot) {
-                        Event e = doc.toObject(Event.class);
-                        if (e != null) {
-                            e.setEventID(doc.getId()); // ensure ID is set
-                            joinedEvents.add(e);
-                            Log.d("UserEventHistory", "Joined event: " + e.getTitle());
-                        }
-                    }
-                    joinedAdapter.notifyDataSetChanged();
+    private void loadHistory() {
+        // Get device token from FirebaseAuth
+        String deviceToken = userService.getDeviceToken();
+        Log.d(TAG, "Got deviceToken = " + deviceToken);
+
+        // Convert device token → app userId
+        userService.getUserIDByDeviceToken(deviceToken)
+                .addOnSuccessListener(userId -> {
+                    Log.d(TAG, "Got userId = " + userId);
+                    loadHistoryForUser(userId);
                 })
-                .addOnFailureListener(e ->
-                        Log.e("UserEventHistory", "Failed to load joined events", e)
-                );
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to get userId from device token", e);
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(),
+                                "Failed to load event history.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
-    private void loadWaitlistedEvents(String userId) {
-        db.collection("events")
-                .whereArrayContains("waitListUserIDs", userId)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    waitlistedEvents.clear();
-                    for (DocumentSnapshot doc : querySnapshot) {
-                        Event e = doc.toObject(Event.class);
-                        if (e != null) {
-                            e.setEventID(doc.getId());
-                            waitlistedEvents.add(e);
-                            Log.d("UserEventHistory", "Waitlisted event: " + e.getTitle());
-                        }
+    private void loadHistoryForUser(String userId) {
+        Log.d(TAG, "Loading history for userId = " + userId);
+
+        waitlistRepository.listByUser(userId)
+                .addOnSuccessListener(entries -> {
+                    Log.d(TAG, "Found " + entries.size() + " waitlist entries for user");
+
+                    joinedEvents.clear();
+                    notSelectedEvents.clear();
+
+                    // If no entries → nothing to load
+                    if (entries.isEmpty()) {
+                        joinedAdapter.notifyDataSetChanged();
+                        notSelectedAdapter.notifyDataSetChanged();
+                        return;
                     }
-                    waitlistedAdapter.notifyDataSetChanged();
+
+                    List<Task<Event>> fetchTasks = new ArrayList<>();
+
+                    for (WaitingListEntry entry : entries) {
+                        final String eventId = entry.getEventID();
+                        final EntryStatus status = entry.getStatus();
+
+                        Task<Event> fetchTask = eventService.getEvent(eventId)
+                                .addOnSuccessListener(event -> {
+                                    if (event == null) return;
+
+                                    // Joined events (ACCEPTED)
+                                    if (status == EntryStatus.ACCEPTED) {
+                                        joinedEvents.add(event);
+                                    }
+                                    // Not selected / waiting / cancelled / declined
+                                    else if (status == EntryStatus.DECLINED
+                                            || status == EntryStatus.WAITING
+                                            || status == EntryStatus.CANCELLED) {
+                                        notSelectedEvents.add(event);
+                                    }
+                                });
+
+                        fetchTasks.add(fetchTask);
+                    }
+
+                    // Wait for all event fetches to finish
+                    Tasks.whenAllComplete(fetchTasks)
+                            .addOnSuccessListener(done -> {
+                                Log.d(TAG, "Finished fetching events for history. " +
+                                        "Joined=" + joinedEvents.size() +
+                                        " NotSelected=" + notSelectedEvents.size());
+                                joinedAdapter.notifyDataSetChanged();
+                                notSelectedAdapter.notifyDataSetChanged();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Failed while fetching events for history", e);
+                                if (getContext() != null) {
+                                    Toast.makeText(getContext(),
+                                            "Failed to load some events.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
                 })
-                .addOnFailureListener(e ->
-                        Log.e("UserEventHistory", "Failed to load waitlisted events", e)
-                );
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to load waitlist entries for user", e);
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(),
+                                "Failed to load history.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
 

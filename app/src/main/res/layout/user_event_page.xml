@@ -1,87 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="16dp">
 
-    <!-- Waitlisted header -->
+    <!-- Title -->
     <TextView
-        android:id="@+id/waitlisted"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/waitlisted_events"
-        android:textSize="20sp"
+        android:id="@+id/title"
+        android:text="Event History"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp" />
-
-    <View
-        android:id="@+id/topDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        android:layout_marginBottom="4dp" />
-
-    <!-- Waitlisted events list (top) -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerWaitlistedEvents"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="4dp"
-        tools:listitem="@layout/event_list_item" />
-
-    <!-- Joined header (middle) -->
-    <TextView
-        android:id="@+id/joined"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/joined_events"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="4dp" />
-
-    <View
-        android:id="@+id/middleDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        android:layout_marginBottom="4dp" />
-
-    <!-- Joined events list (middle) -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerJoinedEvents"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="4dp"
-        tools:listitem="@layout/event_list_item" />
-
-    <View
-        android:id="@+id/bottomDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Back button at bottom -->
-    <Button
-        android:id="@+id/back"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/back"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="12dp"/>
+
+    <!-- Joined Events Section -->
+    <TextView
+        android:id="@+id/joined_label"
+        android:text="Joined Events"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/joinedEventsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="4dp"
+        android:scrollbars="vertical"/>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        android:layout_marginVertical="12dp"/>
+
+    <!-- Not Selected Events Section -->
+    <TextView
+        android:id="@+id/not_selected_label"
+        android:text="Not Selected / Waiting / Cancelled Events"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notSelectedEventsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="4dp"
+        android:scrollbars="vertical"/>
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/back"
+        android:text="Back"
         android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/white"
-        android:textColor="@color/black" />
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
