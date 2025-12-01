@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class OrganizerCreateEventFragment extends Fragment {
     private EditText eventNameInput, eventDescriptionInput, eventLocationInput;
     private EditText eventMaxParticipantsInput, waitingListSizeInput;
     private EditText eventStartDateInput, eventEndDateInput, inputRegStart, inputRegEnd;
+    private CheckBox geolocationRequiredCheckbox;
     private Button cancelButton, submitButton;
 
     private EventService eventService;
@@ -63,6 +65,7 @@ public class OrganizerCreateEventFragment extends Fragment {
         eventEndDateInput = view.findViewById(R.id.inputEventEnd);
         inputRegStart = view.findViewById(R.id.inputRegistrationStart);
         inputRegEnd = view.findViewById(R.id.inputRegistrationEnd);
+        geolocationRequiredCheckbox = view.findViewById(R.id. checkboxGeolocationRequired);
 
         cancelButton = view.findViewById(R.id.buttonCancel);
         submitButton = view.findViewById(R.id.buttonSubmit);
@@ -106,7 +109,7 @@ public class OrganizerCreateEventFragment extends Fragment {
                         throw new IllegalArgumentException("User not found: " + deviceToken);
                     }
                     if (user.getUsername() == null || user.getUsername().isEmpty() ||
-                        user.getEmail() == null || user.getEmail().isEmpty()) {
+                            user.getEmail() == null || user.getEmail().isEmpty()) {
                         Toast.makeText(getContext(), "Please complete your profile first (username and email)", Toast.LENGTH_SHORT).show();
                         NavHostFragment.findNavController(this).navigateUp();
                         return;
@@ -130,6 +133,7 @@ public class OrganizerCreateEventFragment extends Fragment {
         String regEnd = args.getString("reg_end", "");
         int maxParticipants = args.getInt("max_participants", 0);
         int waitingListSize = args.getInt("waiting_list_size", 0);
+        boolean geolocationRequired = args.getBoolean("requires_geolocation", false);
 
         eventNameInput.setText(eventName);
         eventDescriptionInput.setText(eventDescription);
@@ -142,6 +146,7 @@ public class OrganizerCreateEventFragment extends Fragment {
         if (waitingListSize > 0) {
             waitingListSizeInput.setText(String.valueOf(waitingListSize));
         }
+        geolocationRequiredCheckbox.setChecked(geolocationRequired);
     }
 
     private void setupDatePickers() {
@@ -165,6 +170,7 @@ public class OrganizerCreateEventFragment extends Fragment {
         String eventEndDate = eventEndDateInput.getText().toString();
         String registrationStart = inputRegStart.getText().toString();
         String registrationEnd = inputRegEnd.getText().toString();
+        boolean geolocationRequired = geolocationRequiredCheckbox.isChecked();
 
         if (eventName.isEmpty() || eventDescription.isEmpty() || eventLocation.isEmpty() ||
                 eventStartDate.toString().isEmpty() || eventEndDate.isEmpty() ||
@@ -220,18 +226,34 @@ public class OrganizerCreateEventFragment extends Fragment {
 
 
         eventService.createEvent(currentOrganizer.getUserID(), eventName, eventDescription, eventLocation,
-                eventMaxParticipants, eventStartDate, eventEndDate, waitingListSize, registrationStart, registrationEnd)
+                        eventMaxParticipants, eventStartDate, eventEndDate, waitingListSize, registrationStart, registrationEnd)
                 .addOnSuccessListener(eventId -> {
-                    eventService.refreshEventQR(currentOrganizer.getUserID(), eventId)
-                            .addOnSuccessListener(imageUrl -> {
-                                Toast.makeText(getContext(), "Event created successfully with QR code", Toast.LENGTH_SHORT)
-                                        .show();
-                                NavHostFragment.findNavController(this).navigateUp();
+                    // Set geolocation requirement
+                    eventService.getEvent(eventId)
+                            .addOnSuccessListener(event -> {
+                                event.setRequiresGeolocation(geolocationRequired);
+                                eventService.updateEvent(currentOrganizer.getUserID(), event)
+                                        .addOnSuccessListener(aVoid -> {
+                                            eventService.refreshEventQR(currentOrganizer.getUserID(), eventId)
+                                                    .addOnSuccessListener(imageUrl -> {
+                                                        Toast.makeText(getContext(), "Event created successfully with QR code", Toast.LENGTH_SHORT)
+                                                                .show();
+                                                        NavHostFragment.findNavController(this).navigateUp();
+                                                    })
+                                                    .addOnFailureListener(e -> {
+                                                        Log.e(TAG, "Failed to generate QR code", e);
+                                                        Toast.makeText(getContext(), "Event created but QR code generation failed", Toast.LENGTH_SHORT)
+                                                                .show();
+                                                    });
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e(TAG, "Failed to set geolocation requirement", e);
+                                            Toast.makeText(getContext(), "Event created but failed to set geolocation", Toast.LENGTH_SHORT). show();
+                                        });
                             })
                             .addOnFailureListener(e -> {
-                                Log.e(TAG, "Failed to generate QR code", e);
-                                Toast.makeText(getContext(), "Event created but QR code generation failed", Toast.LENGTH_SHORT)
-                                        .show();
+                                Log.e(TAG, "Failed to fetch event for geolocation update", e);
+                                Toast. makeText(getContext(), "Event created but failed to update settings", Toast.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e -> {
@@ -254,6 +276,7 @@ public class OrganizerCreateEventFragment extends Fragment {
         String eventEndDate = eventEndDateInput.getText().toString();
         String registrationStart = inputRegStart.getText().toString();
         String registrationEnd = inputRegEnd.getText().toString();
+        boolean geolocationRequired = geolocationRequiredCheckbox. isChecked();
 
         if (eventName.isEmpty() || eventDescription.isEmpty() ||
                 eventStartDate.isEmpty() || eventEndDate.isEmpty() ||
@@ -263,7 +286,6 @@ public class OrganizerCreateEventFragment extends Fragment {
         }
 
         int eventMaxParticipants;
-//        Integer waitingListSize;
 
         try {
             eventMaxParticipants = Integer.parseInt(eventMaxParticipantsInput.getText().toString().trim());
@@ -320,6 +342,7 @@ public class OrganizerCreateEventFragment extends Fragment {
                     event.setRegistrationStart(registrationStart);
                     event.setRegistrationEnd(registrationEnd);
                     event.setMaxCapacity(eventMaxParticipants);
+                    event.setRequiresGeolocation(geolocationRequired);
                     if (waitingListSize != null) {
                         event.setWaitlistCapacity(waitingListSize);
                     }

@@ -1,5 +1,6 @@
 package com.example.community.Screens.OrganizerScreens;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +41,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
             , waitlistCount, attendeeCount, invitedCount;
     private Button editButton, uploadPosterButton, viewAttendeesButton,
             viewWaitlistButton, viewInvitedButton, viewDeclinedButton,
-            viewCancelledButton, runLotteryButton, backButton;
+            viewCancelledButton, runLotteryButton, exportAttendeesButton, backButton;
 
     @Nullable
     @Override
@@ -82,6 +83,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         viewCancelledButton = view.findViewById(R.id.viewCancelledButton);
         viewDeclinedButton = view.findViewById(R.id.viewDeclinedButton);
         runLotteryButton = view.findViewById(R.id.runLotteryButton);
+        exportAttendeesButton = view.findViewById(R.id.exportAttendeesButton);
         backButton = view.findViewById(R.id.organizerEventDescriptionBackButton);
 
 
@@ -110,6 +112,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         viewCancelledButton.setOnClickListener(v -> viewCancelledList());
         viewDeclinedButton.setOnClickListener(v -> viewDeclinedList());
         runLotteryButton.setOnClickListener(v -> showLotteryConfirmationDialog());
+        exportAttendeesButton.setOnClickListener(v -> exportAttendeesCSV());
     }
 
     private void loadEventDetails() {
@@ -223,6 +226,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         if (currentEvent.getWaitlistCapacity() != null) {
             args.putInt("waiting_list_size", currentEvent.getWaitlistCapacity());
         }
+        args.putBoolean("requires_geolocation", currentEvent.getRequiresGeolocation());
+
         args.putBoolean("is_edit_mode", true);
 
         NavHostFragment.findNavController(this)
@@ -292,6 +297,62 @@ public class OrganizerEventDescriptionFragment extends Fragment {
         }
         LotteryConfirmationDialogFragment fragment = LotteryConfirmationDialogFragment.newInstance(currentEvent.getEventID());
         fragment.show(getChildFragmentManager(), "lottery_confirmation");
+    }
+
+    private void exportAttendeesCSV() {
+        if (currentEvent == null) {
+            Toast.makeText(getContext(), "Event not loaded", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Show loading toast
+        Toast.makeText(getContext(), "Generating CSV...", Toast.LENGTH_SHORT).show();
+
+        // Get organizer ID first
+        String deviceToken = userService.getDeviceToken();
+        userService.getByDeviceToken(deviceToken)
+                .addOnSuccessListener(user -> {
+                    if (user == null) {
+                        Toast.makeText(getContext(), "Organizer not found", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    String organizerID = user.getUserID();
+
+                    eventService.exportAttendeesCSV(organizerID, currentEvent.getEventID())
+                            .addOnSuccessListener(csvContent -> {
+                                try {
+                                    // Create filename with event title and timestamp
+                                    String filename = currentEvent.getTitle().replaceAll("[^a-zA-Z0-9._-]", "_")
+                                            + "_attendees_" + System.currentTimeMillis() + ". csv";
+
+                                    // Get Downloads directory
+                                    java.io.File downloadsDir = android.os.Environment.getExternalStoragePublicDirectory(
+                                            android.os.Environment.DIRECTORY_DOWNLOADS);
+
+
+                                    java.io.File csvFile = new java.io.File(downloadsDir, filename);
+                                    java.io.FileWriter fileWriter = new java.io.FileWriter(csvFile);
+                                    fileWriter.write(csvContent);
+                                    fileWriter.close();
+
+                                    Toast.makeText(getContext(), "CSV saved to Downloads: " + filename, Toast.LENGTH_LONG).show();
+                                    Log.d(TAG, "CSV file saved at: " + csvFile.getAbsolutePath());
+
+                                } catch (java.io.IOException e) {
+                                    Log.e(TAG, "Failed to save CSV file", e);
+                                    Toast.makeText(getContext(), "Failed to save CSV file: " + e.getMessage(), Toast. LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Failed to export CSV", e);
+                                Toast.makeText(getContext(), "Failed to export attendees", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to get organizer ID", e);
+                    Toast.makeText(getContext(), "Failed to load organizer data", Toast.LENGTH_SHORT).show();
+                });
     }
 
 }
