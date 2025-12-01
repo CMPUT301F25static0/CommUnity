@@ -36,9 +36,11 @@ public class EntrantProfileTest {
 
         onView(withId(R.id.loginButton)).check(matches(isDisplayed()));
         clickAndWait(R.id.loginButton);
+        Thread.sleep(3000);
 
         onView(withId(R.id.buttonUser)).check(matches(isDisplayed()));
         clickAndWait(R.id.buttonUser);
+        Thread.sleep(3000);
 
         onView(withId(R.id.my_profile)).check(matches(isDisplayed()));
         clickAndWait(R.id.my_profile);
@@ -49,15 +51,15 @@ public class EntrantProfileTest {
         // Type "Josiah Daniel" in the name_box
         onView(withId(R.id.name_box))
                 .perform(ViewActions.clearText(), ViewActions.typeText("Josiah Daniel"));
-
+        Thread.sleep(3000);
         // Type "josiah@example.com" in the email_box
         onView(withId(R.id.email_box))
                 .perform(ViewActions.clearText(), ViewActions.typeText("josiah@example.com"));
-
+        Thread.sleep(3000);
         // Type "7801234567" in the phone_box
         onView(withId(R.id.phone_box))
                 .perform(ViewActions.clearText(), ViewActions.typeText("7801234567"));
-
+        Thread.sleep(3000);
         clickAndWait(R.id.save_button);
     }
 
@@ -72,11 +74,11 @@ public class EntrantProfileTest {
         onView(withId(R.id.phone_box))
                 .perform(ViewActions.clearText(), ViewActions.typeText("7800000000"));
         clickAndWait(R.id.save_button);
-
+        Thread.sleep(3000);
         // Step 2: Navigate back to profile
         onView(withId(R.id.my_profile)).check(matches(isDisplayed()));
         clickAndWait(R.id.my_profile);
-
+        Thread.sleep(3000);
         // Step 3: Replace with new data
         onView(withId(R.id.name_box))
                 .perform(ViewActions.clearText(), ViewActions.typeText("Josiah D."));
@@ -84,7 +86,7 @@ public class EntrantProfileTest {
                 .perform(ViewActions.clearText(), ViewActions.typeText("josiah.d@example.com"));
         onView(withId(R.id.phone_box))
                 .perform(ViewActions.clearText(), ViewActions.typeText("7807654321"));
-
+        Thread.sleep(3000);
         clickAndWait(R.id.save_button);
 
 
@@ -96,7 +98,7 @@ public class EntrantProfileTest {
     @Test
     public void testDeleteProfile() throws InterruptedException {
         clickAndWait(R.id.delete_unity);
-
+        Thread.sleep(3000);
         // Confirm deletion dialog if it appears
         onView(withText("Delete Unity")).perform(ViewActions.click());
         Thread.sleep(3000);

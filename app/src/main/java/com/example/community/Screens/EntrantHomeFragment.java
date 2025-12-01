@@ -111,15 +111,12 @@ public class EntrantHomeFragment extends Fragment {
                     .navigate(R.id.action_EntrantHomeFragment_to_EntrantUserProfileFragment);
 
         });
-        eventHistoryButton.setOnClickListener(v -> {
-            NavHostFragment.findNavController(EntrantHomeFragment.this)
-                    .navigate(R.id.UserEventHistoryFragment);
-        });
-        entrantFilterButton.setOnClickListener(v ->
-                NavHostFragment.findNavController(EntrantHomeFragment.this)
-                        .navigate(R.id.action_EntrantHomeFragment_to_UserFilterFragment)
-        );
         entrantQRScannerButton.setOnClickListener(v -> {
+            Toast myToast = Toast.makeText(getActivity(), "Not Implemented yet", Toast.LENGTH_SHORT);
+
+            myToast.show();
+        });
+        entrantFilterButton.setOnClickListener(v -> {
             Toast myToast = Toast.makeText(getActivity(), "Not Implemented yet", Toast.LENGTH_SHORT);
 
             myToast.show();
