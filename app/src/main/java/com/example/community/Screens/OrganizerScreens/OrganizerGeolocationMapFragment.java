@@ -10,23 +10,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx. fragment.app.Fragment;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.community.Event;
 import com.example.community.EventService;
-import com. example.community.R;
+import com.example.community.R;
 import com.example.community.WaitingListEntry;
 import com.example.community.WaitingListEntryService;
-import com.google.android.gms.maps. CameraUpdateFactory;
-import com.google. android.gms.maps.GoogleMap;
-import com.google. android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms. maps.SupportMapFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.GeoPoint;
-
-import java.util.List;
 
 /**
  * Fragment for displaying a Google Map with entrant locations for a specific event.
