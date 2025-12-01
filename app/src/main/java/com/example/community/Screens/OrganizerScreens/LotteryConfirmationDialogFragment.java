@@ -101,7 +101,8 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
     /**
      * Initializes the fragment with the event ID and creates instances of the required services
      *
-     * @param savedInstanceState the saved instance state
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
      */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,10 +119,15 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
     /**
      * Inflates the view for the fragment
      *
-     * @param inflater the layout inflater
-     * @param container the parent view group
-     * @param savedInstanceState the saved instance state
-     * @return the view for the fragment
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The View for the fragment's UI, or null.
      */
     @Nullable
     @Override
@@ -133,8 +139,9 @@ public class LotteryConfirmationDialogFragment extends DialogFragment {
     /**
      * Initializes the views and sets up the number picker and button listeners
      *
-     * @param view the view for the fragment
-     * @param savedInstanceState the saved instance state
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
      */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
