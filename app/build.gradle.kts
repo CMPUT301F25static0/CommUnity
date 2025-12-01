@@ -49,6 +49,8 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
 
     // Firebase BOM (keeps Firebase libs consistent)
     implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
@@ -68,7 +70,6 @@ dependencies {
 
     // Protobuf runtime — add explicitly to all classpaths
     implementation("com.google.protobuf:protobuf-javalite:3.25.1")
-    implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
     testImplementation("com.google.protobuf:protobuf-javalite:3.25.1")
     androidTestImplementation("com.google.protobuf:protobuf-javalite:3.25.1")
