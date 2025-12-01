@@ -16,18 +16,55 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.community.R;
 import com.example.community.Screens.NotificationsFragment;
 
+/**
+ * Dialog fragment for selecting the target entrant type for a notification
+ * <p>
+ * The dialog allows organizers to select the target entrant type for a notification
+ * and navigate to the notification creation fragment
+ * </p>
+ *
+ * @author Fredrik Larida
+ */
 public class NotificationTargetDialogFragment extends DialogFragment {
 
+    /**
+     * Tag for logging
+     */
     private static final String TAG = "NotificationTargetDialogFragment";
+
+    /**
+     * Argument key for event ID
+     */
     private static final String ARG_EVENT_ID = "event_id";
 
+    /**
+     * The ID of the event to create notifications for
+     */
     private String eventID;
 
+    /**
+     * Message displayed at the top of the dialog
+     */
     private TextView messageTextView;
+    /**
+     * Button to choose the waitlist entrants as the notification recipient
+     */
     private Button toWaitlistButton;
+    /**
+     * Button to choose the invited entrants as the notification recipient
+     */
     private Button toInvitedButton;
+    /**
+     * Button to choose the cancelled entrants as the notification recipient
+     */
     private Button toCancelledButton;
 
+    /**
+     * Creates a new instance of the fragment with the given event ID
+     *
+     * @param eventID the ID of the event to create notifications for
+     * @return a new instance of the fragment
+     */
     public static NotificationTargetDialogFragment newInstance(String eventID) {
         NotificationTargetDialogFragment fragment = new NotificationTargetDialogFragment();
         Bundle args = new Bundle();
@@ -36,6 +73,11 @@ public class NotificationTargetDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * Initializes the fragment with the event ID and creates instances of the required services
+     *
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +86,14 @@ public class NotificationTargetDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Inflates the view for the fragment
+     *
+     * @param inflater the layout inflater
+     * @param container the parent view group
+     * @param savedInstanceState the saved instance state
+     * @return the view for the fragment
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,6 +101,12 @@ public class NotificationTargetDialogFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * Creates a dialog for the fragment
+     *
+     * @param savedInstanceState the saved instance state
+     * @return the dialog for the fragment
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -59,6 +115,13 @@ public class NotificationTargetDialogFragment extends DialogFragment {
         return dialog;
     }
 
+    /**
+     * Initializes the views and sets up the button listeners
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -74,10 +137,13 @@ public class NotificationTargetDialogFragment extends DialogFragment {
                 navigateToCreateNotification("INVITED"));
         toCancelledButton.setOnClickListener(v ->
                 navigateToCreateNotification("CANCELLED"));
-
-
     }
 
+    /**
+     * Navigates to the notification creation fragment with the selected entrant type
+     *
+     * @param entrantType the type of entrant to notify
+     */
     private void navigateToCreateNotification(String entrantType) {
         Bundle args = new Bundle();
         args.putString(ARG_EVENT_ID, eventID);

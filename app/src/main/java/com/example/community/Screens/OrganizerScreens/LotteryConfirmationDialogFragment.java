@@ -27,15 +27,15 @@ import java.util.Locale;
 
 /**
  * Dialog fragment for confirming and executing a lottery for event registration
- *
+ * <p>
  * Dialog allows event organizers to specify the number of invited entrants that they want to invite
  * and run a lottery to select participants from waitlisted entrants.
  * Validates that registration has closed before allowing the lottery to run,
  * retrieves available slots based on event capacity, and displays a loading state during
  * the lottery execution
- *
  * The fragment uses a NumberPicker to allow selection of the sample size and communicates
  * with EventService, LotteryService, and UserService to execute the lottery
+ * </p>
  *
  * @author Fredrik Larida
  */
