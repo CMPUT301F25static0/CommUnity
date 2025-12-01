@@ -18,7 +18,7 @@
             android:id="@+id/headerTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CommUnity"
+            android:text="Notification"
             android:textSize="32sp"
             android:textStyle="bold"
             android:textColor="@color/headerPrimary" />
@@ -30,9 +30,9 @@
         android:layout_height="1dp"
         android:background="#BDBDBD" />
 
-    <!-- Event view for Admin -->
+    <!-- Main content -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/adminEventView"
+        android:id="@+id/adminNotificationView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -58,7 +58,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Back"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:background="@drawable/button_color"
+            android:textColor="@color/button_text_color"/>
     </LinearLayout>
 
 </LinearLayout>

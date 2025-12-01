@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Color when pressed (clicked) -->
+    <item android:state_pressed="true"><shape android:shape="rectangle">
+        <!-- A darker or different color for the pressed state -->
+        <solid android:color="#C71A1A"/>
+        <corners android:radius="18dp"/>
+    </shape>
+    </item>
+
+    <!-- Default state (Your original box_color) -->
+    <item android:drawable="@drawable/box_color"/>
+</selector>

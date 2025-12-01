@@ -24,7 +24,7 @@ import com.example.community.UserService;
 
 public class AdminHomeFragment extends Fragment {
 
-    Button buttonEvent, buttonHost, buttonProfile, buttonImage;
+    Button buttonEvent, buttonHost, buttonProfile, buttonImage, buttonNotification, buttonBack;
 
     UserService userService;
 
@@ -41,6 +41,10 @@ public class AdminHomeFragment extends Fragment {
         buttonHost = view.findViewById(R.id.buttonHost);
         buttonProfile = view.findViewById(R.id.buttonProfile);
         buttonImage = view.findViewById(R.id.buttonImage);
+        buttonNotification = view.findViewById(R.id.buttonNotification);
+        buttonBack = view.findViewById(R.id.buttonBack);
+
+
 
         userService = new UserService();
         setUpClickListener();
@@ -67,6 +71,15 @@ public class AdminHomeFragment extends Fragment {
         buttonImage.setOnClickListener(v -> {
             NavHostFragment.findNavController(AdminHomeFragment.this)
                     .navigate(R.id.action_AdminHomeFragment_to_AdminImageFragment);
+        });
+
+        buttonNotification.setOnClickListener(v -> {
+            NavHostFragment.findNavController(AdminHomeFragment.this)
+                    .navigate(R.id.action_AdminHomeFragment_to_AdminNotificationFragment);
+        });
+        buttonBack.setOnClickListener(v -> {
+            NavHostFragment.findNavController(AdminHomeFragment.this)
+                    .navigate(R.id.action_AdminHomeFragment_to_RoleSelectFragment);
         });
     }
 }
