@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,11 +18,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingBottom="1dp"
+
             android:text="@string/community"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
+            android:textColor="@color/headerPrimary"
+            android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/notificationSettings"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +47,7 @@
             android:layout_marginStart="7dp"
             android:layout_marginTop="7dp"
             android:background="@android:drawable/ic_menu_preferences"
-            android:backgroundTint="#000000"
+            android:backgroundTint="@color/headerPrimary"
             android:clickable="true"
             android:contentDescription="@string/notification"
             android:focusable="true"
@@ -65,15 +66,15 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/backToEntrantHome"
             android:layout_width="150sp"
             android:layout_height="48sp"
             android:layout_marginStart="136dp"
             android:layout_marginEnd="141dp"
-            android:backgroundTint="@color/white"
+            android:background="@drawable/button_color"
             android:text="@string/back"
-            android:textColor="@color/black"
+            android:textColor="@color/button_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

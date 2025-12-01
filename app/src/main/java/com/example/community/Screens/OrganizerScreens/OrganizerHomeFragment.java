@@ -194,7 +194,7 @@ public class OrganizerHomeFragment extends Fragment {
         createButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(OrganizerHomeFragment.this)
                     .navigate(R.id.action_OrganizerHomeFragment_to_CreateEventFragment);
-                });
+        });
 
         // Temporary toast messages for unimplemented features
         cameraButton.setOnClickListener(v ->

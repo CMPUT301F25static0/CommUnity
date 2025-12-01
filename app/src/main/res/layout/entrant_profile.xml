@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/bottomeDivider"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintVertical_bias="0.01"
+        tools:layout_editor_absoluteX="0dp"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -29,7 +31,7 @@
                 android:layout_marginTop="4dp"
                 android:hint="Example: Shaz@gmail.com"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/black"
+                android:textColor="@color/textPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,11 +42,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingBottom="1dp"
                 android:text="@string/community"
                 android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
+                android:textColor="@color/headerPrimary"
+                android:textSize="32sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +71,7 @@
                 android:gravity="start"
                 android:paddingBottom="1dp"
                 android:text="@string/name_string"
-                android:textColor="@android:color/black"
+                android:textColor="@color/headerPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/name_box"
@@ -86,7 +87,7 @@
                 android:layout_marginTop="4dp"
                 android:hint="Example: Shaz"
                 android:inputType="textPersonName"
-                android:textColor="@color/black"
+                android:textColor="@color/textPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +102,7 @@
                 android:gravity="start"
                 android:paddingBottom="1dp"
                 android:text="@string/email_string"
-                android:textColor="@android:color/black"
+                android:textColor="@color/headerPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/email_box"
@@ -122,7 +123,7 @@
                 android:gravity="start"
                 android:paddingBottom="1dp"
                 android:text="@string/phone_text"
-                android:textColor="@android:color/black"
+                android:textColor="@color/headerPrimary"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/phone_box"
@@ -139,7 +140,7 @@
                 android:layout_marginTop="4dp"
                 android:hint="Example: 3061112222"
                 android:inputType="phone"
-                android:textColor="@color/black"
+                android:textColor="@color/textPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -159,28 +160,28 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
 
             android:id="@+id/save_button"
             android:layout_width="150sp"
             android:layout_height="48sp"
             android:text="Save"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/black"
+            android:background="@drawable/button_color"
+            android:textColor="@color/button_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/delete_unity"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bottomeDivider" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/delete_unity"
-            android:layout_width="150sp"
-            android:layout_height="48sp"
+            android:layout_width="160sp"
+            android:layout_height="55sp"
             android:layout_margin="1dp"
             android:layout_marginStart="147dp"
             android:text="Delete Unity"
-            android:backgroundTint="@color/white"
-            android:textColor="@android:color/holo_red_dark"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:textColor="@color/button_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/save_button"
