@@ -126,7 +126,7 @@ public class OrganizerCreateEventFragment extends Fragment {
         eventEndDateInput = view.findViewById(R.id.inputEventEnd);
         inputRegStart = view.findViewById(R.id.inputRegistrationStart);
         inputRegEnd = view.findViewById(R.id.inputRegistrationEnd);
-        geolocationRequiredCheckbox = view.findViewById(R.id. checkboxGeolocationRequired);
+        geolocationRequiredCheckbox = view.findViewById(R.id.checkboxGeolocationRequired);
 
         cancelButton = view.findViewById(R.id.buttonCancel);
         submitButton = view.findViewById(R.id.buttonSubmit);
@@ -342,12 +342,12 @@ public class OrganizerCreateEventFragment extends Fragment {
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e(TAG, "Failed to set geolocation requirement", e);
-                                            Toast.makeText(getContext(), "Event created but failed to set geolocation", Toast.LENGTH_SHORT). show();
+                                            Toast.makeText(getContext(), "Event created but failed to set geolocation", Toast.LENGTH_SHORT).show();
                                         });
                             })
                             .addOnFailureListener(e -> {
                                 Log.e(TAG, "Failed to fetch event for geolocation update", e);
-                                Toast. makeText(getContext(), "Event created but failed to update settings", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Event created but failed to update settings", Toast.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e -> {
@@ -376,7 +376,7 @@ public class OrganizerCreateEventFragment extends Fragment {
         String eventEndDate = eventEndDateInput.getText().toString();
         String registrationStart = inputRegStart.getText().toString();
         String registrationEnd = inputRegEnd.getText().toString();
-        boolean geolocationRequired = geolocationRequiredCheckbox. isChecked();
+        boolean geolocationRequired = geolocationRequiredCheckbox.isChecked();
 
         if (eventName.isEmpty() || eventDescription.isEmpty() ||
                 eventStartDate.isEmpty() || eventEndDate.isEmpty() ||

@@ -469,7 +469,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                                 try {
                                     // Create filename with event title and timestamp
                                     String filename = currentEvent.getTitle().replaceAll("[^a-zA-Z0-9._-]", "_")
-                                            + "_attendees_" + System.currentTimeMillis() + ". csv";
+                                            + "_attendees_" + System.currentTimeMillis() + ".csv";
 
                                     // Get Downloads directory
                                     java.io.File downloadsDir = android.os.Environment.getExternalStoragePublicDirectory(
@@ -486,7 +486,7 @@ public class OrganizerEventDescriptionFragment extends Fragment {
 
                                 } catch (java.io.IOException e) {
                                     Log.e(TAG, "Failed to save CSV file", e);
-                                    Toast.makeText(getContext(), "Failed to save CSV file: " + e.getMessage(), Toast. LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Failed to save CSV file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .addOnFailureListener(e -> {

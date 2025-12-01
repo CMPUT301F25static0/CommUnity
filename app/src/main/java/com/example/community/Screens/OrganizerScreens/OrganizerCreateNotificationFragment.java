@@ -167,7 +167,7 @@ public class OrganizerCreateNotificationFragment extends Fragment {
         if (entrantType != null) {
             switch (entrantType) {
                 case "WAITING":
-                    labelNotifyUsers. setText("Notify Waiting List Entrants");
+                    labelNotifyUsers.setText("Notify Waiting List Entrants");
                     break;
                 case "INVITED":
                     labelNotifyUsers.setText("Notify Invited Entrants");
@@ -239,8 +239,8 @@ public class OrganizerCreateNotificationFragment extends Fragment {
         Toast.makeText(getContext(), "Sending notification...", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "=== sendNotificationByType START ===");
         Log.d(TAG, "Title: " + title);
-        Log. d(TAG, "Message: " + message);
-        Log. d(TAG, "EventID: " + eventID);
+        Log.d(TAG, "Message: " + message);
+        Log.d(TAG, "EventID: " + eventID);
         Log.d(TAG, "EntrantType: " + entrantType);
         Log.d(TAG, "Organizer ID: " + (currentOrganizer != null ? currentOrganizer.getUserID() : "NULL"));
 
@@ -252,11 +252,11 @@ public class OrganizerCreateNotificationFragment extends Fragment {
                         .addOnSuccessListener(aVoid -> {
                             Log.d(TAG, "Broadcast successfull");
                             Toast.makeText(getContext(), "Notification sent to waiting list!", Toast.LENGTH_SHORT).show();
-                            NavHostFragment.findNavController(OrganizerCreateNotificationFragment. this).navigateUp();
+                            NavHostFragment.findNavController(OrganizerCreateNotificationFragment.this).navigateUp();
                         })
                         .addOnFailureListener(e -> {
                             Log.e(TAG, "✗ broadcastToWaitlist FAILED", e);
-                            Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast. LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
                 break;
 
@@ -265,7 +265,7 @@ public class OrganizerCreateNotificationFragment extends Fragment {
                 notificationService.broadcastToInvited(currentOrganizer.getUserID(), eventID, title, message)
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(getContext(), "Notification sent to invited entrants!", Toast.LENGTH_SHORT).show();
-                            NavHostFragment.findNavController(OrganizerCreateNotificationFragment.this). navigateUp();
+                            NavHostFragment.findNavController(OrganizerCreateNotificationFragment.this).navigateUp();
                         })
                         .addOnFailureListener(e -> {
                             Log.e(TAG, "Failed to send notification", e);
@@ -282,7 +282,7 @@ public class OrganizerCreateNotificationFragment extends Fragment {
                         })
                         .addOnFailureListener(e -> {
                             Log.e(TAG, "Failed to send notification", e);
-                            Toast. makeText(getContext(), "Failed to send notification: " + e. getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Failed to send notification: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
                 break;
             default:
