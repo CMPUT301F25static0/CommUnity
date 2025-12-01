@@ -20,25 +20,73 @@ import com.example.community.R;
 import com.example.community.User;
 import com.example.community.UserService;
 
+/**
+ * Fragment for creating and sending notifications to event entrants by organizers.
+ * <p>
+ *     Allows organizes to make and send notifications to specific groups of entrants
+ *     for a specific event. The notification includes a title and message, which are
+ *     validated before sending
+ * </p>
+ * <p>
+ *     The fragment receives the event ID and entrant type as arguments from the previous
+ *     fragment.
+ * </p>
+ *
+ * @author Fredrik Larida
+ *
+ * @see NotificationService
+ * @see UserService
+ */
 public class OrganizerCreateNotificationFragment extends Fragment {
 
+    /**
+     * Tag for logging
+     */
     private static final String TAG = "CreateNotificationsFragment";
 
+    /**
+     * ID of the event for whcih the notification will be sent
+     */
     private String eventID;
+    /**
+     * The type of etnrants to receive the notification.
+     */
     private String entrantType;
+    /**
+     * The current organizer user
+     */
     private User currentOrganizer;
 
+    /**
+     * UI elements
+     */
     private TextView labelNotifyUsers;
-    private EditText inputNotificationTitle;
-    private EditText inputNotificationMessage;
-    private Button buttonCancel;
-    private Button buttonSend;
+    private EditText inputNotificationTitle, inputNotificationMessage;;
+    private Button buttonCancel, buttonSend;
 
+    /**
+     * Service for notification operations
+     */
     private NotificationService notificationService;
+    /**
+     * Service for user operations
+     */
     private UserService userService;
 
 
-
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The View for the fragment's UI, or null.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,6 +94,13 @@ public class OrganizerCreateNotificationFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Called when the fragment's view has been created.
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -76,6 +131,10 @@ public class OrganizerCreateNotificationFragment extends Fragment {
         });
     }
 
+    /**
+     * Loads the current organizer's data from the Firestore database
+     * Displays a toast message if the user is not found or if the user's profile is incomplete
+     */
     private void loadOrganizerData() {
         String deviceToken = userService.getDeviceToken();
 
@@ -100,6 +159,11 @@ public class OrganizerCreateNotificationFragment extends Fragment {
                 });
     }
 
+    /**
+     * Updates the label based on the entrant type
+     *
+     * @param entrantType the type of entrant to notify
+     */
     private void updateLabelBasedOnEntrantType() {
         if (entrantType != null) {
             switch (entrantType) {
@@ -118,6 +182,20 @@ public class OrganizerCreateNotificationFragment extends Fragment {
         }
     }
 
+    /**
+     * Validates the notification data and sends the notification
+     * <p>
+     *     Validates:
+     *     <ul>
+     *         <li>if the title is empty</li>
+     *         <li>if the message is empty</li>
+     *         <li>if the event ID is empty</li>
+     *         <li>if the entrant type is empty</li>
+     *     </ul>
+     * </p>
+     * If validation passes, calls sendNotificationByType
+     *
+     */
     private void sendNotifications() {
         String title = inputNotificationTitle.getText().toString().trim();
         String message = inputNotificationMessage.getText().toString().trim();
@@ -142,6 +220,22 @@ public class OrganizerCreateNotificationFragment extends Fragment {
         sendNotificationByType(title, message);
     }
 
+    /**
+     * Sends the notification to the appropriate entrant group based on the entrant type.
+     * <p>
+     *      Uses one of three broadcast methods based on the entrant type:
+     *      <ul>
+     *          <li>{@code "WAITING"} \-\> calls {@code notificationService.broadcastToWaitlist()}</li>
+     *          <li>{@code "INVITED"} \-\> calls {@code notificationService.broadcastToInvited()}</li>
+     *          <li>{@code "CANCELLED"} \-\> calls {@code notificationService.broadcastToCancelled()}</li>
+     *     </ul>
+     * </p>
+     * On success, displays a confirmation toast and navigates back. On failure, displays an error
+     * message with exception details.
+     *
+     * @param title the notification title
+     * @param message the notification message body
+     */
     private void sendNotificationByType(String title, String message) {
         Toast.makeText(getContext(), "Sending notification...", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "=== sendNotificationByType START ===");
@@ -151,12 +245,13 @@ public class OrganizerCreateNotificationFragment extends Fragment {
         Log.d(TAG, "EntrantType: " + entrantType);
         Log.d(TAG, "Organizer ID: " + (currentOrganizer != null ? currentOrganizer.getUserID() : "NULL"));
 
+        // Send notification based on entrant type
         switch (entrantType) {
             case "WAITING":
-                Log.d(TAG, ">>> Calling broadcastToWaitlist");
+                // Send to waiting list entrants
                 notificationService.broadcastToWaitlist(currentOrganizer.getUserID(), eventID, title, message)
                         .addOnSuccessListener(aVoid -> {
-                            Log.d(TAG, "✓ broadcastToWaitlist SUCCESS");
+                            Log.d(TAG, "Broadcast successfull");
                             Toast.makeText(getContext(), "Notification sent to waiting list!", Toast.LENGTH_SHORT).show();
                             NavHostFragment.findNavController(OrganizerCreateNotificationFragment. this).navigateUp();
                         })
@@ -195,6 +290,4 @@ public class OrganizerCreateNotificationFragment extends Fragment {
                 Log.e(TAG, "UNKNOWN ENTRANT TYPE: " + entrantType);
         }
     }
-
-
 }
