@@ -11,20 +11,18 @@
         android:layout_height="match_parent">
 
         <!-- Header -->
-        <TextView
+        <ImageView
             android:id="@+id/eventScreenAppName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-
-            android:text="@string/community"
-            android:textAlignment="center"
-            android:textColor="@color/headerPrimary"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:adjustViewBounds="true"
+            android:maxHeight="50dp"
+            android:src="@drawable/community_logo_name"
+            android:contentDescription="@string/community"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/topDivider"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <View
             android:id="@+id/topDivider"
@@ -42,8 +40,8 @@
             android:layout_height="48dp"
             android:layout_marginStart="7dp"
             android:layout_marginTop="7dp"
-            android:background="@android:drawable/ic_menu_preferences"
-            android:backgroundTint="@color/headerPrimary"
+            android:background="@drawable/wrench"
+            android:backgroundTint="@color/Primary"
             android:clickable="true"
             android:contentDescription="@string/notification"
             android:focusable="true"
