@@ -211,6 +211,33 @@ public class NotificationService {
         return notificationRepository.listNotificationsByEvent(eventID, 1000, null);
         // I capped it at 1000
     }
+    // Handle entrant accepting or declining an invitation
+    public Task<Void> respondToInvitation(String eventID, String userID, boolean accepted) {
+        // Look up the waitlist entry for this (event, user)
+        return waitlistRepository.getByID(eventID, userID)
+                .continueWithTask(task -> {
+                    if (!task.isSuccessful()) {
+                        return Tasks.forException(task.getException());
+                    }
+
+                    WaitingListEntry entry = task.getResult();
+                    if (entry == null) {
+                        return Tasks.forException(
+                                new IllegalStateException("No waitlist entry found for this user and event"));
+                    }
+
+                    // Use the helper methods from WaitingListEntry
+                    if (accepted) {
+                        entry.markAsAccepted();   // sets status = ACCEPTED and acceptedAt = Timestamp.now()
+                    } else {
+                        entry.markAsDeclined();   // sets status = DECLINED and declinedAt = Timestamp.now()
+                    }
+
+                    // Save updated entry back to Firestore
+                    return waitlistRepository.update(entry);
+                });
+    }
+
 
 }
 

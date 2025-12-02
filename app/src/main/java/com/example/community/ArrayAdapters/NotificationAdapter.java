@@ -96,4 +96,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             declineButton = itemView.findViewById(R.id.declineButton);
         }
     }
+    public void removeNotification(Notification notification) {
+        int index = notifications.indexOf(notification);
+        if (index != -1) {
+            notifications.remove(index);
+            notifyItemRemoved(index);
+        }
+    }
 }

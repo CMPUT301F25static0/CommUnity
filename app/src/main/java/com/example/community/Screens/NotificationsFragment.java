@@ -22,7 +22,6 @@ import com.example.community.R;
 import com.example.community.UserService;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class NotificationsFragment extends Fragment {
 
@@ -35,6 +34,9 @@ public class NotificationsFragment extends Fragment {
 
     private NotificationService notificationService;
     private UserService userService;
+
+    // store the current userId here once we resolve it
+    private String currentUserId;
 
     @Nullable
     @Override
@@ -63,18 +65,59 @@ public class NotificationsFragment extends Fragment {
                 new NotificationAdapter.NotificationActionListener() {
                     @Override
                     public void onAccept(Notification notification) {
-                        // TODO: update waitlist status in backend
-                        Toast.makeText(getContext(),
-                                "Accepted invitation for event " + notification.getEventID(),
-                                Toast.LENGTH_SHORT).show();
+                        // Guard: make sure we actually have a userId
+                        if (currentUserId == null || currentUserId.isEmpty()) {
+                            Toast.makeText(getContext(),
+                                    "User not loaded yet. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        notificationService.respondToInvitation(
+                                        notification.getEventID(),
+                                        currentUserId,
+                                        true
+                                )
+                                .addOnSuccessListener(v -> {
+                                    Toast.makeText(getContext(),
+                                            "Invitation accepted",
+                                            Toast.LENGTH_SHORT).show();
+                                    notificationAdapter.removeNotification(notification);
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(getContext(),
+                                                "Failed to accept invitation",
+                                                Toast.LENGTH_SHORT).show()
+                                );
+
                     }
 
                     @Override
                     public void onDecline(Notification notification) {
-                        // TODO: update waitlist / mark notification as rejected
-                        Toast.makeText(getContext(),
-                                "Declined invitation for event " + notification.getEventID(),
-                                Toast.LENGTH_SHORT).show();
+                        // Same guard here
+                        if (currentUserId == null || currentUserId.isEmpty()) {
+                            Toast.makeText(getContext(),
+                                    "User not loaded yet. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        notificationService.respondToInvitation(
+                                        notification.getEventID(),
+                                        currentUserId,
+                                        false
+                                )
+                                .addOnSuccessListener(v -> {
+                                    Toast.makeText(getContext(),
+                                            "Invitation declined",
+                                            Toast.LENGTH_SHORT).show();
+                                    notificationAdapter.removeNotification(notification);
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(getContext(),
+                                                "Failed to decline invitation",
+                                                Toast.LENGTH_SHORT).show()
+                                );
                     }
 
                     @Override
@@ -114,10 +157,11 @@ public class NotificationsFragment extends Fragment {
 
         userService.getUserIDByDeviceToken(deviceToken)
                 .addOnSuccessListener(userId -> {
+                    // Store userId so onAccept/onDecline can use it
+                    currentUserId = userId;
 
                     notificationService.listUserNotification(userId, 50, null)
                             .addOnSuccessListener(fetchedNotifications -> {
-                                // Explicitly fill the RecyclerView’s backing array
                                 notifications.clear();
                                 notifications.addAll(fetchedNotifications);
                                 notificationAdapter.notifyDataSetChanged();
