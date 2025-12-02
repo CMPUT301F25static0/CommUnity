@@ -89,7 +89,7 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView imageInfo;
+        public TextView imageInfo;
         Button deleteButton;
 
         public ImageViewHolder(@NonNull View itemView) {
