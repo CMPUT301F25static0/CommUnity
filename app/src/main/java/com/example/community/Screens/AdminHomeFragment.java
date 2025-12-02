@@ -17,21 +17,60 @@ import com.example.community.UserService;
 
 /**
  * Home Fragment for Admin users.
- * Provides navigation to event management, host management,
- * profile settings, and image management screens.
+ * <p>
+ *     Serves as the main hub for admins. Provides navigation to event management,
+ *     organzier management, user profile settings, image management, and notification
+ *     managemnt.
+ * </p>
+ * <p>
+ *     Displays navigation buttons, each leading to different admin features. Back button allows admin
+ *     to return to role selection screen.
+ * </p>
+ *
+ *
+ * @see AdminEventFragment
+ * @see AdminHostFragment
+ * @see AdminProfileFragment
+ * @see AdminImageFragment
+ * @see AdminNotificationFragment
+ * @see RoleSelectFragment
+ *
  */
 public class AdminHomeFragment extends Fragment {
 
+    /**
+     * UI components
+     */
     private Button buttonEvent, buttonHost, buttonProfile, buttonImage, buttonNotification, buttonBack;
 
     private UserService userService;
 
+    /**
+     * Inflates the fragment's layout view
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The View for the fragment's UI
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         return inflater.inflate(R.layout.admin_home_page, container, false);
     }
 
+    /**
+     * Initializes the fragment's UI. Sets up click listeners for all the buttons.
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@Nullable View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
