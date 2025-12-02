@@ -122,10 +122,10 @@ public class NotificationsFragment extends Fragment {
 
                     @Override
                     public void onViewEvent(Notification notification) {
-                        // TODO: navigate to event details using notification.getEventID()
-                        Toast.makeText(getContext(),
-                                "View event: " + notification.getEventID(),
-                                Toast.LENGTH_SHORT).show();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("eventID", notification.getEventID());
+                        NavHostFragment.findNavController(NotificationsFragment.this)
+                                .navigate(R.id.action_NotificationsFragment_to_EventDetailsFragment, bundle);
                     }
                 });
 

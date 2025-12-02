@@ -111,6 +111,9 @@
         <action
             android:id="@+id/action_EntrantNotificationsFragment_to_NotificationSettingsFragment"
             app:destination="@id/NotificationSettingsFragment" />
+        <action
+            android:id="@+id/action_NotificationsFragment_to_EventDetailsFragment"
+            app:destination="@id/EventDescriptionFragment" />
 
     </fragment>
 
