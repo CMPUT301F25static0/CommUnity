@@ -8,8 +8,8 @@
 
 
     <!-- Background colors -->
-    <color name="backgroundColor">#FFFFFFFF</color>
-    <color name="backgroundBox">#E6E4E4</color>
+    <color name="backgroundColor">#EAF4FF</color>
+    <color name="backgroundBox">#EE6E4E4</color>
 
 
     <!-- Text colors -->
