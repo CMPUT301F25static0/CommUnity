@@ -6,20 +6,16 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static org.hamcrest.Matchers.equalTo;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import androidx.test.espresso.contrib.PickerActions;
 
 import android.widget.DatePicker;
-
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -61,7 +57,6 @@ public class OrganizerTests {
         onView(withId(R.id.save_button)).perform(click());
         Thread.sleep(2000);
 
-
         // --- Step 3: Click Create Event ---
         onView(withId(R.id.buttonCreate)).perform(click());
         Thread.sleep(1500);
@@ -82,56 +77,117 @@ public class OrganizerTests {
         onView(withId(R.id.inputWaitingListSize))
                 .perform(typeText("30"), closeSoftKeyboard());
 
-
-        //US 02.02.03 As an organizer I want to enable or disable the geolocation requirement for my event.
+        // US 02.02.03 - enable geolocation
         onView(withId(R.id.checkboxGeolocationRequired)).perform(click());
 
         // --- Event Start Date ---
         onView(withId(R.id.inputEventStart)).perform(click());
         onView(withClassName(equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(2025, 1, 15)); // January 15, 2025
+                .perform(PickerActions.setDate(2025, 1, 15));
         onView(withId(android.R.id.button1)).perform(click());
-        Thread.sleep(1000);// click "OK"
+        Thread.sleep(1000);
 
-// --- Event End Date ---
+        // --- Event End Date ---
         onView(withId(R.id.inputEventEnd)).perform(click());
         onView(withClassName(equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(2025, 1, 19)); // same day, later time if needed
+                .perform(PickerActions.setDate(2025, 1, 19));
         onView(withId(android.R.id.button1)).perform(click());
         Thread.sleep(1000);
 
-
-        //US 02.01.04 As an organizer, I want to set a registration period.
-
-// --- Registration Start Date (must be before event start) ---
+        // US 02.01.04 - Registration period
         onView(withId(R.id.inputRegistrationStart)).perform(click());
         onView(withClassName(equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(2025, 1, 1)); // January 1, 2025
+                .perform(PickerActions.setDate(2025, 1, 1));
         onView(withId(android.R.id.button1)).perform(click());
         Thread.sleep(1000);
 
-// --- Registration End Date (must be before event start) ---
         onView(withId(R.id.inputRegistrationEnd)).perform(click());
         onView(withClassName(equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(2025, 1, 10)); // January 10, 2025
+                .perform(PickerActions.setDate(2025, 1, 10));
         onView(withId(android.R.id.button1)).perform(click());
         Thread.sleep(3000);
-
-
-
 
         // --- Step 5: Submit Event ---
         onView(withId(R.id.buttonSubmit))
                 .perform(scrollTo(), click());
 
-        Thread.sleep(2500);
+        Thread.sleep(5000);
 
-        // Click on the event named "Winter Cup Tournament"
+        // --- Step 6: Click on the event created ---
         onView(withId(R.id.HostEventView))
                 .perform(actionOnItem(
                         hasDescendant(withText("Winter Cup Tournament")),
                         click()
                 ));
+
+        // --- Step 7: Click buttons in event details ---
+        Thread.sleep(3000);
+
+        clickButton(R.id.viewWaitlistButton);
+        Thread.sleep(3000);// US 02.02.01 As an organizer I want to view the list of entrants who joined my event waiting list
+        onView(withText("CLOSE"))
+                .perform(click());
+        Thread.sleep(3000);
+
+
+        clickButton(R.id.viewInvitedButton);//US 02.06.01 As an organizer I want to view a list of all chosen entrants who are invited to apply.
+
+        Thread.sleep(3000);
+        onView(withText("CLOSE"))
+                .perform(click());
+        Thread.sleep(3000);
+
+        clickButton(R.id.viewCancelledButton);          // US 02.06.02 As an organizer I want to see a list of all the cancelled entrants.
+        Thread.sleep(3000);
+        onView(withText("CLOSE"))
+                .perform(click());
+        Thread.sleep(3000);
+
+        clickButton(R.id.viewAttendeesButton);          // US 02.06.03 As an organizer I want to see a final list of entrants who enrolled for the event.
+        Thread.sleep(3000);
+        onView(withText("CLOSE"))
+                .perform(click());
+        Thread.sleep(3000);
+
+        clickButton(R.id.viewDeclinedButton);           // Cancelled/Declined
+        Thread.sleep(3000);
+        onView(withText("CLOSE"))
+                .perform(click());
+        Thread.sleep(3000);
+
+        clickButton(R.id.runLotteryButton);             // Run Lottery
+
+        Thread.sleep(3000);
+        onView(withText("CANCEL"))
+                .perform(click());
+        Thread.sleep(3000);
+        clickButton(R.id.exportAttendeesButton);        // US 02.06.05 As an organizer I want to export a final list of entrants who enrolled for the event in CSV format.
+        Thread.sleep(3000);
+        clickButton(R.id.organizerEventDescriptionBackButton);
+
+
+
+        // --- Step 1: Click the Notify button ---
+        onView(withId(R.id.buttonNotify))
+                .perform(click());
+
+        Thread.sleep(3000);
+
+        // --- Step 2: Select the event "Winter Cup Tournament" ---
+        onView(withId(R.id.notifyEventRecyclerView))
+                .check(matches(hasDescendant(withText("Winter Cup Tournament"))))
+                .perform(actionOnItem(
+                        hasDescendant(withText("Winter Cup Tournament")),
+                        click()));
+        Thread.sleep(3000);
+
+
+    }
+
+    // --- Helper function for scrolling to and clicking buttons ---
+    private void clickButton(int buttonId) {
+        onView(withId(buttonId))
+                .perform(scrollTo(), click());
     }
 
 }
