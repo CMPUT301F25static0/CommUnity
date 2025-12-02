@@ -34,22 +34,35 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Fragment that allows the organizer to upload a poster image for a specific event.
+ * Handles image selection from gallery, permissions, preview, and uploading to Firebase.
+ */
 public class OrganizerPosterUploadFragment extends Fragment {
+
     private static final String TAG = "OrganizerPosterUploadFragment";
     private static final String ARG_EVENT_ID = "event_id";
 
+    /** The event ID for which the poster is being uploaded */
     private String eventId;
-    private byte[] selectedImageData;
+
+    /** The current organizer ID */
     private String currentOrganizerId;
 
+    /** Byte array of the selected image */
+    private byte[] selectedImageData;
+
+    /** UI elements */
     private TextView previewTextLabel;
     private ImageView imagePosterPreviewImageView;
     private Button buttonUploadPoster, buttonSubmitPoster, cancelButton;
     private ProgressBar progressBar;
 
+    /** Services for image upload and user info */
     private ImageService imageService;
     private UserService userService;
 
+    /** Activity result launchers for image selection and permission requests */
     private ActivityResultLauncher<Intent> imagePicker;
     private ActivityResultLauncher<String> requestPermissionsLauncher;
 
@@ -58,10 +71,15 @@ public class OrganizerPosterUploadFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.organizer_poster_upload_page, container, false);
-        return view;
+        return inflater.inflate(R.layout.organizer_poster_upload_page, container, false);
     }
 
+    /**
+     * Initializes UI elements, retrieves the current organizer ID, and sets up click listeners.
+     *
+     * @param view Root view of the fragment
+     * @param savedInstanceState Previously saved state
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -69,13 +87,15 @@ public class OrganizerPosterUploadFragment extends Fragment {
         imageService = new ImageService();
         userService = new UserService();
 
-        eventId = getArguments().getString(ARG_EVENT_ID);
+        // Get event ID from arguments
+        eventId = getArguments() != null ? getArguments().getString(ARG_EVENT_ID) : null;
         if (eventId == null) {
             Toast.makeText(getActivity(), "Event ID is not valid", Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(this).navigateUp();
             return;
         }
 
+        // Initialize UI components
         previewTextLabel = view.findViewById(R.id.previewTextLabel);
         imagePosterPreviewImageView = view.findViewById(R.id.imagePosterPreview);
         buttonUploadPoster = view.findViewById(R.id.buttonUploadPoster);
@@ -83,6 +103,7 @@ public class OrganizerPosterUploadFragment extends Fragment {
         cancelButton = view.findViewById(R.id.cancelButton);
         progressBar = view.findViewById(R.id.uploadProgressBar);
 
+        // Fetch current organizer ID from device token
         String deviceToken = userService.getDeviceToken();
         userService.getUserIDByDeviceToken(deviceToken)
                 .addOnSuccessListener(userId -> currentOrganizerId = userId)
@@ -91,24 +112,26 @@ public class OrganizerPosterUploadFragment extends Fragment {
                     Toast.makeText(getActivity(), "Failed to get the organizer information", Toast.LENGTH_SHORT).show();
                 });
 
+        // Set up button actions
         buttonUploadPoster.setOnClickListener(v -> openImagePicker());
         buttonSubmitPoster.setOnClickListener(v -> uploadImage());
         cancelButton.setOnClickListener(v -> clearImage());
 
+        // Initialize ActivityResultLaunchers
         imagePicker();
         requestPermissions();
         onClickListener();
     }
 
+    /**
+     * Registers the image picker launcher to allow selecting an image from the device gallery.
+     */
     private void imagePicker() {
         imagePicker = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
-                        Intent data = result.getData();
-                        Uri imageUri = data.getData();
-
-
+                        Uri imageUri = result.getData().getData();
                         if (imageUri != null) {
                             previewTextLabel.setVisibility(View.VISIBLE);
                             Picasso.get()
@@ -131,6 +154,9 @@ public class OrganizerPosterUploadFragment extends Fragment {
                 });
     }
 
+    /**
+     * Registers the permission request launcher to request gallery/media access at runtime.
+     */
     private void requestPermissions() {
         requestPermissionsLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
@@ -143,6 +169,9 @@ public class OrganizerPosterUploadFragment extends Fragment {
                 });
     }
 
+    /**
+     * Opens the device image picker if permissions are granted, otherwise requests them.
+     */
     private void openImagePicker() {
         if (areMediaPermissionsGranted()) {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -153,32 +182,34 @@ public class OrganizerPosterUploadFragment extends Fragment {
         }
     }
 
+    /**
+     * Checks if the app has permission to read images from the device.
+     *
+     * @return True if permission granted, false otherwise
+     */
     private boolean areMediaPermissionsGranted() {
-        boolean isImagePermissionGranted = false;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            isImagePermissionGranted = ContextCompat.checkSelfPermission(
-                    requireContext(),
+            return ContextCompat.checkSelfPermission(requireContext(),
                     Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED;
         } else {
-            isImagePermissionGranted = ContextCompat.checkSelfPermission(
-                    requireContext(),
+            return ContextCompat.checkSelfPermission(requireContext(),
                     Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }
-        return isImagePermissionGranted;
     }
 
+    /**
+     * Requests the necessary permissions to access images from the device gallery.
+     */
     private void requestMediaPermissions() {
-        String permission;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permission = Manifest.permission.READ_MEDIA_IMAGES;
-        } else {
-            permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-        }
-
+        String permission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? Manifest.permission.READ_MEDIA_IMAGES
+                : Manifest.permission.READ_EXTERNAL_STORAGE;
         requestPermissionsLauncher.launch(permission);
     }
 
+    /**
+     * Clears the selected image preview and disables the submit button.
+     */
     private void clearImage() {
         selectedImageData = null;
         buttonSubmitPoster.setEnabled(false);
@@ -187,42 +218,28 @@ public class OrganizerPosterUploadFragment extends Fragment {
     }
 
     /**
-     * Converts an image Uri to a byte array for Firebase upload.
-     * Reads the image file in chunks and stores all bytes in memory.
+     * Converts a content URI of an image into a byte array for uploading to Firebase.
      *
-     * @param uri The Uri of the selected image
-     * @return A byte array containing all the image data
-     * @throws IOException If the file cannot be read
+     * @param uri The URI of the selected image
+     * @return Byte array of image data
+     * @throws IOException If the image cannot be read
      */
     private byte[] getBytesFromUri(Uri uri) throws IOException {
-        // Open an input stream from the Uri to read the image file
         InputStream inputStream = getContext().getContentResolver().openInputStream(uri);
-
-        // Create a ByteArrayOutputStream to store all bytes in memory
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-
-        // Set the chunk size to 1024 bytes (1 KB)
-        int bufferSize = 1024;
-
-        // Create a temporary byte array to hold each chunk as we read it
-        byte[] buffer = new byte[bufferSize];
-
-        // Variable to store how many bytes were read in each iteration
+        byte[] buffer = new byte[1024];
         int len;
-
-        // Loop: Keep reading chunks until we reach the end of the file
         while ((len = inputStream.read(buffer)) != -1) {
-            // Write the bytes we just read (len bytes) to our byteBuffer
             byteBuffer.write(buffer, 0, len);
         }
-
-        // Close the input stream to release system resources
         inputStream.close();
-
-        // Convert the ByteArrayOutputStream to a byte array and return it
         return byteBuffer.toByteArray();
     }
 
+    /**
+     * Uploads the selected image to the event's poster location using ImageService.
+     * Handles progress bar and enables/disables buttons during upload.
+     */
     private void uploadImage() {
         if (selectedImageData == null) {
             Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();

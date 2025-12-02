@@ -131,4 +131,78 @@ public class NotificationRepository {
             return notifications;
         });
     }
+
+    /**
+     * Deletes a notification by ID.
+     *
+     * @param notificationID ID of the notification to delete
+     * @return task that completes when deletion finishes
+     */
+    public Task<Void> delete(String notificationID) {
+        return notificationsRef.document(notificationID).delete();
+    }
+
+    /**
+     * Deletes all notifications for a specific event.
+     *
+     * @param eventID ID of the event
+     * @return task that completes when all notifications are deleted
+     */
+    public Task<Void> deleteAllForEvent(String eventID) {
+        return notificationsRef.whereEqualTo("eventID", eventID).get().continueWithTask(task -> {
+            List<Task<Void>> deleteTasks = new ArrayList<>();
+            for (DocumentSnapshot doc : task.getResult()) {
+                deleteTasks.add(doc.getReference().delete());
+            }
+            return Tasks.whenAll(deleteTasks);
+        });
+    }
+
+    /**
+     * Deletes all notifications for a specific user.
+     *
+     * @param userID ID of the user
+     * @return task that completes when all notifications are deleted
+     */
+    public Task<Void> deleteAllForUser(String userID) {
+        return notificationsRef.whereEqualTo("recipientID", userID).get().continueWithTask(task -> {
+            List<Task<Void>> deleteTasks = new ArrayList<>();
+            for (DocumentSnapshot doc : task.getResult()) {
+                deleteTasks.add(doc.getReference().delete());
+            }
+            return Tasks.whenAll(deleteTasks);
+        });
+    }
+
+    /**
+     * Gets a notification by ID.
+     * ADDED: Retrieves a single notification document
+     *
+     * @param notificationID ID of the notification
+     * @return task containing the notification
+     */
+    public Task<Notification> getByID(String notificationID) {
+        return notificationsRef.document(notificationID).get().continueWith(task -> {
+            if (! task.isSuccessful()) {
+                throw task.getException();
+            }
+
+            DocumentSnapshot doc = task.getResult();
+            if (doc.exists()) {
+                return doc.toObject(Notification.class);
+            }
+            return null;
+        });
+    }
+
+    /**
+     * Updates an existing notification.
+     * ADDED: Updates a notification document in Firestore
+     *
+     * @param notification notification with updated data
+     * @return task that completes when update finishes
+     */
+    public Task<Void> update(Notification notification) {
+        return notificationsRef.document(notification.getNotificationID()).set(notification);
+    }
 }
