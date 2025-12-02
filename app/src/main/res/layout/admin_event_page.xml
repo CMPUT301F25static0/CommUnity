@@ -63,7 +63,7 @@
             android:clickable="true"
             android:elevation="6dp"
             android:foreground="?attr/selectableItemBackground"
-            android:background="@drawable/box_selector"
+            android:background="@drawable/button_color"
             android:textColor="@color/button_text_color"/>
     </LinearLayout>
 

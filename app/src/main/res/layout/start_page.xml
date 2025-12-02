@@ -6,14 +6,16 @@
     android:gravity="center"
     android:background="@color/backgroundColor">
 
-    <TextView
+    <ImageView
         android:id="@+id/appTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CommUnity"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:textColor="@color/headerPrimary" />
+        android:adjustViewBounds="true"
+        android:maxWidth="200dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/community_logo_full" />
+
 
     <TextView
         android:id="@+id/poweredBy"
@@ -22,7 +24,8 @@
         android:text="powered by static0"
         android:textSize="14sp"
         android:textColor="@color/textPrimary"
-        android:layout_marginTop="8dp"/>
+        android:paddingTop="8dp"
+        />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/loginButton"
@@ -30,7 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#3E50B4"
         android:visibility="gone"
         android:text="Log in"
         android:textAllCaps="false"

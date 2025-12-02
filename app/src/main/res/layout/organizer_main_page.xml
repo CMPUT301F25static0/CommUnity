@@ -48,20 +48,25 @@
 
             <ImageButton
                 android:id="@+id/organizerNotifications"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/button_color"
-                android:contentDescription="Notifications"
-                android:src="@android:drawable/ic_dialog_email"
+                android:layout_width="48sp"
+                android:layout_height="48sp"
+                android:background="@drawable/baseline_notifications_none_24"
+                android:clickable="true"
+                android:contentDescription="@string/notification"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:padding="6dp" />
 
             <ImageButton
                 android:id="@+id/buttonCamera"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/button_color"
-                android:contentDescription="Camera"
-                android:src="@android:drawable/ic_menu_camera"
+                android:layout_width="48sp"
+                android:layout_height="48sp"
+                android:layout_marginEnd="200dp"
+                android:background="@drawable/camera_icon"
+                android:clickable="true"
+                android:contentDescription="@string/scan_qr_code"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:padding="6dp"
                 android:layout_marginStart="8dp" />
         </LinearLayout>

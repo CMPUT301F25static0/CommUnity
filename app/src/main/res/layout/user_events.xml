@@ -14,31 +14,25 @@
         >
 
 
-        <TextView
+        <ImageView
             android:id="@+id/eventScreenAppName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="4dp"
-            android:gravity="center"
-            android:paddingBottom="1dp"
-            android:text="@string/community"
-            android:textAlignment="center"
-            android:textColor="@color/headerPrimary"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:adjustViewBounds="true"
+            android:maxHeight="50dp"
+            android:src="@drawable/community_logo_name"
+            android:contentDescription="@string/community"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/topDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <View
             android:id="@+id/topDivider"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="14dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +45,6 @@
             android:layout_width="48sp"
             android:layout_height="48sp"
             android:background="@drawable/baseline_notifications_none_24"
-            android:backgroundTint="@color/headerPrimary"
             android:clickable="true"
             android:contentDescription="@string/notification"
             android:focusable="true"
@@ -66,7 +59,7 @@
             android:layout_width="48sp"
             android:layout_height="48sp"
             android:layout_marginEnd="200dp"
-            android:background="@android:drawable/ic_menu_camera"
+            android:background="@drawable/camera_icon"
             android:clickable="true"
             android:contentDescription="@string/scan_qr_code"
             android:focusable="true"
