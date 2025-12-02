@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class OrganizerHomeFragment extends Fragment {
     ImageButton notificationsButton, cameraButton;
     Button guideButton, filterButton, createButton, notifyButton;
-    Button geolocationButton, myProfileButton;
+    Button geolocationButton, myProfileButton, backButton;
     RecyclerView hostEventList;
 
     private ArrayList<Event> eventsArrayList;
@@ -59,6 +59,8 @@ public class OrganizerHomeFragment extends Fragment {
         geolocationButton = view.findViewById(R.id.buttonGeolocation);
         myProfileButton = view.findViewById(R.id.buttonMyProfile);
         hostEventList = view.findViewById(R.id.HostEventView);
+        backButton = view.findViewById(R.id.buttonBack);
+
 
         hostEventList.setLayoutManager(new LinearLayoutManager(getContext()));
         eventArrayAdapter = new EventArrayAdapter(eventsArrayList);
@@ -150,5 +152,11 @@ public class OrganizerHomeFragment extends Fragment {
             NavHostFragment.findNavController(OrganizerHomeFragment.this)
                     .navigate(R.id.action_OrganizerHomeFragment_to_GeolocationFragment);
         });
+
+        backButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(OrganizerHomeFragment.this)
+                    .navigate(R.id.action_OrganizerHomeFragment_to_RoleSelectFragment);
+        });
+
     }
 }

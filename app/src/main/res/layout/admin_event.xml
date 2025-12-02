@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="12dp"
-    android:background="@color/backgroundBox">
+    android:background="@drawable/box_color">
 
     <!-- Event image -->
     <ImageView
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:text="Short details go here. Location, time, brief description..."
         android:textSize="14sp"
-        android:textColor="@color/textPrimary"
+        android:textColor="@color/button_text_color"
         android:maxLines="3"
         android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@id/eventImage"
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Deadline: 2025-11-01"
-        android:textColor="@color/textPrimary"
+        android:textColor="@color/button_text_color"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/eventImage"
         app:layout_constraintTop_toBottomOf="@id/event_description"

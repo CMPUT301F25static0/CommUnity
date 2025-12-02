@@ -26,12 +26,13 @@
 
             <EditText
                 android:id="@+id/email_box"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="4dp"
-                android:hint="Example: Shaz@gmail.com"
+                android:hint="  Example: Shaz@gmail.com"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/textPrimary"
+                android:background="@color/backgroundBox"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -76,22 +77,24 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/name_box"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="0.015"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/topDivider" />
 
             <EditText
                 android:id="@+id/name_box"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="4dp"
-                android:hint="Example: Shaz"
+                android:hint="  Example: Shaz"
                 android:inputType="textPersonName"
                 android:textColor="@color/textPrimary"
+                android:background="@color/backgroundBox"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name" />
+
 
             <TextView
                 android:id="@+id/email"
@@ -107,11 +110,10 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/email_box"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="0.015"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name_box"
                 app:layout_constraintVertical_bias="0.0" />
-
 
             <TextView
                 android:id="@+id/phone"
@@ -128,19 +130,20 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/phone_box"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/email_box"
                 app:layout_constraintVertical_bias="1.0" />
 
             <EditText
                 android:id="@+id/phone_box"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="4dp"
-                android:hint="Example: 3061112222"
+                android:hint="  Example: 3061112222"
                 android:inputType="phone"
                 android:textColor="@color/textPrimary"
+                android:background="@color/backgroundBox"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"

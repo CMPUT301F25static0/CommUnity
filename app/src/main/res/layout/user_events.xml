@@ -6,17 +6,30 @@
     android:layout_height="match_parent">
 
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        >
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-16dp">
 
+
+        <androidx.appcompat.widget.AppCompatButton
+
+            android:id="@+id/buttonBack"
+            android:layout_width="40dp"
+            android:layout_height="54dp"
+            android:background="@android:color/transparent"
+            android:text="←"
+            android:textSize="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/topDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.111" />
 
         <TextView
             android:id="@+id/eventScreenAppName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="4dp"
@@ -25,11 +38,11 @@
             android:text="@string/community"
             android:textAlignment="center"
             android:textColor="@color/headerPrimary"
-            android:textSize="24sp"
+            android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/topDivider"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.465"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -102,15 +115,15 @@
             android:id="@+id/event_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/goToNotifications"
-            app:layout_constraintBottom_toTopOf="@+id/bottomDivider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:clipToPadding="false"
             android:paddingStart="12dp"
-            android:paddingEnd="12dp"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp"/>
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottomDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/goToNotifications" />
 
 
         <View
@@ -129,8 +142,8 @@
             android:id="@+id/event_history"
             android:layout_width="150sp"
             android:layout_height="48sp"
-            android:text="@string/event_history"
             android:background="@drawable/button_color"
+            android:text="@string/event_history"
             android:textColor="@color/button_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/my_profile"
@@ -143,8 +156,8 @@
             android:layout_height="48sp"
             android:layout_margin="1dp"
             android:layout_marginStart="147dp"
-            android:text="@string/my_profile"
             android:background="@drawable/button_color"
+            android:text="@string/my_profile"
             android:textColor="@color/button_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -153,9 +166,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class EntrantHomeFragment extends Fragment {
 
     ImageButton entrantNotificationsButton, entrantQRScannerButton;
-    Button entrantFilterButton, eventHistoryButton, myProfileButton, guideButton;
+    Button entrantFilterButton, eventHistoryButton, myProfileButton, guideButton, backButton;
     RecyclerView entrantEventList;
 
     private ArrayList<Event> eventsArrayList;
@@ -53,6 +53,8 @@ public class EntrantHomeFragment extends Fragment {
         myProfileButton = view.findViewById(R.id.my_profile);
         entrantEventList = view.findViewById(R.id.event_list);
         guideButton = view.findViewById(R.id.guideButton);
+        backButton = view.findViewById(R.id.buttonBack);
+
 
         eventService = new EventService();
         eventsArrayList = new ArrayList<>();
@@ -124,6 +126,10 @@ public class EntrantHomeFragment extends Fragment {
         guideButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(EntrantHomeFragment.this)
                         .navigate(R.id.UserGuideFragment)
+        );
+        backButton.setOnClickListener(v ->
+                NavHostFragment.findNavController(EntrantHomeFragment.this)
+                        .navigate(R.id.action_EntrantHomeFragment_to_LoginFragment)
         );
     }
 }

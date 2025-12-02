@@ -9,14 +9,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:paddingBottom="8dp"
         android:gravity="center">
 
+        <androidx.appcompat.widget.AppCompatButton
+
+            android:id="@+id/buttonBack"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="54dp"
+            android:background="@android:color/transparent"
+            android:text="←"
+            android:textSize="32dp" />
+
         <TextView
             android:id="@+id/headerTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="2.3"
             android:text="CommUnity"
             android:textColor="@color/headerPrimary"
             android:textSize="32sp"
@@ -108,16 +119,6 @@
             android:layout_marginVertical="15dp"
             android:textSize="18sp" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Back"
-            android:textAllCaps="false"
-            android:textSize="18sp"
-            android:background="@drawable/button_color"
-            android:textColor="@color/white"/>
 
     </LinearLayout>
 

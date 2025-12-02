@@ -97,6 +97,7 @@ public class OrganizerPosterUploadFragment extends Fragment {
 
         imagePicker();
         requestPermissions();
+        onClickListener();
     }
 
     private void imagePicker() {
@@ -246,5 +247,12 @@ public class OrganizerPosterUploadFragment extends Fragment {
                     cancelButton.setEnabled(true);
                     Toast.makeText(getContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    private void onClickListener() {
+        cancelButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(this)
+                    .navigate(R.id.action_OrganizerPosterUploadFragment_to_OrganizerEventDescriptionFragment);
+        });
     }
 }

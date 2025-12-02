@@ -83,6 +83,11 @@
             android:id="@+id/action_EntrantHomeFragment_to_UserGuideFragment"
             app:destination="@id/UserGuideFragment" />
 
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_LoginFragment"
+            app:destination="@id/RoleSelectFragment" />
+
+
         <!--        Implement QR action-->
         <!--        Implement Filters action-->
     </fragment>
@@ -105,6 +110,11 @@
         android:label="Notifications"
         tools:layout="@layout/notification_page"
         >
+        <action
+            android:id="@+id/action_NotificationsFragment_to_EntrantHomeFragment"
+            app:destination="@id/EntrantHomeFragment"
+            >
+        </action>
     </fragment>
 
     <fragment
@@ -171,6 +181,11 @@
         <action
             android:id="@+id/action_OrganizerHomeFragment_to_GeolocationFragment"
             app:destination="@id/GeolocationFragment" />
+        <action
+            android:id="@+id/action_OrganizerHomeFragment_to_RoleSelectFragment"
+            app:destination="@id/RoleSelectFragment">
+        </action>
+
     </fragment>
 
     <fragment
@@ -223,6 +238,7 @@
         <action
             android:id="@+id/action_OrganizerEventDescriptionFragment_to_OrganizerPosterUploadFragment"
             app:destination="@id/OrganizerPosterUploadFragment" />
+
     </fragment>
 
     <fragment
@@ -233,6 +249,10 @@
         <argument
             android:name="event_id"
             app:argType="string" />
+
+        <action
+            android:id="@+id/action_OrganizerPosterUploadFragment_to_OrganizerEventDescriptionFragment"
+            app:destination="@id/OrganizerEventDescriptionFragment" />
     </fragment>
 
 <!--    Organizer Send Notification related-->
@@ -246,6 +266,10 @@
         <action
             android:id="@+id/action_OrganizerNotifyFragment_to_OrganizerCreateNotificationFragment"
             app:destination="@id/OrganizerCreateNotificationFragment" />
+
+        <action
+            android:id="@+id/action_OrganizerNotifyFragment_to_OrganizerHomeFragment"
+            app:destination="@id/OrganizerHomeFragment" />
 
     </fragment>
 
