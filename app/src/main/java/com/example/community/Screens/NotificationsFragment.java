@@ -1,6 +1,7 @@
 package com.example.community.Screens;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +102,7 @@ public class NotificationsFragment extends Fragment {
                                     Toast.makeText(getContext(),
                                             "Invitation accepted",
                                             Toast.LENGTH_SHORT).show();
-                                    notificationAdapter.removeNotification(notification);
+                                    dismissNotification(notification);
                                 })
                                 .addOnFailureListener(e ->
                                         Toast.makeText(getContext(),
@@ -130,7 +131,7 @@ public class NotificationsFragment extends Fragment {
                                     Toast.makeText(getContext(),
                                             "Invitation declined",
                                             Toast.LENGTH_SHORT).show();
-                                    notificationAdapter.removeNotification(notification);
+                                    dismissNotification(notification);
                                 })
                                 .addOnFailureListener(e ->
                                         Toast.makeText(getContext(),
@@ -141,8 +142,15 @@ public class NotificationsFragment extends Fragment {
 
                     @Override
                     public void onViewEvent(Notification notification) {
+                        if (notification.getEventID() == null || notification.getEventID().isEmpty()) {
+                            Toast.makeText(getContext(),
+                                    "Event ID not found",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         Bundle bundle = new Bundle();
-                        bundle.putString("eventID", notification.getEventID());
+                        bundle.putString("event_id", notification.getEventID());
                         NavHostFragment.findNavController(NotificationsFragment.this)
                                 .navigate(R.id.action_NotificationsFragment_to_EventDetailsFragment, bundle);
                     }
@@ -187,8 +195,13 @@ public class NotificationsFragment extends Fragment {
                     notificationService.listUserNotification(userId, 50, null)
                             .addOnSuccessListener(fetchedNotifications -> {
                                 notifications.clear();
-                                notifications.addAll(fetchedNotifications);
+                                for (Notification n : fetchedNotifications) {
+                                    if (!n.isDismissed()) {
+                                    notifications.add(n);
+                                    }
+                                }
                                 notificationAdapter.notifyDataSetChanged();
+
                             })
                             .addOnFailureListener(e -> {
                                 e.printStackTrace();
@@ -203,6 +216,17 @@ public class NotificationsFragment extends Fragment {
                     Toast.makeText(getContext(),
                             "Failed to resolve user from device token: " + e.getMessage(),
                             Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void dismissNotification(Notification notification) {
+        notificationService.dismissNotification(notification.getNotificationID())
+                .addOnSuccessListener(v -> {
+                    notificationAdapter.removeNotification(notification);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("NotificationsFragment", "Failed to dismiss notification", e);
+                    Toast.makeText(getContext(), "Failed to dismiss notification", Toast.LENGTH_SHORT).show();
                 });
     }
 

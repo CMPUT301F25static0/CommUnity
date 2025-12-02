@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.community.Event;
 import com.example.community.EventService;
 import com.example.community.R;
+import com.example.community.User;
 import com.example.community.UserService;
 import com.example.community.WaitingListEntry;
 import com.example.community.WaitingListEntryService;
@@ -43,6 +45,7 @@ public class EntrantEventDescriptionFragment extends Fragment {
     private static final int PERMISSION_REQUEST_CODE = 100;
 
     private Event currentEvent;
+    private User currentUser;
     private WaitingListEntryService waitingListEntryService;
     private UserService userService;
     private EventService eventService;
@@ -53,6 +56,7 @@ public class EntrantEventDescriptionFragment extends Fragment {
             ,registrationDates, capacity, organizerUsername, organizerEmail, organizerPhone,
             waitlistCapacity;
     private Button waitlistButton, backButton;
+    private ProgressBar loadingScreen;
 
     /**
      * Creates a new instance of this fragment with the specified event ID.
@@ -110,15 +114,15 @@ public class EntrantEventDescriptionFragment extends Fragment {
         waitlistCapacity = view.findViewById(R.id.waitlistCount);
         waitlistButton = view.findViewById(R.id.waitlistButton);
         backButton = view.findViewById(R.id.backButton);
+        loadingScreen = view.findViewById(R.id.loadingScreen);
 
+        showLoadingScreen();
         loadEventDetails();
 
         backButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(EntrantEventDescriptionFragment.this)
                     .navigateUp();
         });
-
-
     }
 
     private void loadEventDetails() {
@@ -128,19 +132,22 @@ public class EntrantEventDescriptionFragment extends Fragment {
                     currentEvent = event;
                     eventTitle.setText(event.getTitle());
                     eventDescription.setText(event.getDescription());
+                    eventLocation.setText("Event Location: " + event.getLocation());
                     eventDates.setText(String.format("Event Dates: %s - %s",
                             event.getEventStartDate(), event.getEventEndDate()));
                     registrationDates.setText(String.format("Registration Period: %s - %s",
-                            event.getRegistrationStart(), event.getEventEndDate()));
+                            event.getRegistrationStart(), event.getRegistrationEnd()));
                     capacity.setText(String.format("Capacity: %d/%d",
                             event.getCurrentCapacity(), event.getMaxCapacity()));
                     checkWaitlistStatus();
                     loadOrganizerDetails(event.getOrganizerID());
+                    hideLoadingScreen();
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to load event details", e);
                     Toast.makeText(getContext(), "Failed to load event details", Toast.LENGTH_SHORT)
                             .show();
+                    hideLoadingScreen();
                 });
     }
 
@@ -222,24 +229,52 @@ public class EntrantEventDescriptionFragment extends Fragment {
      * Adds the current user to the event waitlist.
      */
     private void joinWaitlist() {
-        if (currentEvent.getRequiresGeolocation()) {
-            // Request location permission if needed
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager. PERMISSION_GRANTED) {
-                    // Permission is not granted, request it
-                    ActivityCompat.requestPermissions(requireActivity(),
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            PERMISSION_REQUEST_CODE);
-                    return;
-                }
-            }
-            // Permission is granted, get location and join
-            getLocationAndJoin();
-        } else {
-            // Geolocation not required, join without location
-            joinWaitlistWithoutLocation();
+        if (currentEntrantId == null) {
+            Toast.makeText(getActivity(), "User ID not loaded yet.  Please try again.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        showLoadingScreen();
+
+        userService.getByUserID(currentEntrantId)
+                .addOnSuccessListener(user -> {
+                    if (user == null) {
+                        Toast.makeText(getContext(), "User not found", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Validate username and email
+                    if (user.getUsername() == null || user.getUsername().isEmpty() ||
+                            user.getEmail() == null || user.getEmail().isEmpty()) {
+                        Toast.makeText(getContext(), "Please complete your profile first (username and email)", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    currentUser = user;
+
+                    if (currentEvent.getRequiresGeolocation()) {
+                        // Request location permission if needed
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                                // Permission is not granted, request it
+                                ActivityCompat.requestPermissions(requireActivity(),
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        PERMISSION_REQUEST_CODE);
+                                return;
+                            }
+                        }
+                        // Permission is granted, get location and join
+                        getLocationAndJoin();
+                    } else {
+                        // Geolocation not required, join without location
+                        joinWaitlistWithoutLocation();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to load user profile", e);
+                    Toast.makeText(getContext(), "Failed to load user profile", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void getLocationAndJoin() {
@@ -247,15 +282,15 @@ public class EntrantEventDescriptionFragment extends Fragment {
             if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(),
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT). show();
+                Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            LocationRequest locationRequest = new LocationRequest.Builder(Priority. PRIORITY_HIGH_ACCURACY, 5000)
+            LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
                     .setMaxUpdateDelayMillis(10000)
                     .build();
 
-            fusedLocationClient.getCurrentLocation(Priority. PRIORITY_HIGH_ACCURACY, null)
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                     .addOnSuccessListener(location -> {
                         if (location != null) {
                             Log.d(TAG, "Location obtained: " + location.getLatitude() + ", " + location.getLongitude());
@@ -272,14 +307,14 @@ public class EntrantEventDescriptionFragment extends Fragment {
                                             joinWaitlistWithLocation(geoPoint);
                                         } else {
                                             Log.w(TAG, "Last location also null, joining without location");
-                                            Toast.makeText(requireContext(), "Unable to get current location.  Joining without location.",
+                                            Toast.makeText(requireContext(), "Unable to get current location. Joining without location.",
                                                     Toast.LENGTH_SHORT).show();
                                             joinWaitlistWithoutLocation();
                                         }
                                     })
                                     .addOnFailureListener(e -> {
                                         Log.e(TAG, "Failed to get last location", e);
-                                        Toast.makeText(requireContext(), "Failed to get location.  Joining without location.",
+                                        Toast.makeText(requireContext(), "Failed to get location. Joining without location.",
                                                 Toast.LENGTH_SHORT).show();
                                         joinWaitlistWithoutLocation();
                                     });
@@ -292,50 +327,65 @@ public class EntrantEventDescriptionFragment extends Fragment {
                         joinWaitlistWithoutLocation();
                     });
         } catch (SecurityException e) {
-            Log. e(TAG, "Security exception getting location", e);
-            Toast. makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Security exception getting location", e);
+            Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void joinWaitlistWithLocation(GeoPoint location) {
         if (currentEntrantId == null) {
-            Toast.makeText(getActivity(), "User ID not loaded yet. Please try again.", Toast.LENGTH_SHORT). show();
+            Toast.makeText(getActivity(), "User ID not loaded yet. Please try again.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        showLoadingScreen();
+
         waitingListEntryService.joinWithLocation(currentEntrantId, currentEvent.getEventID(), location)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "Successfully joined waitlist with location", Toast.LENGTH_SHORT). show();
+                    Toast.makeText(getActivity(), "Successfully joined waitlist with location", Toast.LENGTH_SHORT).show();
                     updateWaitlistButton(true);
+                    reloadFragment();
+                    hideLoadingScreen();
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to join waitlist", e);
                     String errorMessage = "Failed to join waitlist";
-                    if (e.getMessage() != null && e.getMessage(). contains("Waitlist is full")) {
+                    if (e.getMessage() != null && e.getMessage().contains("Waitlist is full")) {
                         errorMessage = "Waitlist is full";
                     }
-                    Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT). show();
+                    if (e.getMessage() != null && e.getMessage().contains("Already on waitlist")) {
+                        errorMessage = "User is already on waitlist";
+                    }
+                    Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+                    reloadFragment();
+                    hideLoadingScreen();
                 });
     }
 
     private void joinWaitlistWithoutLocation() {
         if (currentEntrantId == null) {
-            Toast.makeText(getActivity(), "User ID not loaded yet. Please try again.", Toast. LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "User ID not loaded yet.Please try again.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        waitingListEntryService. join(currentEntrantId, currentEvent.getEventID())
-                . addOnSuccessListener(aVoid -> {
-                    Toast. makeText(getActivity(), "Successfully joined waitlist", Toast.LENGTH_SHORT).show();
+        showLoadingScreen();
+
+        waitingListEntryService.join(currentEntrantId, currentEvent.getEventID())
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getActivity(), "Successfully joined waitlist", Toast.LENGTH_SHORT).show();
                     updateWaitlistButton(true);
+                    reloadFragment();
+                    hideLoadingScreen();
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to join waitlist", e);
                     String errorMessage = "Failed to join waitlist";
-                    if (e.getMessage() != null && e. getMessage().contains("Waitlist is full")) {
+                    if (e.getMessage() != null && e.getMessage().contains("Waitlist is full")) {
                         errorMessage = "Waitlist is full";
                     }
-                    Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT). show();
+                    Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+                    reloadFragment();
+                    hideLoadingScreen();
                 });
     }
 
@@ -343,14 +393,37 @@ public class EntrantEventDescriptionFragment extends Fragment {
      * Removes the current user from the event waitlist.
      */
     private void leaveWaitlist() {
+        showLoadingScreen();
+
         waitingListEntryService.leave(currentEntrantId, currentEvent.getEventID())
         .addOnSuccessListener(aVoid -> {
             Toast.makeText(getActivity(), "Successfully left waitlist", Toast.LENGTH_SHORT).show();
             updateWaitlistButton(false);
+            reloadFragment();
+            hideLoadingScreen();
         })
         .addOnFailureListener(e -> {
             Log.e(TAG, "Failed to leave waitlist", e);
             Toast.makeText(getActivity(), "Failed to leave waitlist", Toast.LENGTH_SHORT).show();
+            reloadFragment();
+            hideLoadingScreen();
         });
+    }
+
+    private void showLoadingScreen() {
+        if (loadingScreen != null) {
+            loadingScreen.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideLoadingScreen() {
+        if (loadingScreen != null) {
+            loadingScreen.setVisibility(View.GONE);
+        }
+    }
+
+    private void reloadFragment() {
+        showLoadingScreen();
+        loadEventDetails();
     }
 }
