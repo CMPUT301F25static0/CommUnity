@@ -39,6 +39,9 @@ public class NotificationsFragment extends Fragment {
     private NotificationService notificationService;
     private UserService userService;
 
+    // store the current userId here once we resolve it
+    private String currentUserId;
+
     /**
      * Inflates the notifications layout.
      *
@@ -69,7 +72,7 @@ public class NotificationsFragment extends Fragment {
 
         notificationSettingsButton = view.findViewById(R.id.notificationSettings);
         backButton = view.findViewById(R.id.backToEntrantHome);
-//        notificationList = view.findViewById(R.id.notificationList);
+        notificationList = view.findViewById(R.id.notificationList);
 
         notifications = new ArrayList<>();
         notificationService = new NotificationService();
@@ -81,29 +84,74 @@ public class NotificationsFragment extends Fragment {
                 new NotificationAdapter.NotificationActionListener() {
                     @Override
                     public void onAccept(Notification notification) {
-                        Toast.makeText(getContext(),
-                                "Accepted invitation for event " + notification.getEventID(),
-                                Toast.LENGTH_SHORT).show();
+                        // Guard: make sure we actually have a userId
+                        if (currentUserId == null || currentUserId.isEmpty()) {
+                            Toast.makeText(getContext(),
+                                    "User not loaded yet. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        notificationService.respondToInvitation(
+                                        notification.getEventID(),
+                                        currentUserId,
+                                        true
+                                )
+                                .addOnSuccessListener(v -> {
+                                    Toast.makeText(getContext(),
+                                            "Invitation accepted",
+                                            Toast.LENGTH_SHORT).show();
+                                    notificationAdapter.removeNotification(notification);
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(getContext(),
+                                                "Failed to accept invitation",
+                                                Toast.LENGTH_SHORT).show()
+                                );
+
                     }
 
                     @Override
                     public void onDecline(Notification notification) {
-                        Toast.makeText(getContext(),
-                                "Declined invitation for event " + notification.getEventID(),
-                                Toast.LENGTH_SHORT).show();
+                        // Same guard here
+                        if (currentUserId == null || currentUserId.isEmpty()) {
+                            Toast.makeText(getContext(),
+                                    "User not loaded yet. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        notificationService.respondToInvitation(
+                                        notification.getEventID(),
+                                        currentUserId,
+                                        false
+                                )
+                                .addOnSuccessListener(v -> {
+                                    Toast.makeText(getContext(),
+                                            "Invitation declined",
+                                            Toast.LENGTH_SHORT).show();
+                                    notificationAdapter.removeNotification(notification);
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(getContext(),
+                                                "Failed to decline invitation",
+                                                Toast.LENGTH_SHORT).show()
+                                );
                     }
 
                     @Override
                     public void onViewEvent(Notification notification) {
-                        Toast.makeText(getContext(),
-                                "View event: " + notification.getEventID(),
-                                Toast.LENGTH_SHORT).show();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("eventID", notification.getEventID());
+                        NavHostFragment.findNavController(NotificationsFragment.this)
+                                .navigate(R.id.action_NotificationsFragment_to_EventDetailsFragment, bundle);
                     }
                 });
 
         notificationList.setLayoutManager(new LinearLayoutManager(getContext()));
         notificationList.setAdapter(notificationAdapter);
 
+        // Load notifications
         loadNotificationsForCurrentUser();
 
         notificationSettingsButton.setOnClickListener(v ->
@@ -133,6 +181,9 @@ public class NotificationsFragment extends Fragment {
         userService.getUserIDByDeviceToken(deviceToken)
                 .addOnSuccessListener(userId -> {
 
+                    // Save for accept/decline actions
+                    currentUserId = userId;
+
                     notificationService.listUserNotification(userId, 50, null)
                             .addOnSuccessListener(fetchedNotifications -> {
                                 notifications.clear();
@@ -154,4 +205,5 @@ public class NotificationsFragment extends Fragment {
                             Toast.LENGTH_SHORT).show();
                 });
     }
+
 }

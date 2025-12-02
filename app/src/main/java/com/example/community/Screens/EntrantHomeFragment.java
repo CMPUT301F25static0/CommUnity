@@ -36,9 +36,16 @@ public class EntrantHomeFragment extends Fragment {
     private Button entrantFilterButton, eventHistoryButton, myProfileButton, guideButton;
     private RecyclerView entrantEventList;
 
-    private ArrayList<Event> eventsArrayList;
+    // Lists
+    private ArrayList<Event> eventsArrayList;      // currently displayed (possibly filtered)
+    private ArrayList<Event> allEventsArrayList;   // master list of all events
+
     private EventArrayAdapter eventArrayAdapter;
     private EventService eventService;
+
+    // Current filters
+    private String currentFilterKeyword = "";
+    private String currentFilterTime = "";
 
     /**
      * Inflates the fragment's layout.
@@ -51,7 +58,8 @@ public class EntrantHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.user_events, container, false);
+        View entrantHomeFragment = inflater.inflate(R.layout.user_events, container, false);
+        return entrantHomeFragment;
     }
 
     /**
@@ -78,6 +86,7 @@ public class EntrantHomeFragment extends Fragment {
         // Initialize services and data structures
         eventService = new EventService();
         eventsArrayList = new ArrayList<>();
+        allEventsArrayList = new ArrayList<>();
 
         // Setup RecyclerView with adapter
         entrantEventList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -93,6 +102,7 @@ public class EntrantHomeFragment extends Fragment {
         // Load upcoming events and set up click listeners for navigation
         loadEvents();
         setUpClickListener();
+        setUpFilterResultListener();
     }
 
     /**
@@ -109,9 +119,20 @@ public class EntrantHomeFragment extends Fragment {
             eventService.listUpcoming(fromDate, toDate, null)
                     .addOnSuccessListener(events -> {
                         Log.d("EntrantHomeFragment", "Loaded " + events.size() + " events");
-                        eventsArrayList.clear();
-                        eventsArrayList.addAll(events);
-                        eventArrayAdapter.notifyDataSetChanged();
+
+                        // Save all events to master list
+                        allEventsArrayList.clear();
+                        allEventsArrayList.addAll(events);
+
+                        // If no active filter → show everything
+                        if (currentFilterKeyword.isEmpty() && currentFilterTime.isEmpty()) {
+                            eventsArrayList.clear();
+                            eventsArrayList.addAll(allEventsArrayList);
+                            eventArrayAdapter.notifyDataSetChanged();
+                        } else {
+                            // Re-apply the current filter on the fresh data
+                            applyFilters(currentFilterKeyword, currentFilterTime);
+                        }
                     })
                     .addOnFailureListener(e -> {
                         Log.e("EntrantHomeFragment", "Failed to load events", e);
@@ -125,19 +146,24 @@ public class EntrantHomeFragment extends Fragment {
      * Handles navigation to notifications, user profile, event history, filters, guide, and QR scanner.
      */
     private void setUpClickListener() {
-        entrantNotificationsButton.setOnClickListener(v ->
-                NavHostFragment.findNavController(EntrantHomeFragment.this)
-                        .navigate(R.id.action_EntrantHomeFragment_to_NotificationsFragment)
-        );
+        entrantNotificationsButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(EntrantHomeFragment.this)
+                    .navigate(R.id.action_EntrantHomeFragment_to_NotificationsFragment);
+        });
 
-        eventHistoryButton.setOnClickListener(v ->
-                NavHostFragment.findNavController(EntrantHomeFragment.this)
-                        .navigate(R.id.UserEventHistoryFragment)
-        );
+        myProfileButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(EntrantHomeFragment.this)
+                    .navigate(R.id.action_EntrantHomeFragment_to_EntrantUserProfileFragment);
+        });
 
-        myProfileButton.setOnClickListener(v ->
+        eventHistoryButton.setOnClickListener(v -> {
+            NavHostFragment.findNavController(EntrantHomeFragment.this)
+                    .navigate(R.id.UserEventHistoryFragment);
+        });
+
+        entrantFilterButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(EntrantHomeFragment.this)
-                        .navigate(R.id.action_EntrantHomeFragment_to_EntrantUserProfileFragment)
+                        .navigate(R.id.action_EntrantHomeFragment_to_UserFilterFragment)
         );
 
         entrantQRScannerButton.setOnClickListener(v -> {
@@ -145,12 +171,102 @@ public class EntrantHomeFragment extends Fragment {
             NavHostFragment.findNavController(EntrantHomeFragment.this)
                     .navigate(R.id.action_EntrantHomeFragment_to_QRScannerFragment);
         });
-        entrantFilterButton.setOnClickListener(v -> {
-            Toast myToast = Toast.makeText(getActivity(), "Not Implemented yet", Toast.LENGTH_SHORT);
-        });
+
         guideButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(EntrantHomeFragment.this)
                         .navigate(R.id.UserGuideFragment)
         );
+    }
+
+    private void setUpFilterResultListener() {
+        var navController = NavHostFragment.findNavController(EntrantHomeFragment.this);
+
+        if (navController.getCurrentBackStackEntry() == null) {
+            Log.w("EntrantHomeFragment", "No currentBackStackEntry for filter result");
+            return;
+        }
+
+        navController.getCurrentBackStackEntry()
+                .getSavedStateHandle()
+                .getLiveData("eventFilters")
+                .observe(getViewLifecycleOwner(), value -> {
+                    if (value instanceof Bundle) {
+                        Bundle filters = (Bundle) value;
+                        String keyword = filters.getString("keyword", "");
+                        String time = filters.getString("time", "");
+
+                        Log.d("EntrantHomeFragment", "Received filters: keyword=" + keyword + ", time=" + time);
+                        applyFilters(keyword, time);
+                    } else {
+                        Log.w("EntrantHomeFragment", "Filter value is not a Bundle");
+                    }
+                });
+    }
+
+    private void applyFilters(String keyword, String time) {
+        // Remember current filters so loadEvents() can re-apply them after async fetch
+        currentFilterKeyword = (keyword == null) ? "" : keyword;
+        currentFilterTime = (time == null) ? "" : time;
+
+        if (allEventsArrayList == null || allEventsArrayList.isEmpty()) {
+            Log.d("EntrantHomeFragment", "applyFilters: events not loaded yet, will apply after loadEvents");
+            return; // loadEvents() will call applyFilters again once data arrives
+        }
+
+        String keywordLower = currentFilterKeyword.toLowerCase();
+        String timeLower = currentFilterTime.toLowerCase();
+
+        // If both empty → show all events again
+        if (keywordLower.isEmpty() && timeLower.isEmpty()) {
+            eventsArrayList.clear();
+            eventsArrayList.addAll(allEventsArrayList);
+            eventArrayAdapter.notifyDataSetChanged();
+            Toast.makeText(getContext(),
+                    "Cleared filter. Showing all events (" + eventsArrayList.size() + ")",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        eventsArrayList.clear();
+
+        for (Event e : allEventsArrayList) {
+            if (e == null) continue;
+
+            boolean matchesKeyword = true;
+            boolean matchesTime = true;
+
+            if (!keywordLower.isEmpty()) {
+                String title = safeLower(e.getTitle());
+                String description = safeLower(e.getDescription());
+                String location = safeLower(e.getLocation());
+
+                matchesKeyword =
+                        title.contains(keywordLower)
+                                || description.contains(keywordLower)
+                                || location.contains(keywordLower);
+            }
+
+            if (!timeLower.isEmpty()) {
+                String start = safeLower(e.getEventStartDate());
+                String end = safeLower(e.getEventEndDate());
+
+                matchesTime = start.contains(timeLower) || end.contains(timeLower);
+            }
+
+            if (matchesKeyword && matchesTime) {
+                eventsArrayList.add(e);
+            }
+        }
+
+        Log.d("EntrantHomeFragment", "Filtered events count = " + eventsArrayList.size());
+        eventArrayAdapter.notifyDataSetChanged();
+
+        Toast.makeText(getContext(),
+                "Applied filter. Showing " + eventsArrayList.size() + " events.",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private String safeLower(String s) {
+        return (s == null) ? "" : s.toLowerCase();
     }
 }

@@ -173,7 +173,6 @@ public class WaitlistRepository {
     public Task<List<WaitingListEntry>> listByUser(String userID) {
         return db.collectionGroup(SUBCOLLECTION_WAITLIST)
                 .whereEqualTo("userID", userID)
-                .orderBy("joinedAt")
                 .get()
                 .continueWith(task -> {
                     if (!task.isSuccessful()) {
