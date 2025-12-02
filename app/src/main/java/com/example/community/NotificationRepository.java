@@ -173,4 +173,36 @@ public class NotificationRepository {
             return Tasks.whenAll(deleteTasks);
         });
     }
+
+    /**
+     * Gets a notification by ID.
+     * ADDED: Retrieves a single notification document
+     *
+     * @param notificationID ID of the notification
+     * @return task containing the notification
+     */
+    public Task<Notification> getByID(String notificationID) {
+        return notificationsRef.document(notificationID).get().continueWith(task -> {
+            if (! task.isSuccessful()) {
+                throw task.getException();
+            }
+
+            DocumentSnapshot doc = task.getResult();
+            if (doc.exists()) {
+                return doc.toObject(Notification.class);
+            }
+            return null;
+        });
+    }
+
+    /**
+     * Updates an existing notification.
+     * ADDED: Updates a notification document in Firestore
+     *
+     * @param notification notification with updated data
+     * @return task that completes when update finishes
+     */
+    public Task<Void> update(Notification notification) {
+        return notificationsRef.document(notification.getNotificationID()).set(notification);
+    }
 }
