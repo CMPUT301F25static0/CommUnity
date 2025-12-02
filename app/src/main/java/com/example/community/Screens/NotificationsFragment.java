@@ -69,7 +69,7 @@ public class NotificationsFragment extends Fragment {
 
         notificationSettingsButton = view.findViewById(R.id.notificationSettings);
         backButton = view.findViewById(R.id.backToEntrantHome);
-        notificationList = view.findViewById(R.id.notificationList);
+//        notificationList = view.findViewById(R.id.notificationList);
 
         notifications = new ArrayList<>();
         notificationService = new NotificationService();
