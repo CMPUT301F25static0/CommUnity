@@ -178,7 +178,6 @@ public class AdminHostFragment extends Fragment implements com.example.community
      *         <li>Clears the existing list of users</li>
      *         <li>Adds only organizer users to the list</li>
      *         <li>Refreshes the list in the UI</li>
-     *         <li>Logs the number of users loaded</li>
      *     </ul>
      * </p>
      *
