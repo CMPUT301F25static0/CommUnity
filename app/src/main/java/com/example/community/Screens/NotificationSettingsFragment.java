@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +17,26 @@ import com.example.community.R;
 
 public class NotificationSettingsFragment extends Fragment {
 
+import com.example.community.UserService;
+
+/**
+ * Fragment that allows the user to view and adjust notification settings.
+ * Provides confirm and cancel buttons to save or discard changes.
+ */
+public class NotificationSettingsFragment extends Fragment {
+
+    private UserService userService;
+    private RadioButton yesResultsRadio;
+    private RadioButton noResultsRadio;
+
+    /**
+     * Inflates the notification settings layout.
+     *
+     * @param inflater           LayoutInflater to inflate views
+     * @param container          Parent view container
+     * @param savedInstanceState Saved state bundle
+     * @return Inflated fragment view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -23,6 +45,13 @@ public class NotificationSettingsFragment extends Fragment {
         return inflater.inflate(R.layout.notification_settings, container, false);
     }
 
+    /**
+     * Called after the fragment's view is created.
+     * Sets up click listeners for confirm and cancel buttons.
+     *
+     * @param view               The fragment's view
+     * @param savedInstanceState Saved state bundle
+     */
     @Override
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
@@ -38,6 +67,17 @@ public class NotificationSettingsFragment extends Fragment {
         );
 
         // Cancel: just go back to previous page
+        userService = new UserService();
+
+        Button confirmButton = view.findViewById(R.id.confirm_button);
+        Button cancelButton  = view.findViewById(R.id.cancel_popup);
+        yesResultsRadio      = view.findViewById(R.id.yes_results);
+        noResultsRadio       = view.findViewById(R.id.no_results);
+
+        // Confirm: save settings, then go back
+        confirmButton.setOnClickListener(v -> saveSettingsAndGoBack());
+
+        // Cancel: go back without saving changes
         cancelButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(NotificationSettingsFragment.this)
                         .popBackStack()

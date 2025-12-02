@@ -9,10 +9,24 @@
     <!-- Text colors -->
     <color name="headerPrimary">#3668C8</color>
     <color name="textPrimary">#807272</color>
+    <color name="warning">@android:color/holo_red_dark</color>
 
     <!-- Button colors -->
     <color name="fill">@android:color/transparent</color>
     <color name="button_text_color">#FFFFFFFF</color>
+
+    <!-- For gradient look    -->
+    <color name="StrokeColor_button">#2e98c9</color>
+    <color name="StartColor_button">@android:color/transparent</color>
+    <color name="CenterColor_button">@android:color/transparent</color>
+    <color name="EndColor_button">@android:color/transparent</color>
+
+    <!-- Box_selector colors -->
+    <color name="StrokeColor">#2e98c9</color>
+    <color name="StartColor">@android:color/transparent</color>
+    <color name="CenterColor">@android:color/transparent</color>
+    <color name="EndColor">@android:color/transparent</color>
+    <color name="on_click_color">#192AD0</color>
 
 
 

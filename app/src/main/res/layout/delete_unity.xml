@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:background="@color/white"
+        android:background="@color/backgroundBox"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,11 +37,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:text="@string/cancel"
-            android:textColor="@color/textPrimary"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/delete_unity"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/popup_text" />
+            app:layout_constraintTop_toBottomOf="@+id/popup_text"
+            android:background="@drawable/button_color"
+            android:textColor="@color/button_text_color" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/delete_unity"
@@ -50,12 +51,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:text="Delete Unity"
-            android:textColor="@android:color/holo_red_dark"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cancel_popup"
             app:layout_constraintTop_toBottomOf="@+id/popup_text"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="1.0"
+            android:background="@drawable/button_color"
+            android:textColor="@color/warning" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

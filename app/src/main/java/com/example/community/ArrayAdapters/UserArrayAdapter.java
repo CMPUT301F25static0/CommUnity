@@ -16,20 +16,41 @@ import com.example.community.WaitingListEntry;
 
 import java.util.List;
 
+/**
+ * RecyclerView Adapter for displaying a list of {@link User} objects.
+ * Shows each user's name, email, and phone number.
+ */
 public class UserArrayAdapter extends RecyclerView.Adapter<UserArrayAdapter.ViewHolder> {
+    /** Tag for logging*/
     private static final String TAG = "UserArrayAdapter";
+
+    /** List of users to display in the RecyclerView */
     private List<User> users;
     private String listType;
     private OnUserSelectionListener selectionListener;
 
+    /**
+     * ViewHolder class for caching references to the views in each user list item.
+     */
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-
-    public class ViewHolder extends RecyclerView.ViewHolder{
+        /** TextView displaying the user's name */
         TextView userNameTextView;
+
+        /** TextView displaying the user's email */
         TextView userEmailTextView;
+
+        /** TextView displaying the user's phone number */
         TextView userPhoneNumberTextView;
+
+        /** Checkbox for the invited listType*/
         CheckBox userSelectionCheckbox;
 
+        /**
+         * Constructor for ViewHolder.
+         *
+         * @param itemView Root view of the RecyclerView item.
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             userNameTextView = itemView.findViewById(R.id.userNameInList);
@@ -39,6 +60,12 @@ public class UserArrayAdapter extends RecyclerView.Adapter<UserArrayAdapter.View
         }
     }
 
+    /**
+     * Constructor for UserArrayAdapter.
+     *
+     * @param users List of User objects to display.
+     * @param listType The type of list being displayed
+     */
     public UserArrayAdapter(List<User> users, String listType){
         this.users = users;
         this.listType = listType;
@@ -48,6 +75,13 @@ public class UserArrayAdapter extends RecyclerView.Adapter<UserArrayAdapter.View
         this.selectionListener = listener;
     }
 
+    /**
+     * Called when RecyclerView needs a new {@link ViewHolder}.
+     *
+     * @param parent The parent ViewGroup into which the new view will be added.
+     * @param viewType The view type of the new view.
+     * @return A new ViewHolder instance.
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,6 +90,13 @@ public class UserArrayAdapter extends RecyclerView.Adapter<UserArrayAdapter.View
         return new ViewHolder(view);
     }
 
+    /**
+     * Called by RecyclerView to display data at the specified position.
+     * Populates the user's name, email, and phone number.
+     *
+     * @param holder The ViewHolder to bind data to.
+     * @param position Position of the item in the users list.
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = users.get(position);
@@ -88,6 +129,11 @@ public class UserArrayAdapter extends RecyclerView.Adapter<UserArrayAdapter.View
         }
     }
 
+    /**
+     * Returns the total number of users in the adapter.
+     *
+     * @return Size of the users list.
+     */
     @Override
     public int getItemCount() {
         return users.size();

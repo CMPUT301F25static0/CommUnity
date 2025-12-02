@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="40dp"
         android:paddingBottom="8dp"
         android:gravity="center">
 
@@ -19,16 +18,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CommUnity"
+            android:textColor="@color/headerPrimary"
             android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="@color/headerPrimary" />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Header divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#BDBDBD" />
+        android:background="#BDBDBD"
+
+        />
 
     <!-- Event view for Admin -->
     <androidx.recyclerview.widget.RecyclerView
@@ -58,7 +59,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Back"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:clickable="true"
+            android:elevation="6dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:background="@drawable/box_selector"
+            android:textColor="@color/button_text_color"/>
     </LinearLayout>
 
 </LinearLayout>

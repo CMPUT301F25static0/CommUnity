@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Service class responsible for managing lotteries for events.
+ * Handles selecting winners from a waitlist, marking them as invited,
+ * and sending notifications to winners and losers.
+ */
 public class LotteryService {
     private final String TAG = "LotteryService";
 
@@ -16,6 +21,9 @@ public class LotteryService {
     private NotificationService notificationService;
     private WaitingListEntryService waitingListEntryService;
 
+    /**
+     * Constructs a new LotteryService and initializes required repositories and services.
+     */
     public LotteryService() {
         this.waitlistRepository = new WaitlistRepository();
         this.eventRepository = new EventRepository();
@@ -23,6 +31,15 @@ public class LotteryService {
         this.waitingListEntryService = new WaitingListEntryService();
     }
 
+    /**
+     * Runs a lottery for a specific event organized by a given organizer.
+     * Selects a sample of waitlisted users, marks winners as invited, and sends notifications.
+     *
+     * @param organizerID The user ID of the organizer running the lottery
+     * @param eventID     The ID of the event
+     * @param sampleSize  The number of winners to select
+     * @return A Task representing the asynchronous completion of the lottery process
+     */
     public Task<Void> runLottery(String organizerID, String eventID, int sampleSize) {
         return eventRepository.getByID(eventID)
                 .continueWithTask(eventTask -> {
@@ -77,6 +94,14 @@ public class LotteryService {
                 });
     }
 
+    /**
+     * Randomly selects winners from the provided list of entries.
+     *
+     * @param entriesList The list of entries to select from
+     * @param slotsToFill The number of winners to select
+     * @param <T>         The type of entries
+     * @return A list containing the selected winners
+     */
     private <T> List<T> selectLotteryWinners(List<T> entriesList, int slotsToFill) {
         if (slotsToFill >= entriesList.size()) {
             return new ArrayList<>(entriesList);
@@ -95,12 +120,27 @@ public class LotteryService {
         return copy.subList(0, slotsToFill);
     }
 
+    /**
+     * Returns a list of waitlist entries that were not selected as winners.
+     *
+     * @param waitingEntries The full list of waiting entries
+     * @param lotteryWinners The selected winners
+     * @return A list of losers
+     */
     private List<WaitingListEntry> getLotteryLosers(List<WaitingListEntry> waitingEntries, List<WaitingListEntry> lotteryWinners) {
         List<WaitingListEntry> losers = new ArrayList<>(waitingEntries);
         losers.removeAll(lotteryWinners);
         return losers;
     }
 
+    /**
+     * Marks the provided lottery winners as invited in the backend.
+     *
+     * @param organizerID    The ID of the event organizer
+     * @param eventID        The ID of the event
+     * @param lotteryWinners List of winners to mark as invited
+     * @return A Task representing the asynchronous completion of the invitations
+     */
     private Task<Void> markAsInvited(String organizerID, String eventID, List<WaitingListEntry> lotteryWinners) {
         List<Task<Void>> inviteTasks = new ArrayList<>();
         for (WaitingListEntry entry : lotteryWinners) {
@@ -109,6 +149,14 @@ public class LotteryService {
         return Tasks.whenAll(inviteTasks);
     }
 
+    /**
+     * Sends notifications to both winners and losers of the lottery.
+     *
+     * @param lotteryWinners The list of winners
+     * @param lotteryLosers  The list of losers
+     * @param eventID        The ID of the event
+     * @return A Task representing the asynchronous completion of notifications
+     */
     private Task<Void> sendNotifications(List<WaitingListEntry> lotteryWinners,
                                          List<WaitingListEntry> lotteryLosers,
                                          String eventID) {
@@ -117,6 +165,4 @@ public class LotteryService {
         notificationTasks.add(notificationService.notifyLosers(eventID, lotteryLosers));
         return Tasks.whenAll(notificationTasks);
     }
-
-
 }

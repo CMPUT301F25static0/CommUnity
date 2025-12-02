@@ -155,5 +155,13 @@
             android:background="@drawable/button_color"
             android:textColor="@color/button_text_color"/>
 
+        <ProgressBar
+            android:id="@+id/loadingScreen"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            style="?android:attr/progressBarStyle" />
+
     </LinearLayout>
 </ScrollView>

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
@@ -14,7 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:minWidth="48dp"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        app:buttonTint="@color/StrokeColor"
+        android:background="@color/backgroundBox"/>
 
     <LinearLayout
         android:layout_width="0dp"
