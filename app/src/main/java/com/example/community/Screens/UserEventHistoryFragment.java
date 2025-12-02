@@ -29,6 +29,10 @@ import com.google.android.gms.tasks.Tasks;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment displaying the event history of the current user.
+ * Provides a simple back button to navigate to the previous screen.
+ */
 public class UserEventHistoryFragment extends Fragment {
 
     private static final String TAG = "UserEventHistory";
@@ -47,6 +51,14 @@ public class UserEventHistoryFragment extends Fragment {
     private WaitlistRepository waitlistRepository;
     private EventService eventService;
 
+    /**
+     * Inflates the layout for the user's event history page.
+     *
+     * @param inflater           LayoutInflater used to inflate views
+     * @param container          Parent container
+     * @param savedInstanceState Saved instance state
+     * @return The inflated view for this fragment
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,

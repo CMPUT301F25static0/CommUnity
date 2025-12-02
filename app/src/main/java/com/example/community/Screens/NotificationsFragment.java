@@ -1,6 +1,7 @@
 package com.example.community.Screens;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,10 @@ import com.example.community.UserService;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment that displays notifications for the current user.
+ * Users can view, accept, or decline invitations and navigate to notification settings.
+ */
 public class NotificationsFragment extends Fragment {
 
     ImageButton notificationSettingsButton;
@@ -38,6 +43,14 @@ public class NotificationsFragment extends Fragment {
     // store the current userId here once we resolve it
     private String currentUserId;
 
+    /**
+     * Inflates the notifications layout.
+     *
+     * @param inflater           LayoutInflater to inflate views
+     * @param container          Parent view container
+     * @param savedInstanceState Saved state bundle
+     * @return Inflated fragment view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -46,6 +59,13 @@ public class NotificationsFragment extends Fragment {
         return inflater.inflate(R.layout.notification_page, container, false);
     }
 
+    /**
+     * Called after the fragment's view is created.
+     * Initializes UI components, sets up RecyclerView, and loads notifications.
+     *
+     * @param view               The fragment's view
+     * @param savedInstanceState Saved state bundle
+     */
     @Override
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
@@ -59,7 +79,7 @@ public class NotificationsFragment extends Fragment {
         notificationService = new NotificationService();
         userService = new UserService();
 
-        // RecyclerView
+        // Initialize RecyclerView adapter
         notificationAdapter = new NotificationAdapter(
                 notifications,
                 new NotificationAdapter.NotificationActionListener() {
@@ -82,7 +102,7 @@ public class NotificationsFragment extends Fragment {
                                     Toast.makeText(getContext(),
                                             "Invitation accepted",
                                             Toast.LENGTH_SHORT).show();
-                                    notificationAdapter.removeNotification(notification);
+                                    dismissNotification(notification);
                                 })
                                 .addOnFailureListener(e ->
                                         Toast.makeText(getContext(),
@@ -111,7 +131,7 @@ public class NotificationsFragment extends Fragment {
                                     Toast.makeText(getContext(),
                                             "Invitation declined",
                                             Toast.LENGTH_SHORT).show();
-                                    notificationAdapter.removeNotification(notification);
+                                    dismissNotification(notification);
                                 })
                                 .addOnFailureListener(e ->
                                         Toast.makeText(getContext(),
@@ -122,8 +142,15 @@ public class NotificationsFragment extends Fragment {
 
                     @Override
                     public void onViewEvent(Notification notification) {
+                        if (notification.getEventID() == null || notification.getEventID().isEmpty()) {
+                            Toast.makeText(getContext(),
+                                    "Event ID not found",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         Bundle bundle = new Bundle();
-                        bundle.putString("eventID", notification.getEventID());
+                        bundle.putString("event_id", notification.getEventID());
                         NavHostFragment.findNavController(NotificationsFragment.this)
                                 .navigate(R.id.action_NotificationsFragment_to_EventDetailsFragment, bundle);
                     }
@@ -146,6 +173,10 @@ public class NotificationsFragment extends Fragment {
         );
     }
 
+    /**
+     * Loads the list of notifications for the current user based on device token.
+     * Updates the RecyclerView adapter with the fetched notifications.
+     */
     private void loadNotificationsForCurrentUser() {
         String deviceToken = userService.getDeviceToken();
         if (deviceToken == null || deviceToken.isEmpty()) {
@@ -164,8 +195,13 @@ public class NotificationsFragment extends Fragment {
                     notificationService.listUserNotification(userId, 50, null)
                             .addOnSuccessListener(fetchedNotifications -> {
                                 notifications.clear();
-                                notifications.addAll(fetchedNotifications);
+                                for (Notification n : fetchedNotifications) {
+                                    if (!n.isDismissed()) {
+                                    notifications.add(n);
+                                    }
+                                }
                                 notificationAdapter.notifyDataSetChanged();
+
                             })
                             .addOnFailureListener(e -> {
                                 e.printStackTrace();
@@ -180,6 +216,17 @@ public class NotificationsFragment extends Fragment {
                     Toast.makeText(getContext(),
                             "Failed to resolve user from device token: " + e.getMessage(),
                             Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void dismissNotification(Notification notification) {
+        notificationService.dismissNotification(notification.getNotificationID())
+                .addOnSuccessListener(v -> {
+                    notificationAdapter.removeNotification(notification);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("NotificationsFragment", "Failed to dismiss notification", e);
+                    Toast.makeText(getContext(), "Failed to dismiss notification", Toast.LENGTH_SHORT).show();
                 });
     }
 

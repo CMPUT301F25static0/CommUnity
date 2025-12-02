@@ -44,6 +44,19 @@ public class QRScannerFragment extends Fragment {
     private QRCodeService qrCodeService;
     private boolean isScanning = false;
 
+    /**
+     * Inflates the QR scanner layout.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The View for the fragment's UI
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,6 +64,13 @@ public class QRScannerFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Initializes the QR scanner and sets up the UI components.
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -95,6 +115,16 @@ public class QRScannerFragment extends Fragment {
         );
     }
 
+    /**
+     * Handle the result of camera permission request.
+     *
+     * @param requestCode The request code passed in {@link #requestPermissions(String[], int)}.
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     *
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -214,6 +244,9 @@ public class QRScannerFragment extends Fragment {
         }
     }
 
+    /**
+     * Resume scanning when the fragment is resumed.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -222,6 +255,9 @@ public class QRScannerFragment extends Fragment {
         }
     }
 
+    /**
+     * Pause scanning when the fragment is paused.
+     */
     @Override
     public void onPause() {
         super.onPause();
@@ -230,6 +266,9 @@ public class QRScannerFragment extends Fragment {
         }
     }
 
+    /**
+     * Clean up resources when the fragment is destroyed.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();

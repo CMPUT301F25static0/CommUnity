@@ -14,6 +14,10 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.community.R;
 
+/**
+ * Fragment for filtering events based on a keyword or time availability.
+ * Allows the user to enter search criteria and apply the filter.
+ */
 public class FilterFragment extends Fragment {
 
     private EditText inputKeyword;
@@ -21,6 +25,14 @@ public class FilterFragment extends Fragment {
     private Button buttonBack;
     private Button buttonApplyFilter;
 
+    /**
+     * Inflates the filter fragment layout.
+     *
+     * @param inflater           LayoutInflater to inflate views
+     * @param container          Parent view container
+     * @param savedInstanceState Saved state bundle
+     * @return Inflated fragment view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -29,6 +41,13 @@ public class FilterFragment extends Fragment {
         return inflater.inflate(R.layout.filter_page, container, false);
     }
 
+    /**
+     * Called after the fragment's view is created.
+     * Initializes UI elements and sets up back and apply filter button listeners.
+     *
+     * @param view               The fragment's view
+     * @param savedInstanceState Saved state bundle
+     */
     @Override
     public void onViewCreated(@NonNull View view,
                               @Nullable Bundle savedInstanceState) {
@@ -39,10 +58,11 @@ public class FilterFragment extends Fragment {
         buttonBack = view.findViewById(R.id.buttonBack);
         buttonApplyFilter = view.findViewById(R.id.buttonApplyFilter);
 
+        // Back button returns to previous screen
         buttonBack.setOnClickListener(v ->
                 NavHostFragment.findNavController(FilterFragment.this).popBackStack()
         );
-
+        // Apply button triggers search with entered criteria
         buttonApplyFilter.setOnClickListener(v -> {
             String keyword = inputKeyword.getText().toString().trim();
             String time = inputTime.getText().toString().trim();

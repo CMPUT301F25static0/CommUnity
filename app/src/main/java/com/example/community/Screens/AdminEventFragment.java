@@ -27,21 +27,65 @@ import com.example.community.R;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
+/**
+ * Fragment for admins to view and manage upcoming events
+ * <p<
+ *    Display a list of all upcoming events scheduled within a year.
+ *    Admins can perform admin actions like deleting events.
+ * </p>
+ * <p>
+ *     Fragment loads events from the current date to one year in the future. Clicking on an event opens
+ *     a dialog where the admin can delete the event. Confirmation dialog is shown before event deletion
+ *     happens.
+ * </p>
+ *
+ * @see EventService
+ * @see EventArrayAdapter
+ * @see DateValidation
+ */
 public class AdminEventFragment extends Fragment implements EventArrayAdapter.OnEventClickListener {
 
-    Button backButton;
-    RecyclerView adminEventView;
+    /** Button to navigate to previous fragment */
+    private Button backButton;
+    /** RecyclerView displaying the list of upcoming events */
+    private RecyclerView adminEventView;
 
+    /** List of upcoming events */
     private ArrayList<Event> eventsArrayList;
+
+    /** Adapter for managing the RecyclerView and event click handling. */
     private EventArrayAdapter eventArrayAdapter;
+
+    /** Service for managing event data. */
     private EventService eventService;
 
+    /**
+     * Inflates the dialog's layout view
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The View for the fragment's UI
+     */
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.admin_event_page, container, false);
     }
 
+    /**
+     * Initializes the fragment's UI and data. Sets up click listeners, sets up RecyclerView
+     * adapter, loads upcoming events.
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -66,6 +110,10 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
         setUpClickListener();
     }
 
+    /**
+     * Loads upcoming events from today to one year in the future.
+     * Uses DateValidation to ensure the date range is valid.
+     */
     private void loadEvents() {
         String fromDate = DateValidation.getCurrentDate();
 
@@ -88,11 +136,23 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
         }
     }
 
+    /**
+     * Handles the click event for an event in the RecyclerView.
+     * When an event is clicked, displays action dialog
+     *
+     * @param event The Event object that was clicked.
+     */
     @Override
     public void onEventClick(Event event) {
         showActionDialog(event);
     }
 
+    /**
+     * Displays an action dialog with admin operations for the selected event.
+     * Provides the "Delete Event" option. When selected, confirmDelete is called.
+     *
+     * @param event the event for which the action dialog is being displayed
+     */
     private void showActionDialog(Event event) {
         CharSequence[] options = new CharSequence[]{"Delete Event"};
 
@@ -104,6 +164,11 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
                 .show();
     }
 
+    /**
+     * Displays a confirmation dialog before deleting an event.
+     *
+     * @param event teh event to be deleted
+     */
     private void confirmDelete(Event event) {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Delete Event")
@@ -113,8 +178,22 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
                 .show();
     }
 
+
+    /**
+     * Deletes the specified event from the backend and updates the RecyclerView.
+     * <p>
+     *     How it works:
+     *     <ul>
+     *         <li>Calls the EventService to delete the event and removes it from the list.</li>
+     *         <li>Removes event from the local list when successful</li>
+     *         <li>Notifies the adapter of the change</li>
+     *         <li>Shows a toast message</li>
+     *     </ul>
+     * </p>
+     * @param event the event to be deleted
+     */
     private void deleteEvent(Event event) {
-        eventService.cancelEvent(event.getOrganizerID(), event.getEventID())
+        eventService.deleteEvent(event.getEventID())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         int position = eventsArrayList.indexOf(event);
@@ -130,6 +209,10 @@ public class AdminEventFragment extends Fragment implements EventArrayAdapter.On
                 });
     }
 
+    /**
+     * Sets up click listeners for UI components.
+     * Currently only the back button.
+     */
     private void setUpClickListener() {
         backButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(AdminEventFragment.this)
