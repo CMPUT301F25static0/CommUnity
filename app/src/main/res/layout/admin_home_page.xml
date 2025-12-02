@@ -10,17 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="8dp"
         android:gravity="center">
 
-        <TextView
+        <ImageView
             android:id="@+id/headerTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CommUnity"
-            android:textColor="@color/headerPrimary"
-            android:textSize="32sp"
-            android:textStyle="bold" />
+            android:adjustViewBounds="true"
+            android:maxHeight="50dp"
+            android:src="@drawable/community_logo_name"
+            android:contentDescription="@string/community"/>
     </LinearLayout>
 
     <!-- Divider line -->

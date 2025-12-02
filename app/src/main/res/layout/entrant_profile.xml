@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/bottomeDivider"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.01"
         tools:layout_editor_absoluteX="0dp"
         >
 
@@ -37,20 +37,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/email" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/eventScreenAppName"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="1dp"
-                android:text="@string/community"
-                android:textAlignment="center"
-                android:textColor="@color/headerPrimary"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:adjustViewBounds="true"
+                android:maxHeight="50dp"
+                android:src="@drawable/community_logo_name"
+                android:contentDescription="@string/community"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <View
                 android:id="@+id/topDivider"

@@ -253,4 +253,9 @@ public class WaitingListEntry {
         this.status = EntryStatus.CANCELLED;
         this.cancelledAt = Timestamp.now();
     }
+    public void markAsInvited() {
+        this.status = EntryStatus.INVITED;
+        this.invitedAt = Timestamp.now();
+    }
+
 }

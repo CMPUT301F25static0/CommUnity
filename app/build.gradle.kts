@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.example.community"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -23,6 +23,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -43,16 +44,21 @@ configurations.all {
 }
 
 dependencies {
-    // Core AndroidX
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
-    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation(libs.play.services.maps)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    implementation("com.squareup.picasso:picasso:2.8")
 
 
     // Firebase BOM (keeps Firebase libs consistent)
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
     implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
 
     // Firebase with explicit excludes (main APK)
@@ -76,9 +82,14 @@ dependencies {
 
     // Other libraries
     implementation("com.squareup.picasso:picasso:2.8")
-    implementation("com.google.zxing:core:3.5.3")
 
-    // Desugaring
+    implementation("com.google.zxing:core:3.5.3")
+    implementation("com.journeyapps:zxing-android-embedded:4.1.0")
+    implementation("androidx.core:core:1.13.1")
+
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
     // Unit tests

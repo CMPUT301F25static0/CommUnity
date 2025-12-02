@@ -13,20 +13,18 @@
         >
 
 
-        <TextView
+        <ImageView
             android:id="@+id/eventScreenAppName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="1dp"
-            android:text="@string/community"
-            android:textAlignment="center"
-            android:textColor="@color/headerPrimary"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:adjustViewBounds="true"
+            android:maxHeight="50dp"
+            android:src="@drawable/community_logo_name"
+            android:contentDescription="@string/community"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/topDivider"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <View
             android:id="@+id/topDivider"
@@ -56,6 +54,7 @@
 
 
         <RadioGroup
+            android:id="@+id/notification_radio_group"
             android:layout_width="1in"
             android:layout_height="48dp"
             android:layout_marginHorizontal="50dp"
@@ -71,15 +70,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Yes"
-                app:buttonTint="@drawable/button_color"/>
+                app:buttonTint="@color/StrokeColor"/>
 
             <RadioButton
                 android:id="@+id/no_results"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:buttonTint="@color/headerPrimary"
-                android:checked="true"
+                app:buttonTint="@color/StrokeColor"
                 android:text="No" />
 
 
@@ -115,8 +113,8 @@
             android:layout_margin="1dp"
             android:layout_marginStart="147dp"
             android:text="@string/cancel"
-            android:background="@drawable/button_color"
-            android:textColor="@color/button_text_color"
+            android:background="@color/warning"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/confirm_button"

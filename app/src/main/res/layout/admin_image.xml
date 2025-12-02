@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:text="Remove"
         android:textAllCaps="false"
-        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

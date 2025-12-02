@@ -1,8 +1,28 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
+
+<!--For solid Color-->
+
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <stroke
         android:width="2dp"
-        android:color="#2e98c9" />
+        android:color="@color/fill" />
     <solid android:color="@color/fill" />
+    <corners android:radius="4dp" />
+</shape>-->
+
+
+<!--For gradient Color-->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <gradient
+        android:type="linear"
+        android:angle="315"
+        android:startColor="@color/StartColor_button"
+        android:endColor="@color/EndColor_button"
+        android:dither="true" />
+
+
     <corners android:radius="4dp" />
 </shape>

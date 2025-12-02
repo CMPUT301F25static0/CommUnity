@@ -16,23 +16,61 @@ import com.example.community.R;
 
 import java.util.ArrayList;
 
+/**
+ * RecyclerView Adapter for displaying a list of {@link Notification} objects.
+ * Provides buttons for actions such as Accept, Decline, or View Event based on notification type.
+ */
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
+    /** Listener interface for handling notification actions */
     public interface NotificationActionListener {
+        /**
+         * Called when the user accepts a notification.
+         *
+         * @param notification The Notification object that was accepted.
+         */
         void onAccept(Notification notification);
+
+        /**
+         * Called when the user declines a notification.
+         *
+         * @param notification The Notification object that was declined.
+         */
         void onDecline(Notification notification);
+
+        /**
+         * Called when the user wants to view the related event.
+         *
+         * @param notification The Notification object associated with the event.
+         */
         void onViewEvent(Notification notification);
     }
 
+    /** List of notifications to display */
     private final ArrayList<Notification> notifications;
+
+    /** Listener for handling notification actions */
     private final NotificationActionListener listener;
 
+    /**
+     * Constructor for NotificationAdapter.
+     *
+     * @param notifications List of notifications to display.
+     * @param listener Listener for handling Accept, Decline, or View Event actions.
+     */
     public NotificationAdapter(ArrayList<Notification> notifications,
                                NotificationActionListener listener) {
         this.notifications = notifications;
         this.listener = listener;
     }
 
+    /**
+     * Called when RecyclerView needs a new {@link ViewHolder}.
+     *
+     * @param parent The parent ViewGroup into which the new view will be added.
+     * @param viewType The view type of the new view.
+     * @return A new ViewHolder instance.
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -41,17 +79,24 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return new ViewHolder(view);
     }
 
+    /**
+     * Binds data to the ViewHolder for the given position.
+     * Sets button visibility and click actions depending on notification type.
+     *
+     * @param holder The ViewHolder to bind data to.
+     * @param position Position of the item in the notifications list.
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Notification n = notifications.get(position);
 
-        // Main text
+        // Set main notification text
         holder.messageText.setText(n.getMessage());
 
-        // Middle button – you can later put event title here if you fetch it
+        // Set the middle button text
         holder.eventButton.setText("View Event");
 
-        // Only show Accept/Decline for WIN-type notifications
+        // Show Accept/Decline buttons only for WIN-type notifications
         if (n.getType() == NotificationType.WIN) {
             holder.acceptButton.setVisibility(View.VISIBLE);
             holder.declineButton.setVisibility(View.VISIBLE);
@@ -60,6 +105,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.declineButton.setVisibility(View.GONE);
         }
 
+        // Set click actions for buttons
         holder.eventButton.setOnClickListener(v -> {
             if (listener != null) listener.onViewEvent(n);
             else Toast.makeText(v.getContext(), "View event " + n.getEventID(),
@@ -77,23 +123,51 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         });
     }
 
+    /**
+     * Returns the total number of notifications in the adapter.
+     *
+     * @return Size of the notifications list.
+     */
     @Override
     public int getItemCount() {
         return notifications.size();
     }
 
+    /**
+     * ViewHolder class for caching references to views in each notification item.
+     */
     static class ViewHolder extends RecyclerView.ViewHolder {
+
+        /** TextView displaying the notification message */
         TextView messageText;
+
+        /** Button to view related event */
         Button eventButton;
+
+        /** Button to accept the notification */
         Button acceptButton;
+
+        /** Button to decline the notification */
         Button declineButton;
 
+        /**
+         * Constructor for ViewHolder.
+         *
+         * @param itemView Root view of the RecyclerView item.
+         */
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             messageText  = itemView.findViewById(R.id.popup_text);
             eventButton  = itemView.findViewById(R.id.studyGroup);
             acceptButton = itemView.findViewById(R.id.accept_button);
             declineButton = itemView.findViewById(R.id.declineButton);
+        }
+    }
+    public void removeNotification(Notification notification) {
+        int index = notifications.indexOf(notification);
+        if (index != -1) {
+            notifications.remove(index);
+            notifyItemRemoved(index);
         }
     }
 }

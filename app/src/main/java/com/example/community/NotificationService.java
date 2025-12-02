@@ -211,6 +211,76 @@ public class NotificationService {
         return notificationRepository.listNotificationsByEvent(eventID, 1000, null);
         // I capped it at 1000
     }
+    // Handle entrant accepting or declining an invitation
+
+    /**
+     * Handles a user's response to a lottery invitation.
+     * If accepted -> mark entry ACCEPTED.
+     * If declined -> mark entry DECLINED and draw a replacement from WAITING.
+     */
+    public Task<Void> respondToInvitation(String eventID, String userID, boolean accepted) {
+        return waitlistRepository.getByID(eventID, userID)
+                .onSuccessTask(entry -> {
+                    if (entry == null) {
+                        return Tasks.forException(
+                                new IllegalStateException("Waitlist entry not found for event=" +
+                                        eventID + " user=" + userID));
+                    }
+
+                    if (accepted) {
+                        // User keeps the spot
+                        entry.markAsAccepted();
+                        return waitlistRepository.update(entry);
+                    } else {
+                        // User gives up the spot -> mark declined and redraw
+                        entry.markAsDeclined();
+                        return waitlistRepository.update(entry)
+                                .onSuccessTask(v -> selectReplacementFromWaitlist(eventID));
+                    }
+                });
+    }
+
+    /**
+     * Selects a replacement from the WAITING list when someone declines
+     * and sends them a WIN notification.
+     */
+    private Task<Void> selectReplacementFromWaitlist(String eventID) {
+        return waitlistRepository.listByEventAndStatus(eventID, EntryStatus.WAITING)
+                .onSuccessTask(entries -> {
+                    if (entries == null || entries.isEmpty()) {
+                        // No one left to draw
+                        return Tasks.forResult(null);
+                    }
+
+                    // Simple strategy: pick the first WAITING entry
+                    // (you can randomize later if you want)
+                    WaitingListEntry replacement = entries.get(0);
+
+                    // Mark them as INVITED
+                    replacement.markAsInvited();
+
+                    List<WaitingListEntry> winners = new ArrayList<>();
+                    winners.add(replacement);
+
+                    // First update Firestore with new status
+                    return waitlistRepository.update(replacement)
+                            // Then send them a WIN notification using your existing method
+                            .onSuccessTask(v -> notifyWinners(eventID, winners));
+                });
+    }
+
+    public Task<Void> dismissNotification(String notificationID) {
+        return notificationRepository.getByID(notificationID)
+                .onSuccessTask(notification -> {
+                    if (notification == null) {
+                        return Tasks.forException(
+                                new IllegalStateException("Notification not found: " + notificationID));
+                    }
+                    notification.markAsDismissed(); // ADDED: Mark as dismissed
+                    return notificationRepository.update(notification); // ADDED: Update in backend
+                });
+    }
+
 
 }
 

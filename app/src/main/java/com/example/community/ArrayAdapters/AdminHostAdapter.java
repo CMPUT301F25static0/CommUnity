@@ -18,18 +18,31 @@ import com.example.community.UserService;
 
 import java.util.List;
 
+/**
+ * Adapter for the admin host list
+ */
 public class AdminHostAdapter extends RecyclerView.Adapter<AdminHostAdapter.HostViewHolder> {
 
     private List<User> userList;
     private final UserService userService;
     private final Context context;
 
+    /**
+     * Interface for the delete button click listener
+     */
     public interface OnHostListener {
         void onDeleteClicked(User user, int position);
     }
 
     private final OnHostListener onHostListener;
 
+    /**
+     * Constructs an AdminHostAdapter
+     *
+     * @param context the application context
+     * @param userList te list of users to display
+     * @param onHostListener the listener for host actions
+     */
     public AdminHostAdapter(Context context, List<User> userList, OnHostListener onHostListener) {
         this.context = context;
         this.userList = userList;
@@ -37,6 +50,13 @@ public class AdminHostAdapter extends RecyclerView.Adapter<AdminHostAdapter.Host
         this.onHostListener = onHostListener;
     }
 
+    /**
+     * Creates a new view holder for the admin host list
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to
+     *                 an adapter position.
+     * @param viewType The view type of the new View.
+     * @return the new view holder
+     */
     @NonNull
     @Override
     public HostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -46,6 +66,13 @@ public class AdminHostAdapter extends RecyclerView.Adapter<AdminHostAdapter.Host
         return new HostViewHolder(view);
     }
 
+    /**
+     * Binds the data to the view holder
+     *
+     * @param holder   The ViewHolder which should be updated to represent the contents of the
+     *                 item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull HostViewHolder holder, int position) {
         User user = userList.get(position);
@@ -61,6 +88,11 @@ public class AdminHostAdapter extends RecyclerView.Adapter<AdminHostAdapter.Host
         });
     }
 
+    /**
+     * Returns total number of items in the user list
+     *
+     * @return size of the user list
+     */
     @Override
     public int getItemCount() {
         return userList.size();

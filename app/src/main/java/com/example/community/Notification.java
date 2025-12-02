@@ -18,6 +18,7 @@ public class Notification {
     private String title;
     private String message;
     private NotificationType type;
+    private boolean dismissed;
 
     public String eventTitle;
 
@@ -89,5 +90,16 @@ public class Notification {
 
     public void setEventTitle(String eventTitle) {
         this.eventTitle = eventTitle;
+    }
+
+    public void setDismissed(boolean dismissed) {
+        this.dismissed = dismissed;
+    }
+    public boolean isDismissed() {
+        return dismissed;
+    }
+
+    public void markAsDismissed() {
+        this.dismissed = true;
     }
 }

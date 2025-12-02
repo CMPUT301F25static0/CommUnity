@@ -24,7 +24,6 @@
         android:id="@+id/main_toolbar"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginTop="10dp"
         android:elevation="0dp"
         android:theme="@style/customPopupTheme"
         app:layout_constraintEnd_toEndOf="parent"
