@@ -17,19 +17,39 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+/**
+ * Adapter for displaying a list of images
+ */
 public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.ImageViewHolder> {
 
     private final List<Image> imageList;
     private final OnImageDeleteListener listener;
 
+    /**
+     * Interface for the delete button click listener
+     */
     public interface OnImageDeleteListener {
         void onDeleteClick(Image image, int position);
     }
+
+    /**
+     * Constructs an ImageArrayAdapter
+     *
+     * @param imageList list of images to display
+     * @param listener listener for handling image deletion
+     */
     public ImageArrayAdapter(List<Image> imageList, OnImageDeleteListener listener) {
         this.imageList = imageList;
         this.listener = listener;
     }
 
+    /**
+     * Creates a new view holder for the image list
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to
+     *                 an adapter position.
+     * @param viewType The view type of the new View.
+     * @return
+     */
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,6 +58,12 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
         return new ImageViewHolder(view);
     }
 
+    /**
+     * Binds the data to the view holder
+     * @param holder   The ViewHolder which should be updated to represent the contents of the
+     *                 item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Image image = imageList.get(position);
@@ -82,16 +108,28 @@ public class ImageArrayAdapter extends RecyclerView.Adapter<ImageArrayAdapter.Im
         });
     }
 
+    /**
+     * Returns total number of item,s in the list
+     * @return
+     */
     @Override
     public int getItemCount() {
         return imageList.size();
     }
 
+    /**
+     * ViewHolder class that holds the views for each item
+     */
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView imageInfo;
         Button deleteButton;
 
+        /**
+         * Constructs an ImageViewHolder
+         *
+         * @param itemView the view to hold the image and information
+         */
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imgContent);
