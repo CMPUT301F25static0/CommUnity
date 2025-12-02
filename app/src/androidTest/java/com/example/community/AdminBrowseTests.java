@@ -56,4 +56,15 @@ public class AdminBrowseTests {
     public void testAdminBrowseImages() throws InterruptedException {
         clickAndWait(R.id.buttonImage);
     }
+
+    // US 03.08.01 As an administrator, I want to review logs of all notifications sent to entrants by organizers.
+    @Test
+    public void testAdminReviewNotificationLogs() throws InterruptedException {
+        // Navigate to Notifications Log page
+        clickAndWait(R.id.buttonNotification); // replace with actual button ID
+
+        Thread.sleep(2000); // wait for page to load
+
+    }
+
 }
