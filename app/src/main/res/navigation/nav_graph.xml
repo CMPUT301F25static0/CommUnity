@@ -404,7 +404,6 @@
     </fragment>
 
 
-
     <!--    Host Poster Upload Fragments -->
     <fragment
         android:id="@+id/HostPosterUploadFragment"
