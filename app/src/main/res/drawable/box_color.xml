@@ -21,7 +21,6 @@
                 android:type="linear"
                 android:angle="315"
                 android:startColor="@color/StartColor"
-                android:centerColor="@color/CenterColor"
                 android:endColor="@color/EndColor"
                 android:dither="true" />
 

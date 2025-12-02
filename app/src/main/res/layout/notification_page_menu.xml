@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginBottom="4dp"
-        android:background="@drawable/box_color"
+        android:background="@color/backgroundBox"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,6 @@
             android:layout_height="68dp"
             android:layout_marginStart="36dp"
             android:layout_marginBottom="36dp"
-
             android:orientation="horizontal"
             android:text="Study Group"
             app:layout_constraintBottom_toBottomOf="parent"

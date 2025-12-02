@@ -57,8 +57,8 @@
             app:layout_constraintStart_toEndOf="@+id/cancel_popup"
             app:layout_constraintTop_toBottomOf="@+id/popup_text"
             app:layout_constraintVertical_bias="1.0"
-            android:background="@drawable/button_color"
-            android:textColor="@color/warning" />
+            android:background="@color/warning"
+            android:textColor="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

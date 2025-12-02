@@ -15,15 +15,11 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <stroke
-        android:width="2dp"
-        android:color="@color/StrokeColor" />
 
     <gradient
         android:type="linear"
         android:angle="315"
         android:startColor="@color/StartColor_button"
-        android:centerColor="@color/CenterColor_button"
         android:endColor="@color/EndColor_button"
         android:dither="true" />
 

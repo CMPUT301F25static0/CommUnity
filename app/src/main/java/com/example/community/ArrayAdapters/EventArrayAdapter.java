@@ -117,12 +117,12 @@ public class EventArrayAdapter extends RecyclerView.Adapter<EventArrayAdapter.Vi
                     .load(posterURL)
                     .fit()
                     .centerCrop()
-                    .error(R.drawable.ic_launcher_foreground)
-                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .error(R.drawable.community_logo_full)
+                    .placeholder(R.drawable.community_logo_full)
                     . into(viewHolder.eventThumbnail);
         } else {
             // Use default placeholder if no poster URL
-            viewHolder.eventThumbnail.setImageResource(R.drawable.ic_launcher_foreground);
+            viewHolder.eventThumbnail.setImageResource(R.drawable.community_logo_full);
         }
     }
 

@@ -26,7 +26,7 @@
         android:text="Event Name"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/headerPrimary"
+        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@id/eventImage"
         app:layout_constraintTop_toTopOf="@id/eventImage"
         app:layout_constraintEnd_toEndOf="parent"
