@@ -33,22 +33,79 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Fragment for admin to view and manage notifications
+ * <p>
+ *     Displays a log of all notifications sent to users. Admin can view notification the notification message that was sent and the notification
+ *     message.
+ * </p>
+ * <p>
+ *     Fragment loads all notifications from the database and displays them in a RecyclerView.
+ * </p>
+ *
+ * @see NotificationArrayAdapter
+ * @see Notification
+ */
+
 public class AdminNotificationFragment extends Fragment {
 
+    /**
+     * RecyclerView for displaying the list of notifications
+     */
     private RecyclerView recyclerView;
+
+    /**
+     * Adapter for managing the RecyclerView items and display
+     */
     private NotificationArrayAdapter adapter;
+
+    /**
+     * List of notifications to be displayed
+     */
     private List<Notification> notificationList;
+
+    /**
+     * Firebase Firestore instance for querying notification and event data
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Button to go back to previous fragment
+     */
     private Button backButton;
 
+    /**
+     * Map of event IDs to event titles for displaying notification details
+     */
     private final Map<String, String> eventTitleMap = new HashMap<>();
 
+    /**
+     * Inflates the layout for this fragment
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The View for the fragment's UI
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.admin_notification_page, container, false);
     }
 
+    /**
+     * Initializes the fragment's UI. Initializes Firestore, sets up adapter, loads notification data,
+     * sets up back button listener
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -76,6 +133,23 @@ public class AdminNotificationFragment extends Fragment {
         });
     }
 
+    /**
+     * Loads all notifications from the database and displays them in the RecyclerView
+     * <p>
+     *     How it works:
+     *     <ul>
+     *         <li>Queries the "notifications" collection in Firestore</li>
+     *         <li>Clears the notification list and event ID set</li>
+     *         <li>Iterates through the query results</li>
+     *         <li>Adds each notification to the list</li>
+     *         <li>Adds unique event IDs to the set</li>
+     *         <li>Sorts the notifications by issue date</li>
+     *         <li>Updates the adapter</li>
+     *     </ul>
+     * </p>
+     *
+     * Logs errors if notification loading or document conversion fails.
+     */
     private void loadNotifications() {
         db.collection("notifications")
                 .get()
@@ -114,6 +188,25 @@ public class AdminNotificationFragment extends Fragment {
                 });
     }
 
+    /**
+     * Fetches event titels for all event IDs and sorts notifications
+     * <p>
+     *     How it works:
+     *     <ul>
+     *         <li>Creates a list of tasks to fetch event details</li>
+     *         <li>Queries the "events" collection for each event ID</li>
+     *         <li>Clears the event title map</li>
+     *         <li>Iterates through the query results</li>
+     *         <li>Adds each event title to the map</li>
+     *         <li>Sorts the notifications by issue date</li>
+     *         <li>Updates the adapter</li>
+     *     </ul>
+     * </p>
+     *
+     *
+     *
+     * @param eventIds set of event IDs to fetch titles for
+     */
     private void fetchEventTitlesAndSort(Set<String> eventIds) {
         List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
 
@@ -145,6 +238,9 @@ public class AdminNotificationFragment extends Fragment {
         });
     }
 
+    /**
+     * Sorts notifications by issue date (newest first), then by event title, then by event ID.
+     */
     private void sortNotifications() {
         Collections.sort(notificationList, (n1, n2) -> {
             long d1 = n1.getIssueDate();

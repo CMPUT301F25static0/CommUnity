@@ -269,6 +269,18 @@ public class NotificationService {
                 });
     }
 
+    public Task<Void> dismissNotification(String notificationID) {
+        return notificationRepository.getByID(notificationID)
+                .onSuccessTask(notification -> {
+                    if (notification == null) {
+                        return Tasks.forException(
+                                new IllegalStateException("Notification not found: " + notificationID));
+                    }
+                    notification.markAsDismissed(); // ADDED: Mark as dismissed
+                    return notificationRepository.update(notification); // ADDED: Update in backend
+                });
+    }
+
 
 }
 
