@@ -157,7 +157,8 @@ public class NotificationsFragment extends Fragment {
 
         userService.getUserIDByDeviceToken(deviceToken)
                 .addOnSuccessListener(userId -> {
-                    // Store userId so onAccept/onDecline can use it
+
+                    // Save for accept/decline actions
                     currentUserId = userId;
 
                     notificationService.listUserNotification(userId, 50, null)
@@ -181,4 +182,5 @@ public class NotificationsFragment extends Fragment {
                             Toast.LENGTH_SHORT).show();
                 });
     }
+
 }
