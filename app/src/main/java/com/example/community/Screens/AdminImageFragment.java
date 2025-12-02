@@ -25,22 +25,78 @@ import com.example.community.Image;
 import java.util.ArrayList;
 import com.example.community.Event;
 
+/**
+ * Fragment for admins to view and manage event poster images.
+ * <p>
+ *     Displays a list of all event poster images uploaded by organizers. Admins can view image details
+ *     and perform deletion of images.
+ * </p>
+ * <p>
+ *     Loads all events from the database, gets the poster image information, and displays them in a
+ *     RecyclerView. When an admin clicks delete, a confirmation dialog is shown. If confirmed, the
+ *     image is deleted from the database and the list is updated.
+ * </p>
+ *
+ * @see ImageArrayAdapter
+ * @see ImageService
+ * @see Image
+ * @see Event
+ */
 public class AdminImageFragment extends Fragment {
 
+    /**
+     * Button to go back to previous fragment
+     */
     Button backButton;
 
+    /**
+     * List of poster images from the events
+     */
     private ArrayList<com.example.community.Image> imagesArrayList;
+
+    /**
+     * Adapter for managing the RecyclerView items and delete button handling
+     */
     private ImageArrayAdapter imageArrayAdapter;
+
+    /**
+     * Service for managing image data
+     */
     private ImageService imageService;
 
+    /**
+     * RecyclerView displaying the list of eent poster images
+     */
     private RecyclerView adminImageView;
 
+
+    /**
+     * Inflates the layout for this fragment
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The View for the fragment's UI
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.admin_image_page, container, false);
     }
 
+    /**
+     * Initializes services and UI. Sets up the RecyclerView adapter with image delete listeners,
+     * loads poster images, and sets up the back button listener.
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -66,6 +122,19 @@ public class AdminImageFragment extends Fragment {
         setUpClickListener();
     }
 
+    /**
+     * Loads all event poster images and fills the RecyclerView
+     * <p>
+     *     How it works:
+     *     <ul>
+     *         <li>Queries all events from the Firestore</li>
+     *         <li>For each event, if it has a poster image, it is added to the ArrayList</li>
+     *         <li>The ArrayList is then passed to the adapter</li>
+     *         <li>Notifies the adapter to refresh the RecyclerView</li>
+     *     </ul>
+     * </p>
+     * Displays an error if event loading or image loading fails
+     */
     private void loadImages() {
         com.google.firebase.firestore.FirebaseFirestore.getInstance()
                 .collection("events")
@@ -113,13 +182,31 @@ public class AdminImageFragment extends Fragment {
     }
 
 
-
+    /**
+     * Sets up the back button listener to navigate back to the previous fragment
+     */
     private void setUpClickListener() {
         backButton.setOnClickListener(v -> {
             NavHostFragment.findNavController(AdminImageFragment.this).navigateUp();
         });
     }
 
+    /**
+     * Displays confirmation dialog and deltes a poster image froma an event
+     * <p>
+     *     How it works:
+     *     <ul>
+     *         <li>Shows a confirmation dialog asking the admin to confirm deletion</li>
+     *         <li>Queries the Firestore for the event with the matching poster image ID</li>
+     *         <li>Calls imageService to delete the event poster image from the event</li>
+     *         <li>Removes the image from the ArrayList</li>
+     *         <li>Notifies the adapter to refresh the RecyclerView</li>
+     *     </ul>
+     * </p>
+     *
+     * @param image the poster image to be deleted
+     * @param position the position of the image in the RecyclerView list
+     */
     public void onDeleteClicked(Image image, int position) {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Delete Image")
