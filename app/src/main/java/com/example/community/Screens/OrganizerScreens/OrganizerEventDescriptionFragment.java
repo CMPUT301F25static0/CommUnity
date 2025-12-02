@@ -159,8 +159,8 @@ public class OrganizerEventDescriptionFragment extends Fragment {
                     .load(posterURL)
                     .fit()
                     .centerCrop()
-                    .error(R.drawable.ic_launcher_foreground)
-                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .error(R.drawable.community_logo_full)
+                    .placeholder(R.drawable.community_logo_full)
                     .into(posterImageView);
             posterImageView.setVisibility(View.VISIBLE);
         } else {

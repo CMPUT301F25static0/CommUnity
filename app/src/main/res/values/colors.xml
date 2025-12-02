@@ -14,7 +14,7 @@
 
     <!-- Background colors -->
     <color name="backgroundColor">@color/white</color>
-    <color name="backgroundBox">#E6E4E4</color>
+    <color name="backgroundBox">#F0F0F0</color>
 
     <!-- Text colors -->
     <color name="headerPrimary">@color/Primary</color>
