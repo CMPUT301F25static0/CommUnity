@@ -112,9 +112,9 @@ public class EntrantHomeFragment extends Fragment {
 
         });
         entrantQRScannerButton.setOnClickListener(v -> {
-            Toast myToast = Toast.makeText(getActivity(), "Not Implemented yet", Toast.LENGTH_SHORT);
-
-            myToast.show();
+            Log.d("EntrantHomeFragment", "QR Scanner button clicked");
+            NavHostFragment.findNavController(EntrantHomeFragment.this)
+                    .navigate(R.id.action_EntrantHomeFragment_to_QRScannerFragment);
         });
         entrantFilterButton.setOnClickListener(v -> {
             Toast myToast = Toast.makeText(getActivity(), "Not Implemented yet", Toast.LENGTH_SHORT);
