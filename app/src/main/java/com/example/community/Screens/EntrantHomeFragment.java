@@ -72,6 +72,7 @@ public class EntrantHomeFragment extends Fragment {
             args.putString("event_id", event.getEventID());
             NavHostFragment.findNavController(EntrantHomeFragment.this)
                     .navigate(R.id.action_EntrantHomeFragment_to_EventDescriptionFragment, args);
+
         });
         entrantEventList.setAdapter(eventArrayAdapter);
 
@@ -135,7 +136,13 @@ public class EntrantHomeFragment extends Fragment {
         );
 
         entrantQRScannerButton.setOnClickListener(v -> {
+            Log.d("EntrantHomeFragment", "QR Scanner button clicked");
+            NavHostFragment.findNavController(EntrantHomeFragment.this)
+                    .navigate(R.id.action_EntrantHomeFragment_to_QRScannerFragment);
+        });
+        entrantFilterButton.setOnClickListener(v -> {
             Toast myToast = Toast.makeText(getActivity(), "Not Implemented yet", Toast.LENGTH_SHORT);
+
             myToast.show();
         });
 
