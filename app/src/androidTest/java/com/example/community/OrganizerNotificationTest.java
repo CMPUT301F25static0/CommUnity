@@ -155,5 +155,30 @@ public class OrganizerNotificationTest {
                 .perform(typeText("This is a test notification message."), closeSoftKeyboard());
         Thread.sleep(1000);
         onView(withId(R.id.buttonSend)).perform(click());
+        Thread.sleep(1000);
+        onView(withText("Back to Main Menu")).perform(click());
+        Thread.sleep(3000);
+
+        // --- US 02.02.02: View geolocation of entrants in event waiting list ---
+
+        // Click the Geolocation button
+        onView(withId(R.id.buttonGeolocation))
+                .perform(click());
+
+        Thread.sleep(3000);
+
+        // Select the "Winter Cup Tournament" from the RecyclerView
+        onView(withId(R.id.geolocationEventList))
+                .perform(actionOnItem(
+                        hasDescendant(withText("Winter Cup Tournament")),
+                        click()));
+
+        // At this point, the app should open the map for the selected event
+        Thread.sleep(1000);
+
+        onView(withText("Back")).perform(click());
+
+
+
     }
 }
