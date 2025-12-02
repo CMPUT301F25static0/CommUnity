@@ -45,7 +45,17 @@
             >
         </action>
     </fragment>
+    <fragment
 
+        android:id="@+id/QRScannerFragment"
+        android:name="com.example.community.Screens.QRScannerFragment"
+        android:label="Scan QR Code" >
+
+        <action
+            android:id="@+id/action_QRScannerFragment_to_EventDescriptionFragment"
+            app:destination="@id/EventDescriptionFragment"
+            app:popUpTo="@id/EntrantHomeFragment" />
+    </fragment>
 
     <!-- Entrant Fragments -->
     <fragment
@@ -88,6 +98,11 @@
 
         <!--        Implement QR action-->
         <!--        Implement Filters action-->
+<!--        Implement QR action-->
+        <action
+            android:id="@+id/action_EntrantHomeFragment_to_QRScannerFragment"
+            app:destination="@id/QRScannerFragment" />
+<!--        Implement Filters action-->
     </fragment>
 
     <fragment
