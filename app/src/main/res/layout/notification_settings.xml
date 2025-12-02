@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,8 +21,8 @@
             android:paddingBottom="1dp"
             android:text="@string/community"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
+            android:textColor="@color/headerPrimary"
+            android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +45,7 @@
             android:layout_marginTop="96dp"
             android:text="@string/results_noti"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
+            android:textColor="@color/textPrimary"
 
             android:textSize="18sp"
             android:textStyle="bold"
@@ -69,14 +70,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Yes" />
+                android:text="Yes"
+                app:buttonTint="@color/StrokeColor"/>
 
             <RadioButton
                 android:id="@+id/no_results"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:buttonTint="@color/material_dynamic_neutral90"
+                app:buttonTint="@color/StrokeColor"
                 android:checked="true"
                 android:text="No" />
 
@@ -94,27 +96,27 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/confirm_button"
             android:layout_width="150sp"
             android:layout_height="48sp"
             android:text="@string/confirm"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/black"
+            android:background="@drawable/button_color"
+            android:textColor="@color/button_text_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/cancel_popup"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bottomeDivider" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/cancel_popup"
             android:layout_width="150sp"
             android:layout_height="48sp"
             android:layout_margin="1dp"
             android:layout_marginStart="147dp"
             android:text="@string/cancel"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/black"
+            android:background="@drawable/button_color"
+            android:textColor="@color/warning"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/confirm_button"

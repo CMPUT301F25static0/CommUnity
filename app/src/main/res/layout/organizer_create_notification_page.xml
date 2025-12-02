@@ -2,22 +2,20 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/backgroundColor"
     android:fillViewport="true">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:orientation="vertical">
 
-        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="40dp"
-            android:paddingBottom="8dp"
+            android:paddingBottom="24dp"
             android:gravity="center">
 
             <TextView
@@ -27,116 +25,130 @@
                 android:text="CommUnity"
                 android:textSize="32sp"
                 android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textColor="@color/headerPrimary" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#BDBDBD"
+                android:layout_marginBottom="24dp" />
+
         </LinearLayout>
 
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#BDBDBD"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Notify Accepted -->
-        <TextView
-            android:id="@+id/labelNotifyUsers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Notify Users"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="6dp" />
-
-        <EditText
-            android:id="@+id/inputNotificationTitle"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:hint="Input the title of your notification. Please start with name of event."
-            android:gravity="top|start"
-            android:background="@android:drawable/edit_text"
-            android:padding="10dp"
-            android:layout_marginBottom="16dp"
-            android:maxLines="6" />
-
-        <EditText
-            android:id="@+id/inputNotifyMessage"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:hint="Input your message here"
-            android:gravity="top|start"
-            android:background="@android:drawable/edit_text"
-            android:padding="10dp"
-            android:layout_marginBottom="16dp"
-            android:maxLines="6" />
-
-<!--        &lt;!&ndash; Notify Waiting &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/labelNotifyWaiting"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Notify Waiting"-->
-<!--            android:textSize="16sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:layout_marginBottom="6dp" />-->
-
-<!--        <EditText-->
-<!--            android:id="@+id/inputNotifyWaiting"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="120dp"-->
-<!--            android:hint="Message for waitlisted users..."-->
-<!--            android:gravity="top|start"-->
-<!--            android:background="@android:drawable/edit_text"-->
-<!--            android:padding="10dp"-->
-<!--            android:layout_marginBottom="16dp"-->
-<!--            android:maxLines="6" />-->
-
-<!--        &lt;!&ndash; Notify Canceled &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/labelNotifyCanceled"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Notify Canceled"-->
-<!--            android:textSize="16sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:layout_marginBottom="6dp" />-->
-
-<!--        <EditText-->
-<!--            android:id="@+id/inputNotifyCanceled"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="120dp"-->
-<!--            android:hint="Message for canceled users..."-->
-<!--            android:gravity="top|start"-->
-<!--            android:background="@android:drawable/edit_text"-->
-<!--            android:padding="10dp"-->
-<!--            android:layout_marginBottom="24dp"-->
-<!--            android:maxLines="6" />-->
-
-        <!-- Bottom buttons: Cancel (left), Send (right) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <Button
-                android:id="@+id/buttonCancel"
-                android:layout_width="wrap_content"
+            <!-- Notify Accepted -->
+            <TextView
+                android:id="@+id/labelNotifyUsers"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cancel"
-                android:textAllCaps="false" />
+                android:text="Notify Users"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp"
+                android:textColor="@color/textPrimary"/>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
+            <EditText
+                android:id="@+id/inputNotificationTitle"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:hint="Input the title of your notification. Please start with name of event."
+                android:gravity="top|start"
+                android:background="@android:drawable/edit_text"
+                android:backgroundTint="@color/backgroundBox"
+                android:padding="10dp"
+                android:layout_marginBottom="16dp"
+                android:maxLines="6" />
 
-            <Button
-                android:id="@+id/buttonSend"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/inputNotifyMessage"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:hint="Input your message here"
+                android:gravity="top|start"
+                android:background="@android:drawable/edit_text"
+                android:backgroundTint="@color/backgroundBox"
+                android:padding="10dp"
+                android:layout_marginBottom="16dp"
+                android:maxLines="6" />
+
+    <!--        &lt;!&ndash; Notify Waiting &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/labelNotifyWaiting"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Notify Waiting"-->
+    <!--            android:textSize="16sp"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:layout_marginBottom="6dp" />-->
+
+    <!--        <EditText-->
+    <!--            android:id="@+id/inputNotifyWaiting"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="120dp"-->
+    <!--            android:hint="Message for waitlisted users..."-->
+    <!--            android:gravity="top|start"-->
+    <!--            android:background="@android:drawable/edit_text"-->
+    <!--            android:padding="10dp"-->
+    <!--            android:layout_marginBottom="16dp"-->
+    <!--            android:maxLines="6" />-->
+
+    <!--        &lt;!&ndash; Notify Canceled &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/labelNotifyCanceled"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Notify Canceled"-->
+    <!--            android:textSize="16sp"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:layout_marginBottom="6dp" />-->
+
+    <!--        <EditText-->
+    <!--            android:id="@+id/inputNotifyCanceled"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="120dp"-->
+    <!--            android:hint="Message for canceled users..."-->
+    <!--            android:gravity="top|start"-->
+    <!--            android:background="@android:drawable/edit_text"-->
+    <!--            android:padding="10dp"-->
+    <!--            android:layout_marginBottom="24dp"-->
+    <!--            android:maxLines="6" />-->
+
+            <!-- Bottom buttons: Cancel (left), Send (right) -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Send"
-                android:textAllCaps="false" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_color"
+                    android:textColor="@color/button_text_color"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonSend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Send"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_color"
+                    android:textColor="@color/warning"/>
+            </LinearLayout>
+
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView>

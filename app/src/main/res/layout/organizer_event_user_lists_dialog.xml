@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/backgroundColor">
 
     <TextView
         android:id="@+id/listTitle"
@@ -28,7 +29,7 @@
         app:layout_constraintTop_toBottomOf="@id/listTitle"
         app:layout_constraintBottom_toTopOf="@id/cancelUsersButton" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/cancelUsersButton"
         android:layout_width="0dp"
         android:layout_height="48dp"
@@ -39,9 +40,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/closeListButton"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/button_color"
+        android:textColor="@color/button_text_color"
         android:visibility="gone" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/closeListButton"
         android:layout_width="0dp"
         android:layout_height="48dp"
@@ -50,6 +53,8 @@
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@id/cancelUsersButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/button_color"
+        android:textColor="@color/button_text_color"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

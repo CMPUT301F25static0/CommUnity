@@ -19,6 +19,8 @@ public class Notification {
     private String message;
     private NotificationType type;
 
+    public String eventTitle;
+
     /**
      * Default constructor required for Firebase.
      */
@@ -79,5 +81,13 @@ public class Notification {
 
     public void setType(NotificationType type) {
         this.type = type;
+    }
+
+    public String getEventTitle() {
+        return eventTitle;
+    }
+
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
     }
 }
