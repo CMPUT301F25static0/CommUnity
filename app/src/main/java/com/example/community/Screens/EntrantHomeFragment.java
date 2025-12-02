@@ -140,11 +140,6 @@ public class EntrantHomeFragment extends Fragment {
             NavHostFragment.findNavController(EntrantHomeFragment.this)
                     .navigate(R.id.action_EntrantHomeFragment_to_QRScannerFragment);
         });
-        entrantFilterButton.setOnClickListener(v -> {
-            Toast myToast = Toast.makeText(getActivity(), "Not Implemented yet", Toast.LENGTH_SHORT);
-
-            myToast.show();
-        });
 
         guideButton.setOnClickListener(v ->
                 NavHostFragment.findNavController(EntrantHomeFragment.this)
